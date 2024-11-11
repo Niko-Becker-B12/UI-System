@@ -13,11 +13,12 @@ public class UiManager : MonoBehaviour
 
     #endregion
 
+    public bool scaleToScreenSize = true;
 
     public int selectedWindow = 0;
     public int lastWindow = -1;
 
-    [ShowInInspector]
+    [ShowInInspector, ReadOnly]
     public Stack<int> lastWindows = new Stack<int>(128);
 
     public List<UiWindow> mainWindows = new List<UiWindow>();
@@ -32,6 +33,9 @@ public class UiManager : MonoBehaviour
             Destroy(this.gameObject);
 
         lastWindows = new Stack<int>(128);
+
+        if(scaleToScreenSize)
+            this.GetComponent<CanvasScaler>().referenceResolution = new Vector2(Screen.width, Screen.height);
 
     }
 

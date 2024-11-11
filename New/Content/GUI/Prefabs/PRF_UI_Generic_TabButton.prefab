@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 8802860442112416348}
   - component: {fileID: 120204113590792767}
   - component: {fileID: 9033913108082926277}
-  - component: {fileID: 509886591647433780}
+  - component: {fileID: 8868293815568525930}
   m_Layer: 0
   m_Name: PRF_UI_Generic_TabButton
   m_TagString: Untagged
@@ -312,7 +312,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_HorizontalFit: 2
   m_VerticalFit: 2
---- !u!114 &509886591647433780
+--- !u!114 &8868293815568525930
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -321,7 +321,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1735159663999086636}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 30649d3a9faa99c48a7b1166b86bf2a0, type: 3}
+  m_Script: {fileID: 11500000, guid: 9c4e676cb55d4ba40acb3e1a07be85f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
@@ -329,7 +329,7 @@ MonoBehaviour:
     m_Right: 16
     m_Top: 12
     m_Bottom: 12
-  m_ChildAlignment: 3
+  m_ChildAlignment: 4
   m_Spacing: 12
   m_ChildForceExpandWidth: 0
   m_ChildForceExpandHeight: 0
@@ -338,6 +338,7 @@ MonoBehaviour:
   m_ChildScaleWidth: 1
   m_ChildScaleHeight: 1
   m_ReverseArrangement: 0
+  m_IsVertical: 0
 --- !u!1 &1919674740918242059
 GameObject:
   m_ObjectHideFlags: 0

@@ -8,6 +8,7 @@ using static ThisOtherThing.UI.GeoUtils;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using System;
+using Unity.VisualScripting;
 
 [RequireComponent(typeof(CanvasGroup))]
 public class UiElement : SerializedMonoBehaviour
@@ -43,8 +44,6 @@ public class UiElement : SerializedMonoBehaviour
 
         canvasGroup = GetComponent<CanvasGroup>();
         rectTransform = GetComponent<RectTransform>();
-
-        //GameManager.OnLoginFinalized += delegate { ApplySkinData(); };
 
         ApplySkinData();
 
@@ -109,7 +108,80 @@ public class UiElement : SerializedMonoBehaviour
         if (skinData == null)
             return;
 
-        if(backgroundGraphic != null)
+        if (!TryGetComponent<UiCombiLayoutGroup>(out UiCombiLayoutGroup layoutGroup))
+            layoutGroup = this.AddComponent<UiCombiLayoutGroup>();
+
+        if(skinData.useLayoutOptions)
+        {
+
+            switch (skinData.childAlignmentAxis)
+            {
+
+                case ComponentSkinDataObject.UiElementChildAlignmentAxis.None:
+                    layoutGroup.enabled = true;
+                    break;
+                case ComponentSkinDataObject.UiElementChildAlignmentAxis.Vertical:
+                    layoutGroup.enabled = true;
+                    layoutGroup.padding = skinData.layoutMargin;
+                    layoutGroup.spacing = skinData.layoutSpacing;
+                    layoutGroup.isVertical = true;
+                    layoutGroup.childAlignment = skinData.childAlignment;
+                    break;
+                case ComponentSkinDataObject.UiElementChildAlignmentAxis.Horizontal:
+                    layoutGroup.enabled = true;
+                    layoutGroup.padding = skinData.layoutMargin;
+                    layoutGroup.spacing = skinData.layoutSpacing;
+                    layoutGroup.isVertical = false;
+                    layoutGroup.childAlignment = skinData.childAlignment;
+                    break;
+
+            }
+
+            if (!TryGetComponent<ContentSizeFitter>(out ContentSizeFitter contentSizeFitter))
+                contentSizeFitter = this.AddComponent<ContentSizeFitter>();
+
+
+            if (skinData.layoutSizingOption.HasFlag(ComponentSkinDataObject.UiElementSizingOptions.ContentSizeFitted))
+            {
+                contentSizeFitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
+                contentSizeFitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+
+                layoutGroup.childControlHeight = false;
+                layoutGroup.childControlWidth = false;
+                layoutGroup.childForceExpandHeight = false;
+                layoutGroup.childForceExpandWidth = false;
+                layoutGroup.childScaleHeight = true;
+                layoutGroup.childScaleWidth = true;
+
+            }
+            else if (skinData.layoutSizingOption.HasFlag(ComponentSkinDataObject.UiElementSizingOptions.ParentSizeFixed))
+            {
+
+                contentSizeFitter.horizontalFit = ContentSizeFitter.FitMode.Unconstrained;
+                contentSizeFitter.verticalFit = ContentSizeFitter.FitMode.Unconstrained;
+
+                if (skinData.layoutSizingOption.HasFlag(ComponentSkinDataObject.UiElementSizingOptions.ControlChildWidth))
+                {
+
+                    layoutGroup.childControlWidth = true;
+                    layoutGroup.childForceExpandWidth = true;
+                    layoutGroup.childScaleWidth = false;
+
+                }
+                if (skinData.layoutSizingOption.HasFlag(ComponentSkinDataObject.UiElementSizingOptions.ControlChildHeight))
+                {
+
+                    layoutGroup.childControlHeight = true;
+                    layoutGroup.childForceExpandHeight = true;
+                    layoutGroup.childScaleHeight = false;
+
+                }
+
+            }
+
+        }
+
+        if (backgroundGraphic != null)
         {
 
             if(backgroundGraphic is Rectangle)
@@ -150,7 +222,7 @@ public class UiElement : SerializedMonoBehaviour
                 (backgroundGraphic as Rectangle).RoundedProperties.UniformResolution.Resolution = RoundingProperties.ResolutionType.Fixed;
                 (backgroundGraphic as Rectangle).RoundedProperties.UniformResolution.FixedResolution = 16;
 
-                if ((backgroundGraphic as Rectangle).ShadowProperties.Shadows.Length == 0)
+                if ((backgroundGraphic as Rectangle).ShadowProperties.Shadows == null || (backgroundGraphic as Rectangle).ShadowProperties.Shadows.Length == 0)
                 {
 
                     ShadowProperties[] shadows = new ShadowProperties[1];

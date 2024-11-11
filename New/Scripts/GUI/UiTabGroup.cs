@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -9,7 +10,7 @@ public class UiTabGroup : UiElement
 
     public GameObject tabButtonPrefab;
 
-    public Transform tabButtonParent;
+    public RectTransform tabButtonParent;
 
     public GameObject contentGroupPrefab;
     public RectTransform contentGroupHolder;
@@ -40,8 +41,6 @@ public class UiTabGroup : UiElement
     {
 
         base.ApplySkinData();
-
-
 
     }
 
@@ -110,28 +109,8 @@ public class UiTabGroup : UiElement
         GameObject tempButtonObject = Instantiate(tabButtonPrefab, tabButtonParent);
         UiTab tab = tempButtonObject.GetComponent<UiTab>();
 
-        //GameObject tempContentHolderObject = Instantiate(contentGroupPrefab, contentGroupHolder);
-        //
-        //tab.contentHolderParent = GameObject.Find($"{contentGroupHolder.name}/{tempContentHolderObject.name}{contentPosition}").transform;
-
         GameObject newContentHolder = Instantiate(contentGroupPrefab, contentGroupHolder);
         newContentHolder.transform.SetParent(contentGroupHolder);
-        //newContentHolder.transform.localScale = Vector3.one;
-        //
-        //VerticalLayoutGroup layoutGroup = newContentHolder.AddComponent<VerticalLayoutGroup>();
-        //ContentSizeFitter sizeFitter = newContentHolder.AddComponent<ContentSizeFitter>();
-        //
-        //
-        //layoutGroup.childControlHeight = false;
-        //layoutGroup.childControlWidth = true;
-        //layoutGroup.childForceExpandHeight = false;
-        //layoutGroup.childForceExpandWidth = true;
-        //layoutGroup.childScaleHeight = true;
-        //layoutGroup.childScaleWidth = false;
-        //
-        //sizeFitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
-        //sizeFitter.horizontalFit = ContentSizeFitter.FitMode.Unconstrained;
-
 
         tab.contentHolderParent = newContentHolder.transform;
         tab.contentHolderParent.gameObject.SetActive(false);
@@ -157,7 +136,25 @@ public class UiTabGroup : UiElement
 
         (tab.secondaryDetailGraphic as Image).sprite = sprite;
 
-        tab.title.TableEntryReference = title;
+        string[] localizationReferences = new string[2];
+
+        if(title.Contains('/'))
+        {
+
+            localizationReferences = title.Split('/');
+
+            tab.title.SetReference(localizationReferences[0], localizationReferences[1]);
+
+        }
+        else
+        {
+
+            (tab.detailGraphic as TextMeshProUGUI).text = title;
+
+        }
+
+        LayoutRebuilder.ForceRebuildLayoutImmediate(tab.rectTransform);
+        LayoutRebuilder.ForceRebuildLayoutImmediate(tabButtonParent);
 
         return tab;
 
@@ -200,6 +197,8 @@ public class UiTabGroup : UiElement
                 LayoutRebuilder.ForceRebuildLayoutImmediate(contentGroupHolder);
 
                 tabs[i].OnClick(true);
+
+                currentIndex = index;
 
             }
             else

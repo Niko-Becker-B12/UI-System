@@ -1,4 +1,5 @@
 using Sirenix.OdinInspector;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -28,20 +29,40 @@ public class ComponentSkinDataObject : ScriptableObject
     [TitleGroup("Background Radius")]
     public bool useMaxRadius = false;
 
+    [FoldoutGroup("Layout")]
+    public bool useLayoutOptions = false;
 
-    public enum UiElementChildAlignment
+    [Flags]
+    public enum UiElementSizingOptions
     {
+
+        ContentSizeFitted = 1,
+        ParentSizeFixed = 2,
+        ControlChildHeight = 4 | 2,
+        ControlChildWidth = 8 | 2
+
+    }
+
+    [FoldoutGroup("Layout"), ShowIf("useLayoutOptions")]
+    public TextAnchor childAlignment = TextAnchor.UpperLeft;
+
+    [FoldoutGroup("Layout"), ShowIf("useLayoutOptions")]
+    public UiElementSizingOptions layoutSizingOption;
+
+    public enum UiElementChildAlignmentAxis
+    {
+        None,
         Vertical,
         Horizontal
     }
 
-    [FoldoutGroup("Layout")]
-    public UiElementChildAlignment childAlignment;
+    [FoldoutGroup("Layout"), ShowIf("useLayoutOptions")]
+    public UiElementChildAlignmentAxis childAlignmentAxis;
 
-    [FoldoutGroup("Layout")]
+    [FoldoutGroup("Layout"), ShowIf("useLayoutOptions")]
     public RectOffset layoutMargin;
 
-    [FoldoutGroup("Layout")]
+    [FoldoutGroup("Layout"), ShowIf("useLayoutOptions")]
     [Range(0f, 256f)]
     public float layoutSpacing;
 
@@ -72,6 +93,10 @@ public class ComponentSkinDataObject : ScriptableObject
     [BoxGroup("Color/Background Color")]
     public Sprite backgroundSprite;
 
+    [FoldoutGroup("Color")]
+    [BoxGroup("Color/Background Color")]
+    public Material backgroundMaterial;
+
     [BoxGroup("Color/Outline Color")]
     public ColorBlock outlineColor;
 
@@ -82,6 +107,13 @@ public class ComponentSkinDataObject : ScriptableObject
     [BoxGroup("Color/Detail Color")]
     public ColorBlock detailColor;
 
+    [FoldoutGroup("Color")]
+    [BoxGroup("Color/Detail Color")]
+    public Sprite detailSprite;
+
+    [FoldoutGroup("Color")]
+    [BoxGroup("Color/Detail Color")]
+    public Material detailMaterial;
 
 
 }

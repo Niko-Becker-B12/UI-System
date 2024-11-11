@@ -9,10 +9,8 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(ButtonBehavior))]
-public class UiButton : UiElement
+public class UiButton : UiElementExtended
 {
-
-    public Graphic detailGraphic;
 
     public ButtonBehavior _buttonBehavior;
 
@@ -114,7 +112,7 @@ public class UiButton : UiElement
 
         }
 
-        LayoutRebuilder.ForceRebuildLayoutImmediate(this.GetComponent<RectTransform>());
+        LayoutRebuilder.ForceRebuildLayoutImmediate(rectTransform);
         LayoutRebuilder.ForceRebuildLayoutImmediate(backgroundGraphic.rectTransform);
 
     }

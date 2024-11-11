@@ -9,10 +9,8 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(ToggleBehavior))]
-public class UiToggle : UiElement
+public class UiToggle : UiElementExtended
 {
-
-    public Graphic detailGraphic;
 
     public ToggleBehavior _toggleBehavior;
 

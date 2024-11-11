@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   backgroundRadiusTL: 0
   backgroundRadiusTR: 0
-  backgroundRadiusBR: 0
   backgroundRadiusBL: 0
+  backgroundRadiusBR: 0
   useMaxRadius: 0
   childAlignment: 0
   layoutMargin:
@@ -24,9 +24,9 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   layoutSpacing: 0
-  shadowColor: {r: 1, g: 1, b: 1, a: 0.2509804}
-  size: 0
-  softness: 0
+  shadowColor: {r: 0, g: 0, b: 0, a: 0.2509804}
+  size: 10
+  softness: 0.2
   offset: {x: 0, y: 0}
   backgroundColor:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}

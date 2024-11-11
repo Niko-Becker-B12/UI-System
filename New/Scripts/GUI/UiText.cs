@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Localization;
 using UnityEngine.UI;
 
 
@@ -13,6 +15,8 @@ public class UiText : UiElement
 
     public bool fitHorizontalSizeToText = true;
     public bool fitVerticalSizeToText = true;
+    
+    public LocalizedString localizedString;
 
     private void Awake()
     {
@@ -38,16 +42,42 @@ public class UiText : UiElement
 
     }
 
+    private void OnEnable()
+    {
+
+        localizedString.StringChanged += OverrideText;
+
+    }
+
+    private void OnDisable()
+    {
+        
+        localizedString.StringChanged -= OverrideText;
+        
+    }
+
+    public virtual void OverrideText(string newText)
+    {
+
+        if (!backgroundGraphic.TryGetComponent(out TextMeshProUGUI text))
+            return;
+        
+        text.text = newText;
+        
+        LayoutRebuilder.ForceRebuildLayoutImmediate(rectTransform);
+
+    }
+
     public override void ApplySkinData()
     {
 
         if (skinData == null)
             return;
 
-        if(backgroundGraphic != null)
+        if(backgroundGraphic != null && backgroundGraphic.TryGetComponent(out TextMeshProUGUI text))
         {
 
-            (backgroundGraphic as TextMeshProUGUI).color = skinData.backgroundColor.normalColor;
+            text.color = skinData.backgroundColor.normalColor;
 
 
             //if(Application.isPlaying && GameManager.Instance != null && GameManager.Instance.currentClientIndex != -1)
@@ -61,6 +91,7 @@ public class UiText : UiElement
             //}
 
             backgroundGraphic.SetAllDirty();
+            LayoutRebuilder.ForceRebuildLayoutImmediate(rectTransform);
             LayoutRebuilder.ForceRebuildLayoutImmediate(backgroundGraphic.transform.parent as RectTransform);
 
         }

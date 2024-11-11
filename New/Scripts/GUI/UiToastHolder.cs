@@ -88,7 +88,7 @@ public class UiToastHolder : UiElement
 
         index = toastQueue.Count;
 
-        newUiToast.OnToastInactive += DisplayToast;
+        newUiToast.OnToastInactive += delegate { DisplayToast(true); };
 
         //if(!isCurrentlyDisplayingToast)
         //    DisplayToast();
@@ -109,8 +109,11 @@ public class UiToastHolder : UiElement
     }
 
     [Button]
-    public void DisplayToast()
+    public void DisplayToast(bool fromSetInactive = false)
     {
+
+        if (fromSetInactive)
+            isCurrentlyDisplayingToast = false;
 
         if(toastQueue.Count == 0 || isCurrentlyDisplayingToast)
         {

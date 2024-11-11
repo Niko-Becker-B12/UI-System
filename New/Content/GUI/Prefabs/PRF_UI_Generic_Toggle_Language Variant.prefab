@@ -38,8 +38,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 122, y: -12}
-  m_SizeDelta: {x: 28, y: 0}
+  m_AnchoredPosition: {x: 110, y: -12}
+  m_SizeDelta: {x: 20, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5890805900868027407
 CanvasRenderer:
@@ -185,6 +185,18 @@ MonoBehaviour:
   backgroundGraphic: {fileID: 7837571672674682491}
   fitHorizontalSizeToText: 1
   fitVerticalSizeToText: 1
+  localizedString:
+    m_TableReference:
+      m_TableCollectionName: 
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!114 &5661368658473142192
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -212,7 +224,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_IgnoreLayout: 0
-  m_MinWidth: 28
+  m_MinWidth: 20
   m_MinHeight: -1
   m_PreferredWidth: -1
   m_PreferredHeight: -1
@@ -369,7 +381,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7636839909736795254, guid: 95cd7bd19204225438869e26ac40ca40, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 28
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 7636839909736795254, guid: 95cd7bd19204225438869e26ac40ca40, type: 3}
       propertyPath: m_SizeDelta.y
@@ -385,7 +397,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7636839909736795254, guid: 95cd7bd19204225438869e26ac40ca40, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 14
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 7636839909736795254, guid: 95cd7bd19204225438869e26ac40ca40, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -424,7 +436,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_IgnoreLayout: 0
-  m_MinWidth: 28
+  m_MinWidth: 20
   m_MinHeight: -1
   m_PreferredWidth: -1
   m_PreferredHeight: -1
