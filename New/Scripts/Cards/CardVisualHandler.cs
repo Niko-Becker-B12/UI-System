@@ -9,18 +9,36 @@ namespace Cards
     public class CardVisualHandler : MonoBehaviour
     {
         
-        CardDataHandler cardDataHandler => FindAnyObjectByType<CardDataHandler>();
+        public CardDataHandler cardDataHandler;
 
         public GameObject cardPrefab;
         public RectTransform cardParent;
         
         public List<UiElement> cards = new List<UiElement>();
 
+        private int currentIndex = -1;
+        
 
-        private void Start()
+        private void Awake()
         {
             
+            cardDataHandler.OnCardDataGenerated.AddListener(GenerateAllCards);
+            
             cardDataHandler.OnCardReceivedEvent.AddListener(GenerateNewCardVisual);
+            
+        }
+
+        public void GenerateAllCards(List<CardDataObject> newCards)
+        {
+            
+            Debug.Log("Generating all cards");
+
+            for (int i = 0; i < newCards.Count; i++)
+            {
+
+                GenerateNewCardVisual(newCards[i]);
+
+            }
             
         }
 
@@ -29,29 +47,22 @@ namespace Cards
         {
             
             GameObject newCard = GameObject.Instantiate(cardPrefab, cardParent);
-            UiWindowModal cardVisual = newCard.GetComponent<UiWindowModal>();
+            CardVisual cardVisual = newCard.GetComponent<CardVisual>();
             
             cards.Add(cardVisual);
             
-            UiButton cardButton = cardVisual.windowBody.GetComponentInChildren<UiButton>();
-            
-            Function onClick = new Function
-            {
-                functionDelay = 0,
-                functionName = new UnityEvent { }
-            };
-            onClick.functionName.AddListener(() =>
-            {
-                
-                if(cardDataHandler.isServer)
-                    cardDataHandler.OnCardPickedEvent.Invoke(cardData);
-                
-            });
+            cardVisual.Initialize(cardData, cardDataHandler.isServer);
 
-            cardButton.onClickFunctions.Add(onClick);
+            cardVisual.OnCardPickedEvent.AddListener(CardPicked);
             
-            if(cardDataHandler.isServer)
-                cardButton.gameObject.SetActive(false);
+            
+
+        }
+
+        void CardPicked(CardDataObject cardData)
+        {
+            
+            cardDataHandler.OnCardPickedEvent.Invoke(cardData);
             
         }
         

@@ -63,10 +63,12 @@ namespace Cards
                 CardDataObject card = CardDataObject.CreateInstance<CardDataObject>();
 
                 card.name = line[0];
+                card.cardName = line[0];
                 card.description = line[1];
                 card.icon = null;
+                card.cardType = (CardDataObject.CardType)System.Enum.Parse(typeof(CardDataObject.CardType), line[3]);
                 
-                string[] tagArray = line[3].Split(' ');
+                string[] tagArray = line[4].Split(' ');
 
                 foreach (string tag in tagArray)
                 {
@@ -77,6 +79,12 @@ namespace Cards
                     {
                         
                         tags.Add(newTag);
+                        card.tags.Add(newTag);
+                        
+                    }
+                    else
+                    {
+                        
                         card.tags.Add(newTag);
                         
                     }

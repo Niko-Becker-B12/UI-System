@@ -105,6 +105,7 @@ GameObject:
   - component: {fileID: 7084042430028923190}
   - component: {fileID: 8820899921386526717}
   - component: {fileID: 6001867429260931854}
+  - component: {fileID: 455039890616477260}
   m_Layer: 5
   m_Name: Template
   m_TagString: Untagged
@@ -313,6 +314,33 @@ MonoBehaviour:
   rectTransform: {fileID: 0}
   skinData: {fileID: 11400000, guid: d2fae851f1702e14293b79d2e6775a50, type: 2}
   backgroundGraphic: {fileID: 3411542448606646158}
+--- !u!114 &455039890616477260
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 854261116008308833}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c4e676cb55d4ba40acb3e1a07be85f3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 0
+  m_Spacing: 0
+  m_ChildForceExpandWidth: 1
+  m_ChildForceExpandHeight: 1
+  m_ChildControlWidth: 0
+  m_ChildControlHeight: 0
+  m_ChildScaleWidth: 0
+  m_ChildScaleHeight: 0
+  m_ReverseArrangement: 0
+  m_IsVertical: 1
 --- !u!1 &2323003244608055656
 GameObject:
   m_ObjectHideFlags: 0
