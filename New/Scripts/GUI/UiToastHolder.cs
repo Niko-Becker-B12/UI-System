@@ -48,7 +48,10 @@ public class UiToastHolder : UiElement
 
     }
 
-    public void CreateNewToast(out int index, string title = "", string message = "", ToastElementType toastType = ToastElementType.message, float lifetime = 0, Sprite customIcon = null, bool hasCloseButton = true)
+    public void CreateNewToast(out int index, string title = "", string message = "", 
+        ToastElementType toastType = ToastElementType.message, 
+        float lifetime = 0, Sprite customIcon = null, bool hasCloseButton = true, bool hasAdditionalButton = false, 
+        List<Function> additionalButtonOnClickFunctions = null, string additionalButtonText = "")
     {
 
         UiToastElement newUiToast = Instantiate(toastElementPrefab, this.transform).GetComponent<UiToastElement>();
@@ -85,6 +88,12 @@ public class UiToastHolder : UiElement
         newUiToast.canvasGroup.alpha = 0f;
         newUiToast.canvasGroup.interactable = false;
         newUiToast.canvasGroup.blocksRaycasts = false;
+
+        newUiToast.additionalButton.onClickFunctions = additionalButtonOnClickFunctions;
+        
+        newUiToast.additionalButton.GetComponentInChildren<TextMeshProUGUI>().text = additionalButtonText;
+        
+        newUiToast.additionalButton.gameObject.SetActive(hasAdditionalButton);
 
         index = toastQueue.Count;
 

@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using UnityEditor.Localization.Plugins.XLIFF.V20;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Serialization;
 
 namespace Cards
 {
@@ -19,6 +15,7 @@ namespace Cards
         public List<CardTag> usableCardTags = new List<CardTag>();
 
         public UnityEvent<List<CardDataObject>> OnCardDataGenerated;
+        public UnityEvent<List<CardTag>> OnTagDataGenerated;
         public UnityEvent<CardDataObject> OnCardPickedEvent;
         public UnityEvent<CardDataObject> OnCardReceivedEvent;
 
@@ -64,14 +61,26 @@ namespace Cards
                 
             }
             
-            LoadData();
+            UiToastHolder.Instance?.CreateNewToast(out int index, "Notice", "Finished loading cards", UiToastHolder.ToastElementType.success,
+                30f, null, true);
+            UiToastHolder.Instance?.DisplayToast();
+            
+            LoadCardData();
+            LoadTagData();
 
         }
 
-        void LoadData()
+        void LoadCardData()
         {
             
             OnCardDataGenerated?.Invoke(usableCardDataObjects);
+            
+        }
+        
+        void LoadTagData()
+        {
+            
+            OnTagDataGenerated?.Invoke(usableCardTags);
             
         }
 

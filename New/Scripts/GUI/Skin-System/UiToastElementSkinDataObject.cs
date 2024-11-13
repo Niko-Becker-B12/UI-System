@@ -10,5 +10,8 @@ public class UiToastElementSkinDataObject : ComponentSkinDataObject
 
     [BoxGroup("Color")]
     public Sprite toastIcon;
+    
+    public ComponentSkinDataObject closeButtonSkinData;
+    public ComponentSkinDataObject additionalButtonSkinData;
 
 }

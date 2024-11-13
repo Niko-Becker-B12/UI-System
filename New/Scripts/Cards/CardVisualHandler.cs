@@ -14,6 +14,9 @@ namespace Cards
         public GameObject cardPrefab;
         public RectTransform cardParent;
         
+        public GameObject tagPrefab;
+        public RectTransform tagParent;
+        
         public List<UiElement> cards = new List<UiElement>();
 
         private int currentIndex = -1;
@@ -23,6 +26,7 @@ namespace Cards
         {
             
             cardDataHandler.OnCardDataGenerated.AddListener(GenerateAllCards);
+            cardDataHandler.OnTagDataGenerated.AddListener(GenerateAllTags);
             
             cardDataHandler.OnCardReceivedEvent.AddListener(GenerateNewCardVisual);
             
@@ -41,8 +45,21 @@ namespace Cards
             }
             
         }
+        
+        public void GenerateAllTags(List<CardTag> newTags)
+        {
+            
+            Debug.Log("Generating all cards");
 
-        [Button]
+            for (int i = 0; i < newTags.Count; i++)
+            {
+
+                GenerateNewTagVisual(newTags[i]);
+
+            }
+            
+        }
+        
         void GenerateNewCardVisual(CardDataObject cardData)
         {
             
@@ -56,6 +73,14 @@ namespace Cards
             cardVisual.OnCardPickedEvent.AddListener(CardPicked);
             
             
+
+        }
+        
+        void GenerateNewTagVisual(CardTag tagData)
+        {
+            
+            GameObject newTag = GameObject.Instantiate(tagPrefab, tagParent);
+            UiElement tagVisual = newTag.GetComponent<UiElement>();
 
         }
 
