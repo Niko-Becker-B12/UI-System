@@ -30,6 +30,8 @@ public class UiToastElement : UiElement
     [FoldoutGroup("Events")]
     public Function OnSetInactive;
 
+    public UiButton additionalButton;
+
 
     private void Start()
     {
@@ -70,6 +72,19 @@ public class UiToastElement : UiElement
     {
 
         base.ApplySkinData();
+
+        if (skinData != null && skinData is UiToastElementSkinDataObject)
+        {
+            
+            UiToastElementSkinDataObject toastSkinData = skinData as UiToastElementSkinDataObject;
+
+            if(icon != null)
+                (icon as Image).sprite = toastSkinData.toastIcon;
+            
+            closeButton.skinData = toastSkinData.closeButtonSkinData;
+            additionalButton.skinData = toastSkinData.additionalButtonSkinData; 
+
+        }
 
     }
 

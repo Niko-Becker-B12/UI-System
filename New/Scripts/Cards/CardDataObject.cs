@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Cards
 {
@@ -8,10 +9,18 @@ namespace Cards
     public class CardDataObject : ScriptableObject
     {
 
-        public string name;
+        public string cardName;
         public string description;
         public Sprite icon;
         public Guid guid;
+
+        public enum CardType
+        {
+            None,
+            Test
+        }
+        
+        public CardType cardType;
 
         public List<CardTag> tags = new List<CardTag>();
 
