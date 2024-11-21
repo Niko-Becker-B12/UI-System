@@ -2,6 +2,7 @@ using Sirenix.OdinInspector;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class UiManager : MonoBehaviour
@@ -13,6 +14,8 @@ public class UiManager : MonoBehaviour
 
     #endregion
 
+    public UiSkinPalette currentPalette;
+    
     public bool scaleToScreenSize = true;
 
     public int selectedWindow = 0;
@@ -23,6 +26,7 @@ public class UiManager : MonoBehaviour
 
     public List<UiWindow> mainWindows = new List<UiWindow>();
 
+    public UnityEvent<UiSkinPalette> OnSkinChanged;
 
     private void Awake()
     {
@@ -50,18 +54,11 @@ public class UiManager : MonoBehaviour
     public void ApplyClientSkin(int clientSkinIndex)
     {
 
-        //if()
-
-        //GameManager.onOpenLoadingScreen -= delegate { StartCoroutine(OpenLoadingScreen()); };
-
-        for(int i = 0; i < mainWindows.Count; i++)
-        {
-
-            LayoutRebuilder.ForceRebuildLayoutImmediate(mainWindows[i].backgroundGraphic.rectTransform);
-
-        }
-
-        LayoutRebuilder.ForceRebuildLayoutImmediate(this.GetComponentInChildren<RectTransform>());
+        if (currentPalette == null)
+            currentPalette = UiSettings.instance.DefaultPalette;
+            
+        OnSkinChanged?.Invoke(currentPalette);
+        
         Canvas.ForceUpdateCanvases();
 
     }

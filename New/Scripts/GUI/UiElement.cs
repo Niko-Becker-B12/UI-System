@@ -41,12 +41,21 @@ public class UiElement : SerializedMonoBehaviour
 
     public void Awake()
     {
-
-
+        
         canvasGroup = GetComponent<CanvasGroup>();
         rectTransform = GetComponent<RectTransform>();
 
-        ApplySkinData();
+        UiManager manager = FindAnyObjectByType<UiManager>();
+
+        if (manager != null)
+        {
+            
+            //Load desired SkinData
+            
+            
+        }
+        else //No UiManager? Load currently set SkinData
+            ApplySkinData();
 
     }
 
