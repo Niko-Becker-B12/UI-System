@@ -1,0 +1,180 @@
+using UnityEngine;
+using System.Collections.Generic;
+using Sirenix.OdinInspector;
+using TMPro;
+using System.Linq;
+
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
+[CreateAssetMenu(fileName = "", menuName = "Skin/Skin Palette")]
+public class UiSkinPalette : ScriptableObject
+{
+
+    [HorizontalGroup("$displayName")]
+    [VerticalGroup("$displayName/2")]
+    public string displayName;
+
+    [VerticalGroup("$displayName/2")]
+    public TMP_StyleSheet textStyleSheet;
+
+    [VerticalGroup("$displayName/3")]
+    [ReadOnly, ShowInInspector]
+    List<string> skinCategoryNames = new List<string>();
+
+    List<UiSkinCategory> skinCategories = new List<UiSkinCategory>();
+
+
+    [TableList, PropertyOrder(5000)]
+    public List<ComponentSkinDataObject> skinDataObjects = new List<ComponentSkinDataObject>();
+
+
+
+    private void OnValidate()
+    {
+
+#if UNITY_EDITOR
+
+        FindAllSkinDataObjects();
+
+#endif
+
+        skinCategoryNames.Clear();
+        skinCategories.Clear();
+
+        for(int i = 0; i < skinDataObjects.Count; i++)
+        {
+
+            string category;
+
+            GenerateCategoryName(out category, skinDataObjects[i].name);
+
+            if (skinCategories.Contains(skinCategories.Find(x => x.name == category)))
+            {
+
+                int index = skinCategories.IndexOf(skinCategories.Find(x => x.name == category));
+
+                if(index != -1)
+                    skinCategories[index].skinDataObjects.Add(skinDataObjects[i]);
+
+            }
+            else
+            {
+
+                UiSkinCategory uiSkinCategory = new UiSkinCategory() { name = category };
+                uiSkinCategory.skinDataObjects.Add(skinDataObjects[i]);
+
+                skinCategories.Add(uiSkinCategory);
+                skinCategoryNames.Add(uiSkinCategory.name);
+
+            }
+
+        }
+
+    }
+
+    void FindAllSkinDataObjects()
+    {
+
+        skinDataObjects.Clear();
+
+        List<ComponentSkinDataObject> allSkinComponentDataObjects = 
+            AssetDatabase.FindAssets($"t:{typeof(ComponentSkinDataObject).Name}")
+            .Select(AssetDatabase.GUIDToAssetPath)
+            .Select(AssetDatabase.LoadAssetAtPath<ComponentSkinDataObject>).ToList();
+
+        skinDataObjects = (from componentSkinDataObject in allSkinComponentDataObjects
+                            where componentSkinDataObject.name.Contains(displayName)
+                            select componentSkinDataObject).ToList();
+
+    }
+
+    string GenerateCategoryName(out string categoryName, string fullName)
+    {
+
+        string[] splitName = fullName.Split('_');
+
+        if (splitName.Length > 3)
+            categoryName = splitName[3];
+        else
+            categoryName = fullName;
+
+        return categoryName;
+
+    }
+
+    string GenerateTypeName(out string typeName, string fullName)
+    {
+
+        string[] splitName = fullName.Split('_');
+
+        if (splitName.Length > 4)
+            typeName = splitName[4];
+        else
+            typeName = fullName;
+
+        return typeName;
+
+    }
+
+    public void GetSkinData(out ComponentSkinDataObject returnedSkinData, ComponentSkinDataObject currentSkinData)
+    {
+
+        returnedSkinData = null;
+
+        string categoryName;
+        GenerateCategoryName(out categoryName, currentSkinData.name);
+
+        string typeName;
+        GenerateTypeName(out typeName, currentSkinData.name);
+
+        UiSkinCategory foundCategory = null;
+
+        foundCategory = skinCategories.Find(x => x.name.Contains(categoryName));
+
+        if (foundCategory != null)
+        {
+
+            returnedSkinData = foundCategory.skinDataObjects
+                                .Find(y => y.name.Contains(typeName));
+
+            if (returnedSkinData == null)
+            {
+
+                returnedSkinData = foundCategory.skinDataObjects.Find(y => y.name.Contains("Fallback"));
+
+                if(returnedSkinData == null)
+                {
+
+                    foundCategory = UiSettings.instance.DefaultPalette.skinCategories.Find(x => x.name.Contains(categoryName));
+
+                    returnedSkinData = foundCategory.skinDataObjects.Find(y => y.name.Contains("Fallback"));
+
+                }
+
+            }
+
+        }
+        else
+        {
+
+            foundCategory = UiSettings.instance.DefaultPalette.skinCategories.Find(x => x.name.Contains(categoryName));
+
+            returnedSkinData = foundCategory.skinDataObjects.Find(y => y.name.Contains("Fallback"));
+
+        }
+
+    }
+
+    [InlineEditor(InlineEditorObjectFieldModes.Hidden)]
+    private class UiSkinCategory
+    {
+
+        public string name;
+
+        public List<ComponentSkinDataObject> skinDataObjects = new List<ComponentSkinDataObject>();
+
+    }
+
+}
