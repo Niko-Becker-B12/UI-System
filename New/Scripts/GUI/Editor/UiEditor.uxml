@@ -1,7 +1,0 @@
-<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
-    <Style src="project://database/Assets/Scripts/GUI/Editor/UiEditor.uss?fileID=7433441132597879392&amp;guid=f4b34286d332948469123b2259918b33&amp;type=3#UiEditor" />
-    <editor:Toolbar>
-        <editor:ObjectField label="Canvas Parent" type="UnityEngine.RectTransform, UnityEngine.CoreModule" />
-        <editor:ToolbarSpacer />
-    </editor:Toolbar>
-</engine:UXML>
