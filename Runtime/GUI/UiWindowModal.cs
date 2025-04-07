@@ -10,11 +10,11 @@ public class UiWindowModal : UiWindow
     [FoldoutGroup("UI Elements")]
     public UiButton closeButton;
 
+    public bool useManagerForClosing = false;
+
 
     public void Awake()
     {
-
-        base.Awake();
 
         Function onCloseButton = new Function
         {
@@ -23,13 +23,26 @@ public class UiWindowModal : UiWindow
         };
         onCloseButton.functionName.AddListener(() =>
         {
-            UiManager.Instance.GoToLastWindow();
+
+            if(UiManager.Instance != null && useManagerForClosing)
+                UiManager.Instance.GoToLastWindow();
+            else if (UiManager.Instance == null || !useManagerForClosing)
+                FadeElement();
+
+
         });
 
         closeButton.onClickFunctions.Add(onCloseButton);
 
         if(this.skinData != null)
+        {
+
             closeButton.skinData = (this.skinData as UiWindowModalSkinDataObject).closeButtonSkinData;
+            closeButton.ApplySkinData();
+
+        }
+
+        base.Awake();
 
     }
 

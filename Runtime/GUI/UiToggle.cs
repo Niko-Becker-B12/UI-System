@@ -9,10 +9,8 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(ToggleBehavior))]
-public class UiToggle : UiElement
+public class UiToggle : UiElementExtended
 {
-
-    public Graphic detailGraphic;
 
     public ToggleBehavior _toggleBehavior;
 
@@ -143,7 +141,7 @@ public class UiToggle : UiElement
     public virtual void OnClick(bool isActive)
     {
 
-        if (isActive)
+        if(isActive)
         {
 
             if (backgroundGraphic != null)
@@ -154,8 +152,8 @@ public class UiToggle : UiElement
                     if (skinData is UiToggleSkinDataObject)
                     {
 
-                        (backgroundGraphic as Rectangle).ShapeProperties.FillColor = (skinData as UiToggleSkinDataObject).pressedBackgroundColor.normalColor;
-                        (backgroundGraphic as Rectangle).ShapeProperties.OutlineColor = (skinData as UiToggleSkinDataObject).pressedBackgroundColor.normalColor;
+                        (backgroundGraphic as Rectangle).ShapeProperties.FillColor = (skinData as UiToggleSkinDataObject).pressedBackgroundColor.pressedColor;
+                        (backgroundGraphic as Rectangle).ShapeProperties.OutlineColor = (skinData as UiToggleSkinDataObject).pressedBackgroundColor.pressedColor;
 
                     }
                     else
@@ -178,7 +176,7 @@ public class UiToggle : UiElement
 
                 if (skinData != null)
                     if (skinData is UiToggleSkinDataObject)
-                        detailGraphic.color = (skinData as UiToggleSkinDataObject).pressedDetailColor.normalColor;
+                        detailGraphic.color = (skinData as UiToggleSkinDataObject).pressedDetailColor.pressedColor;
                     else
                         detailGraphic.color = skinData.detailColor.pressedColor;
 
@@ -227,7 +225,7 @@ public class UiToggle : UiElement
                     detailGraphic.gameObject.SetActive(false);
 
                 if (skinData != null)
-                    if (skinData is UiToggleSkinDataObject)
+                    if(skinData is UiToggleSkinDataObject)
                         detailGraphic.color = (skinData as UiToggleSkinDataObject).detailColor.pressedColor;
                     else
                         detailGraphic.color = skinData.detailColor.pressedColor;
@@ -260,9 +258,9 @@ public class UiToggle : UiElement
 
         if (backgroundGraphic != null)
         {
-            if (_toggleBehavior.isActive)
+            if(_toggleBehavior.isActive)
             {
-                if (skinData is UiToggleSkinDataObject)
+                if(skinData is UiToggleSkinDataObject)
                 {
                     (backgroundGraphic as Rectangle).ShapeProperties.FillColor = (skinData as UiToggleSkinDataObject).pressedBackgroundColor.highlightedColor;
                     (backgroundGraphic as Rectangle).ShapeProperties.OutlineColor = (skinData as UiToggleSkinDataObject).pressedBackgroundColor.highlightedColor;
@@ -275,8 +273,8 @@ public class UiToggle : UiElement
             }
             else
             {
-                (backgroundGraphic as Rectangle).ShapeProperties.FillColor = skinData.backgroundColor.highlightedColor;
-                (backgroundGraphic as Rectangle).ShapeProperties.OutlineColor = skinData.outlineColor.highlightedColor;
+                    (backgroundGraphic as Rectangle).ShapeProperties.FillColor = skinData.backgroundColor.highlightedColor;
+                    (backgroundGraphic as Rectangle).ShapeProperties.OutlineColor = skinData.outlineColor.highlightedColor;
             }
 
         }
@@ -313,27 +311,28 @@ public class UiToggle : UiElement
                 {
                     (backgroundGraphic as Rectangle).ShapeProperties.FillColor = (skinData as UiToggleSkinDataObject).pressedBackgroundColor.normalColor;
                     (backgroundGraphic as Rectangle).ShapeProperties.OutlineColor = (skinData as UiToggleSkinDataObject).pressedBackgroundColor.normalColor;
-
-                    detailGraphic.color = (skinData as UiToggleSkinDataObject).pressedDetailColor.normalColor;
-
                 }
                 else
                 {
                     (backgroundGraphic as Rectangle).ShapeProperties.FillColor = skinData.backgroundColor.normalColor;
                     (backgroundGraphic as Rectangle).ShapeProperties.OutlineColor = skinData.outlineColor.normalColor;
-
-                    detailGraphic.color = skinData.detailColor.normalColor;
-
                 }
             }
             else
             {
                 (backgroundGraphic as Rectangle).ShapeProperties.FillColor = skinData.backgroundColor.normalColor;
                 (backgroundGraphic as Rectangle).ShapeProperties.OutlineColor = skinData.outlineColor.normalColor;
-
-                detailGraphic.color = skinData.detailColor.normalColor;
-
             }
+
+        }
+
+        if (detailGraphic != null)
+        {
+            if (_toggleBehavior.isActive)
+                if (skinData is UiToggleSkinDataObject)
+                    detailGraphic.color = (skinData as UiToggleSkinDataObject).pressedDetailColor.normalColor;
+                else
+                    detailGraphic.color = skinData.detailColor.normalColor;
 
         }
 

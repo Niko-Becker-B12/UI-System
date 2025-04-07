@@ -1,3 +1,4 @@
+using DG.Tweening;
 using Sirenix.OdinInspector;
 using System.Collections;
 using System.Collections.Generic;
@@ -11,21 +12,37 @@ using UnityEngine.UI;
 public class UiWindow : UiElement
 {
 
-    [FoldoutGroup("UI Skin")]
-    public ComponentSkinDataObject windowHeaderSkinData;
-
     [FoldoutGroup("UI Elements")]
     public LocalizedString windowHeader;
 
     [FoldoutGroup("UI Elements")]
     public TextMeshProUGUI windowHeaderText;
 
-    [FoldoutGroup("Settings")]
-    public bool opensStreamInPiPMode = false;
+    [FoldoutGroup("UI Elements")]
+    public RectTransform windowBody;
 
     [FoldoutGroup("Settings")]
     public int windowId = -1;
 
+    [FoldoutGroup("Events")]
+    public Function OnSetActive;
+
+    [FoldoutGroup("Events")]
+    public Function OnSetInactive;
+
+    Vector2 sizeDelta => rectTransform.sizeDelta;
+
+    Vector2 offsetMin;// => rectTransform.offsetMin;
+    Vector2 offsetMax;// => rectTransform.offsetMax;
+
+
+    private void Start()
+    {
+        
+        offsetMin = rectTransform.offsetMin;
+        offsetMax = rectTransform.offsetMax;
+
+    }
 
     public void Awake()
     {
@@ -36,10 +53,33 @@ public class UiWindow : UiElement
 
     }
 
+    public override void FadeElement(bool fadeIn = false)
+    {
+
+        base.FadeElement(fadeIn);
+
+        if (fadeIn)
+        {
+
+            Function.InvokeEvent(OnSetActive, this);
+
+        }
+        else
+        {
+
+            Function.InvokeEvent(OnSetInactive, this);
+
+        }
+
+    }
+
     public override void ApplySkinData()
     {
 
         base.ApplySkinData();
+
+        if (skinData == null)
+            return;
 
         if(windowHeaderText != null)
         {
@@ -51,10 +91,10 @@ public class UiWindow : UiElement
 
             }
 
-            if(windowHeaderText.TryGetComponent<UiText>(out UiText uitext))
+            if (windowHeaderText.TryGetComponent<UiText>(out UiText uitext) && (skinData as UiWindowSkinDataObject).windowHeaderSkinData != null)
             {
 
-                uitext.skinData = windowHeaderSkinData;
+                uitext.skinData = (skinData as UiWindowSkinDataObject).windowHeaderSkinData;
                 uitext.ApplySkinData();
 
             }
@@ -63,6 +103,30 @@ public class UiWindow : UiElement
 
         if(backgroundGraphic != null) 
             LayoutRebuilder.ForceRebuildLayoutImmediate(backgroundGraphic.rectTransform);
+
+    }
+
+    public virtual void ToggleFullscreen(bool setActive = false)
+    {
+
+        if (setActive)
+        {
+
+            //rectTransform.sizeDelta = new Vector2(Screen.width, Screen.height);
+
+            rectTransform.offsetMin = Vector2.zero;
+            rectTransform.offsetMax = Vector2.zero;
+
+        }
+        else
+        {
+
+            //rectTransform.sizeDelta = sizeDelta;
+
+            rectTransform.offsetMin = offsetMin;
+            rectTransform.offsetMax = offsetMax;
+
+        }
 
     }
 

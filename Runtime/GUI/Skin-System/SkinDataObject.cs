@@ -46,20 +46,11 @@ public class SkinDataObject : ScriptableObject
 
     }
 
-    public string cmsUrl;
-    public string cmsStartUrl;
-
     public bool listedAsCustomID = false;
-
-    public Texture2D baseStreamThumbnail;
-
-    public CustomPlayerIdBaseHandler idHandler;
 
     public TMP_StyleSheet textStyleSheet;
     public TMP_FontAsset fontAsset;
 
     public List<ComponentSkinDataObject> componentSkinDataObjects = new List<ComponentSkinDataObject>();
-
-    public List<LevelDataObject> levels = new List<LevelDataObject>();
 
 }

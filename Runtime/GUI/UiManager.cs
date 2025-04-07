@@ -1,86 +1,93 @@
-using DG.Tweening;
-using FMETP;
-using System;
+using Sirenix.OdinInspector;
 using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
-public class UiManager : Singleton<UiManager>
+public class UiManager : MonoBehaviour
 {
+
+    #region Singleton
+
+    public static UiManager Instance;
+
+    #endregion
+
+    public UiSkinPalette currentPalette;
+    
+    public bool scaleToScreenSize = true;
 
     public int selectedWindow = 0;
     public int lastWindow = -1;
+
+    [ShowInInspector, ReadOnly]
+    public Stack<int> lastWindows = new Stack<int>(128);
+
     public List<UiWindow> mainWindows = new List<UiWindow>();
 
-    public UiWindow loadingScreen;
-
-    public RectTransform customFullscreenComponentsParent;
-
-    public StreamComponentWindow streamWindow;
-
-    [Header("Players")]
-    public GameObject playerToggleButton;
-    public Transform playerToggleParent;
-
-    public List<PlayerStreamToggleButton> playerToggles = new List<PlayerStreamToggleButton>();
-
-    public static event Action<int> OnWindowSwitch;
-
+    public UnityEvent<UiSkinPalette> OnSkinChanged;
 
     private void Awake()
     {
 
-        base.Awake();
+        if (Instance == null)
+            Instance = this;
+        else
+            Destroy(this.gameObject);
 
-        GameManager.onValidatedLogin += delegate { SwitchWindow(1); };
-        GameManager.onValidatedLogin += ApplyClientSkin;
+        lastWindows = new Stack<int>(128);
 
-        GameManager.onOpenLoadingScreen += delegate { StartCoroutine(OpenLoadingScreen()); };
-        GameManager.onCloseLoadingScreen += CloseLoadingScreen;
+        if(scaleToScreenSize)
+            this.GetComponent<CanvasScaler>().referenceResolution = new Vector2(Screen.width, Screen.height);
+
+    }
+
+    private void Start()
+    {
+
+        LayoutRebuilder.ForceRebuildLayoutImmediate(this.GetComponentInChildren<RectTransform>());
+        Canvas.ForceUpdateCanvases();
 
     }
 
     public void ApplyClientSkin(int clientSkinIndex)
     {
 
-        GameManager.onOpenLoadingScreen -= delegate { StartCoroutine(OpenLoadingScreen()); };
-
-        for(int i = 0; i < mainWindows.Count; i++)
-        {
-
-            LayoutRebuilder.ForceRebuildLayoutImmediate(mainWindows[i].backgroundGraphic.rectTransform);
-
-        }
-
+        if (currentPalette == null)
+            currentPalette = UiSettings.instance.DefaultPalette;
+            
+        OnSkinChanged?.Invoke(currentPalette);
+        
+        Canvas.ForceUpdateCanvases();
 
     }
 
-    public void GenerateNewConnectedPlayerToggle(int playerID, out PlayerStreamToggleButton toggle)
-    {
-
-        PlayerStreamToggleButton newPlayerStreamToggle = Instantiate(playerToggleButton, playerToggleParent).GetComponent<PlayerStreamToggleButton>();
-        newPlayerStreamToggle.connectedPlayerId = playerID;
-
-        playerToggles.Add(newPlayerStreamToggle);
-
-        toggle = newPlayerStreamToggle;
-
-    }
-
+    [Button]
     public void SwitchWindow(int index = 0)
     {
+
+        Canvas.ForceUpdateCanvases();
+
+
+
+        lastWindows.Push(selectedWindow);
+
+        if (lastWindows.Count > 0 && lastWindows.Peek() == lastWindow)
+            lastWindows.Pop();
 
         lastWindow = selectedWindow;
         selectedWindow = index;
 
-        if (lastWindow == -1)
-            lastWindow = selectedWindow;
+        if (lastWindows.Count > 0 && lastWindows.Peek() == -1)
+            lastWindows.Push(selectedWindow);
 
-        Debug.Log($"Switching Window: {selectedWindow} ({lastWindow})");
+        if(lastWindows.Count > 0)
+            Debug.Log($"Switching Window: {selectedWindow} ({lastWindows.Peek()})");
+        else
+            Debug.Log($"Switching Window: {selectedWindow} ({index})");
 
-        for(int i = 0; i < mainWindows.Count; i++)
+        for (int i = 0; i < mainWindows.Count; i++)
         {
 
             int currentIndex = i;
@@ -102,34 +109,21 @@ public class UiManager : Singleton<UiManager>
 
         }
 
-        OnWindowSwitch.Invoke(index);
+        LayoutRebuilder.ForceRebuildLayoutImmediate(this.GetComponentInChildren<RectTransform>());
+        Canvas.ForceUpdateCanvases();
 
     }
 
     public void GoToLastWindow()
     {
 
-        SwitchWindow(lastWindow);
+        if (lastWindows.Count == 0)
+            return;
 
-    }
+        int oldIndex = lastWindows.Pop();
+        lastWindow = selectedWindow;
 
-    IEnumerator OpenLoadingScreen()
-    {
-
-        loadingScreen.FadeElement(true);
-
-        //To-Do: create actual loadingscreen, right now we'll wait for 5s
-
-        yield return new WaitForSecondsRealtime(7f);
-
-        GameManager.Instance.LoadingFinished();
-
-    }
-
-    void CloseLoadingScreen()
-    {
-
-        loadingScreen.FadeElement(false);
+        SwitchWindow(oldIndex);
 
     }
 

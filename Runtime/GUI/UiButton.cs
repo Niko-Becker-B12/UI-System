@@ -9,10 +9,8 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(ButtonBehavior))]
-public class UiButton : UiElement
+public class UiButton : UiElementExtended
 {
-
-    public Graphic detailGraphic;
 
     public ButtonBehavior _buttonBehavior;
 
@@ -35,6 +33,7 @@ public class UiButton : UiElement
 
     private void Start()
     {
+
         
         _buttonBehavior = GetComponent<ButtonBehavior>();
 
@@ -113,6 +112,8 @@ public class UiButton : UiElement
 
         }
 
+        LayoutRebuilder.ForceRebuildLayoutImmediate(rectTransform);
+
     }
 
     public virtual void OnClick()
@@ -124,8 +125,19 @@ public class UiButton : UiElement
         if(backgroundGraphic != null)
         {
 
-            (backgroundGraphic as Rectangle).ShapeProperties.FillColor = skinData.backgroundColor.pressedColor;
-            (backgroundGraphic as Rectangle).ShapeProperties.OutlineColor = skinData.outlineColor.pressedColor;
+            if (backgroundGraphic is Rectangle)
+            {
+
+                (backgroundGraphic as Rectangle).ShapeProperties.FillColor = skinData.backgroundColor.pressedColor;
+                (backgroundGraphic as Rectangle).ShapeProperties.OutlineColor = skinData.outlineColor.pressedColor;
+
+            }
+            else if (backgroundGraphic is Polygon)
+            {
+
+                (backgroundGraphic as Polygon).ShapeProperties.FillColor = skinData.backgroundColor.pressedColor;
+
+            }
 
         }
 
@@ -136,8 +148,11 @@ public class UiButton : UiElement
 
         }
 
-        backgroundGraphic.SetAllDirty();
-        detailGraphic.SetAllDirty();
+        if(backgroundGraphic != null)
+            backgroundGraphic.SetAllDirty();
+
+        if(detailGraphic != null) 
+            detailGraphic.SetAllDirty();
 
     }
 
@@ -150,8 +165,19 @@ public class UiButton : UiElement
         if (backgroundGraphic != null)
         {
 
-            (backgroundGraphic as Rectangle).ShapeProperties.FillColor = skinData.backgroundColor.highlightedColor;
-            (backgroundGraphic as Rectangle).ShapeProperties.OutlineColor = skinData.outlineColor.highlightedColor;
+            if(backgroundGraphic is Rectangle)
+            {
+
+                (backgroundGraphic as Rectangle).ShapeProperties.FillColor = skinData.backgroundColor.highlightedColor;
+                (backgroundGraphic as Rectangle).ShapeProperties.OutlineColor = skinData.outlineColor.highlightedColor;
+
+            }
+            else if (backgroundGraphic is Polygon)
+            {
+
+                (backgroundGraphic as Polygon).ShapeProperties.FillColor = skinData.backgroundColor.highlightedColor;
+
+            }
 
         }
 
@@ -162,8 +188,11 @@ public class UiButton : UiElement
 
         }
 
-        backgroundGraphic.SetAllDirty();
-        detailGraphic.SetAllDirty();
+        if(backgroundGraphic != null)
+            backgroundGraphic.SetAllDirty();
+
+        if(detailGraphic != null)
+            detailGraphic.SetAllDirty();
 
     }
 
@@ -176,8 +205,19 @@ public class UiButton : UiElement
         if (backgroundGraphic != null)
         {
 
-            (backgroundGraphic as Rectangle).ShapeProperties.FillColor = skinData.backgroundColor.normalColor;
-            (backgroundGraphic as Rectangle).ShapeProperties.OutlineColor = skinData.outlineColor.normalColor;
+            if (backgroundGraphic is Rectangle)
+            {
+
+                (backgroundGraphic as Rectangle).ShapeProperties.FillColor = skinData.backgroundColor.normalColor;
+                (backgroundGraphic as Rectangle).ShapeProperties.OutlineColor = skinData.outlineColor.normalColor;
+
+            }
+            else if (backgroundGraphic is Polygon)
+            {
+
+                (backgroundGraphic as Polygon).ShapeProperties.FillColor = skinData.backgroundColor.normalColor;
+
+            }
 
         }
 
@@ -188,8 +228,11 @@ public class UiButton : UiElement
 
         }
 
-        backgroundGraphic.SetAllDirty();
-        detailGraphic.SetAllDirty();
+        if (backgroundGraphic != null)
+            backgroundGraphic.SetAllDirty();
+
+        if (detailGraphic != null)
+            detailGraphic.SetAllDirty();
 
     }
 
@@ -202,8 +245,19 @@ public class UiButton : UiElement
         if (backgroundGraphic != null)
         {
 
-            (backgroundGraphic as Rectangle).ShapeProperties.FillColor = skinData.backgroundColor.normalColor;
-            (backgroundGraphic as Rectangle).ShapeProperties.OutlineColor = skinData.outlineColor.normalColor;
+            if (backgroundGraphic is Rectangle)
+            {
+
+                (backgroundGraphic as Rectangle).ShapeProperties.FillColor = skinData.backgroundColor.normalColor;
+                (backgroundGraphic as Rectangle).ShapeProperties.OutlineColor = skinData.outlineColor.normalColor;
+
+            }
+            else if (backgroundGraphic is Polygon)
+            {
+
+                (backgroundGraphic as Polygon).ShapeProperties.FillColor = skinData.backgroundColor.normalColor;
+
+            }
 
         }
 
@@ -214,8 +268,11 @@ public class UiButton : UiElement
 
         }
 
-        backgroundGraphic.SetAllDirty();
-        detailGraphic.SetAllDirty();
+        if (backgroundGraphic != null)
+            backgroundGraphic.SetAllDirty();
+
+        if (detailGraphic != null)
+            detailGraphic.SetAllDirty();
 
     }
 

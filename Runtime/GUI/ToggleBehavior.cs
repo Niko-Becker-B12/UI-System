@@ -55,13 +55,12 @@ namespace Showroom.UI
         public void OnMouseEnter()
         {
 
-            if (!wasClicked)
-                for (int i = 0; i < onMouseEnter.Count; i++)
-                {
+            for (int i = 0; i < onMouseEnter.Count; i++)
+            {
 
-                    Function.InvokeEvent(onMouseEnter[i], this);
+                Function.InvokeEvent(onMouseEnter[i], this);
 
-                }
+            }
 
         }
 
@@ -141,18 +140,21 @@ namespace Showroom.UI
 
         public void OnMouseExit()
         {
-            if (!wasClicked)
-                for (int i = 0; i < onMouseExit.Count; i++)
-                {
 
-                    Function.InvokeEvent(onMouseExit[i], this);
+            for (int i = 0; i < onMouseExit.Count; i++)
+            {
 
-                }
+                Function.InvokeEvent(onMouseExit[i], this);
+
+            }
 
         }
 
         public void ResetClick()
         {
+
+            if (clickableOnce && !wasClicked)
+                return;
 
             wasClicked = false;
 

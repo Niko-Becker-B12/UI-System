@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -9,10 +10,10 @@ public class UiTabGroup : UiElement
 
     public GameObject tabButtonPrefab;
 
-    public Transform tabButtonParent;
+    public RectTransform tabButtonParent;
 
     public GameObject contentGroupPrefab;
-    public Transform contentGroupHolder;
+    public RectTransform contentGroupHolder;
 
     public string contentPosition;
 
@@ -41,19 +42,17 @@ public class UiTabGroup : UiElement
 
         base.ApplySkinData();
 
-
-
     }
 
     public void AddNewTab(string title = "", int index = -1)
     {
 
-        if(index == -1)
+        if (index == -1)
         {
 
             //Add on the end
 
-            UiTab temp = GenerateTabButton(title, index);
+            UiTab temp = GenerateTabButton(title, null, index);
             temp.ApplySkinData();
 
             tabs.Add(temp);
@@ -73,7 +72,35 @@ public class UiTabGroup : UiElement
 
     }
 
-    UiTab GenerateTabButton(string title = "", int index = -1)
+    public void AddNewTab(string title = "",Sprite sprite = null,  int index = -1)
+    {
+
+        if (index == -1)
+        {
+
+            //Add on the end
+
+            UiTab temp = GenerateTabButton(title, sprite, index);
+            temp.ApplySkinData();
+
+            tabs.Add(temp);
+
+        }
+        else
+        {
+
+            //add at index
+
+            UiTab temp = GenerateTabButton(title);
+            temp.ApplySkinData();
+
+            tabs.Insert(index, temp);
+
+        }
+
+    }
+
+    UiTab GenerateTabButton(string title = "", Sprite sprite = null, int index = -1)
     {
 
         if (index == -1)
@@ -82,31 +109,13 @@ public class UiTabGroup : UiElement
         GameObject tempButtonObject = Instantiate(tabButtonPrefab, tabButtonParent);
         UiTab tab = tempButtonObject.GetComponent<UiTab>();
 
-        //GameObject tempContentHolderObject = Instantiate(contentGroupPrefab, contentGroupHolder);
-        //
-        //tab.contentHolderParent = GameObject.Find($"{contentGroupHolder.name}/{tempContentHolderObject.name}{contentPosition}").transform;
-
         GameObject newContentHolder = Instantiate(contentGroupPrefab, contentGroupHolder);
-        newContentHolder.transform.parent = contentGroupHolder;
-        //newContentHolder.transform.localScale = Vector3.one;
-        //
-        //VerticalLayoutGroup layoutGroup = newContentHolder.AddComponent<VerticalLayoutGroup>();
-        //ContentSizeFitter sizeFitter = newContentHolder.AddComponent<ContentSizeFitter>();
-        //
-        //
-        //layoutGroup.childControlHeight = false;
-        //layoutGroup.childControlWidth = true;
-        //layoutGroup.childForceExpandHeight = false;
-        //layoutGroup.childForceExpandWidth = true;
-        //layoutGroup.childScaleHeight = true;
-        //layoutGroup.childScaleWidth = false;
-        //
-        //sizeFitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
-        //sizeFitter.horizontalFit = ContentSizeFitter.FitMode.Unconstrained;
-
+        newContentHolder.transform.SetParent(contentGroupHolder);
 
         tab.contentHolderParent = newContentHolder.transform;
         tab.contentHolderParent.gameObject.SetActive(false);
+        tab.tabGroup = this;
+        tab.tabIndex = index;
 
 
         Function tabButtonOnClickFunction = new Function
@@ -125,8 +134,27 @@ public class UiTabGroup : UiElement
 
         tab._toggleBehavior.clickableOnce = true;
 
+        (tab.secondaryDetailGraphic as Image).sprite = sprite;
 
-        tab.title = title;
+        string[] localizationReferences = new string[2];
+
+        if(title.Contains('/'))
+        {
+
+            localizationReferences = title.Split('/');
+
+            tab.title.SetReference(localizationReferences[0], localizationReferences[1]);
+
+        }
+        else
+        {
+
+            (tab.detailGraphic as TextMeshProUGUI).text = title;
+
+        }
+
+        LayoutRebuilder.ForceRebuildLayoutImmediate(tab.rectTransform);
+        LayoutRebuilder.ForceRebuildLayoutImmediate(tabButtonParent);
 
         return tab;
 
@@ -165,6 +193,13 @@ public class UiTabGroup : UiElement
 
                 tabs[i].contentHolderParent.gameObject.SetActive(true);
 
+                LayoutRebuilder.ForceRebuildLayoutImmediate(tabs[index].contentHolderParent.GetComponent<RectTransform>());
+                LayoutRebuilder.ForceRebuildLayoutImmediate(contentGroupHolder);
+
+                tabs[i].OnClick(true);
+
+                currentIndex = index;
+
             }
             else
             {
@@ -183,14 +218,21 @@ public class UiTabGroup : UiElement
     public void AddEntryToGroup(GameObject rootObject, int index = -1)
     {
 
-        if(index == -1 || rootObject == null)
+        Debug.Log($"Moving {rootObject.name} to {index}");
+
+        if (index == -1 || rootObject == null)
         {
             //Error handling
             return;
         }
 
-        rootObject.transform.parent = tabs[index].contentHolderParent;
+        Debug.Log($"Moving {rootObject.name} to {tabs[index].contentHolderParent.name}");
+
+        rootObject.transform.SetParent(tabs[index].contentHolderParent);
         rootObject.transform.localScale = Vector3.one;
+
+        LayoutRebuilder.ForceRebuildLayoutImmediate(tabs[index].contentHolderParent.GetComponent<RectTransform>());
+        LayoutRebuilder.ForceRebuildLayoutImmediate(this.GetComponent<RectTransform>());
 
     }
 
@@ -204,7 +246,7 @@ public class UiTabGroup : UiElement
     public int GetTabIndex(string title)
     {
 
-        return tabs.FindIndex(x => x.title == title);
+        return tabs.FindIndex(x => x.title.TableEntryReference == title);
 
     }
 
