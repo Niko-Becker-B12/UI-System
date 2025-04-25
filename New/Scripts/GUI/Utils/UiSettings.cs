@@ -70,7 +70,7 @@ public sealed class UiSettings : Settings<UiSettings>
 
             string jsonString = File.ReadAllText($"{Application.persistentDataPath}/GPUI-Settings.json");
 
-            JsonUtility.FromJsonOverwrite(jsonString, this.instance);
+            JsonUtility.FromJsonOverwrite(jsonString, UiSettings.instance);
 
         }
         else

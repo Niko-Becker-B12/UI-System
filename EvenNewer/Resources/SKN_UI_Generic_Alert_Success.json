@@ -1,0 +1,154 @@
+{
+    "backgroundRadiusTL": 4,
+    "backgroundRadiusTR": 4,
+    "backgroundRadiusBL": 4,
+    "backgroundRadiusBR": 4,
+    "useMaxRadius": false,
+    "useLayoutOptions": false,
+    "childAlignment": 0,
+    "layoutSizingOption": 0,
+    "childAlignmentAxis": 0,
+    "layoutMargin": {
+        "m_Left": 0,
+        "m_Right": 0,
+        "m_Top": 0,
+        "m_Bottom": 0
+    },
+    "layoutSpacing": 0.0,
+    "shadowColor": {
+        "r": 0.0,
+        "g": 0.0,
+        "b": 0.0,
+        "a": 0.250980406999588
+    },
+    "size": 2.0,
+    "softness": 0.10000000149011612,
+    "offset": {
+        "x": 0.0,
+        "y": -2.0
+    },
+    "backgroundColor": {
+        "m_NormalColor": {
+            "r": 0.18039216101169587,
+            "g": 0.4901961088180542,
+            "b": 0.19607844948768617,
+            "a": 1.0
+        },
+        "m_HighlightedColor": {
+            "r": 0.18039216101169587,
+            "g": 0.4901960790157318,
+            "b": 0.19607843458652497,
+            "a": 1.0
+        },
+        "m_PressedColor": {
+            "r": 0.18039216101169587,
+            "g": 0.4901960790157318,
+            "b": 0.19607843458652497,
+            "a": 1.0
+        },
+        "m_SelectedColor": {
+            "r": 0.18039216101169587,
+            "g": 0.4901960790157318,
+            "b": 0.19607843458652497,
+            "a": 1.0
+        },
+        "m_DisabledColor": {
+            "r": 0.18039216101169587,
+            "g": 0.4901960790157318,
+            "b": 0.19607843458652497,
+            "a": 1.0
+        },
+        "m_ColorMultiplier": 1.0,
+        "m_FadeDuration": 0.0
+    },
+    "backgroundSprite": {
+        "instanceID": 0
+    },
+    "backgroundMaterial": {
+        "instanceID": 0
+    },
+    "outlineColor": {
+        "m_NormalColor": {
+            "r": 0.0,
+            "g": 0.0,
+            "b": 0.0,
+            "a": 0.0
+        },
+        "m_HighlightedColor": {
+            "r": 0.0,
+            "g": 0.0,
+            "b": 0.0,
+            "a": 0.0
+        },
+        "m_PressedColor": {
+            "r": 0.0,
+            "g": 0.0,
+            "b": 0.0,
+            "a": 0.0
+        },
+        "m_SelectedColor": {
+            "r": 0.0,
+            "g": 0.0,
+            "b": 0.0,
+            "a": 0.0
+        },
+        "m_DisabledColor": {
+            "r": 0.0,
+            "g": 0.0,
+            "b": 0.0,
+            "a": 0.0
+        },
+        "m_ColorMultiplier": 1.0,
+        "m_FadeDuration": 0.0
+    },
+    "outlineWidth": 0,
+    "detailColor": {
+        "m_NormalColor": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0,
+            "a": 1.0
+        },
+        "m_HighlightedColor": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0,
+            "a": 1.0
+        },
+        "m_PressedColor": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0,
+            "a": 1.0
+        },
+        "m_SelectedColor": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0,
+            "a": 1.0
+        },
+        "m_DisabledColor": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0,
+            "a": 1.0
+        },
+        "m_ColorMultiplier": 1.0,
+        "m_FadeDuration": 0.0
+    },
+    "detailSprite": {
+        "instanceID": 0
+    },
+    "detailMaterial": {
+        "instanceID": 0
+    },
+    "toastIcon": {
+        "instanceID": 56682
+    },
+    "closeButtonSkinData": {
+        "instanceID": 54394
+    },
+    "additionalButtonSkinData": {
+        "instanceID": 54268
+    }
+}
