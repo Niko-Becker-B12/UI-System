@@ -6,6 +6,8 @@ using Sirenix.Serialization;
 using Sirenix.OdinInspector;
 using NUnit.Framework.Internal;
 using System;
+using UnityEngine.Android;
+using UnityEngine.Localization.Settings;
 
 #if UNITY_EDITOR
 using Hextant.Editor;
@@ -22,6 +24,15 @@ public sealed class RuntimeSettings : Settings<RuntimeSettings>
 #endif
 
 
+    [SerializeField]
+    private bool usePlayerPrefs = false;
+
+    public bool UsePlayerPrefs
+    {
+        get => usePlayerPrefs;
+        set => usePlayerPrefs = value;
+    }
+    
     public List<RuntimeSettingsPropertyBase> properties = new List<RuntimeSettingsPropertyBase>();
 
     /*
@@ -121,6 +132,23 @@ public sealed class RuntimeSettings : Settings<RuntimeSettings>
 
     */
 
+    private void Awake()
+    {
+        
+#if UNITY_ANDROID
+        if (!Permission.HasUserAuthorizedPermission(Permission.ExternalStorageWrite))
+        {
+            Permission.RequestUserPermission(Permission.ExternalStorageWrite);
+        }
+
+        if (!Permission.HasUserAuthorizedPermission(Permission.ExternalStorageRead))
+        {
+            Permission.RequestUserPermission(Permission.ExternalStorageRead);
+        }
+#endif
+        
+    }
+
 
     public string GetPropertyValue(string propertyName)
     {
@@ -153,16 +181,28 @@ public sealed class RuntimeSettings : Settings<RuntimeSettings>
     {
 
         if (propertyName == null || string.IsNullOrWhiteSpace(propertyName))
+        {
+            
+            Debug.LogError($"There is no property named '{propertyName}' in settings");
+            
             return;
+            
+        }
 
         RuntimeSettingsPropertyBase foundProperty = GetProperty(propertyName);
 
         if (foundProperty == null)
+        {
+            
+            Debug.LogError($"Could not find property '{propertyName}' in settings");
+            
             return;
+            
+        }
 
         foundProperty.Value = propertyValue;
 
-        SaveSettingsToJson();
+        HandleSaving();
 
     }
 
@@ -179,16 +219,57 @@ public sealed class RuntimeSettings : Settings<RuntimeSettings>
 
         foundProperty.Value = newProperty.Value;
 
-        SaveSettingsToJson();
+        HandleSaving();
 
     }
 
     private void OnEnable()
     {
 
-#if UNITY_EDITOR
-        SaveSettingsToJson();
+#if UNITY_ANDROID
+        if (!Permission.HasUserAuthorizedPermission(Permission.ExternalStorageWrite))
+        {
+            Permission.RequestUserPermission(Permission.ExternalStorageWrite);
+        }
+
+        if (!Permission.HasUserAuthorizedPermission(Permission.ExternalStorageRead))
+        {
+            Permission.RequestUserPermission(Permission.ExternalStorageRead);
+        }
+#endif
+        
+
+#if UNITY_ANDROID
+
+        if (PlayerPrefs.HasKey("Language"))
+        {
+            for (int i = 0; i < properties.Count; i++)
+            {
+            
+                properties[i] = new RuntimeSettingsPropertyBase()
+                {
+                    name = properties[i].name,
+                    Value = PlayerPrefs.GetString(properties[i].name)
+                };
+            
+            }
+        }
+        else
+        {
+            HandleSaving();
+        }
+
 #else
+
+        RuntimeSettingsPropertyBase languageProperty = GetProperty("Language");
+        
+        if (languageProperty != null)
+        {
+            
+            LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales.Find((x) => x.Identifier.Code == languageProperty.Value.ToString());
+            
+        }
+
         if (File.Exists($"{Application.persistentDataPath}/B12-Settings.json"))
         {
 
@@ -200,22 +281,58 @@ public sealed class RuntimeSettings : Settings<RuntimeSettings>
         else
         {
 
-            SaveSettingsToJson();
+            HandleSaving();
 
         }
 #endif
+        
+
 
     }
 
     [Button("Save Settings")]
+    public void HandleSaving()
+    {
+        
+        Debug.Log("Saving Settings");
+
+        if (usePlayerPrefs)
+        {
+            SaveSettingsToPlayerPrefs();
+        }
+        else
+        {
+            SaveSettingsToJson();
+        }
+        
+    }
+    
     public static void SaveSettingsToJson()
     {
 
-        Debug.Log("Saving Settings");
+        Debug.Log("Saving Settings to Json");
 
         string jsonString = JsonUtility.ToJson(RuntimeSettings.instance, true);
 
         File.WriteAllText($"{Application.persistentDataPath}/B12-Settings.json", jsonString);
+
+    }
+    
+    public static void SaveSettingsToPlayerPrefs()
+    {
+
+        Debug.Log("Saving Settings to PlayerPrefs");
+        
+        PlayerPrefs.DeleteAll();
+
+        for (int i = 0; i < RuntimeSettings.instance.properties.Count; i++)
+        {
+            
+            PlayerPrefs.SetString(RuntimeSettings.instance.properties[i].name, RuntimeSettings.instance.properties[i].Value.ToString());
+            
+        }
+
+        PlayerPrefs.Save();
 
     }
 
@@ -223,12 +340,17 @@ public sealed class RuntimeSettings : Settings<RuntimeSettings>
     public void UpdateSettings()
     {
 
+#if !UNITY_EDITOR
         for(int i = 0; i < properties.Count; i++)
         {
 
             properties[i].Value = properties[i].Value;
+            
+            if(properties[i].name == "Language")
+                LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales.Find((x)=>x.Identifier.Code == properties[i].Value.ToString());
 
         }
+#endif
 
     }
 

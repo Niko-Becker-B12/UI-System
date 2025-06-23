@@ -13,6 +13,8 @@ public class RuntimeSettingsWrapper : SerializedMonoBehaviour
     {
 
         property = RuntimeSettings.instance.GetProperty(propertyName);
+        
+        Debug.Log($"Property: {propertyName} - Value: {property.Value}");
 
         if (property != null)
         {
@@ -29,7 +31,7 @@ public class RuntimeSettingsWrapper : SerializedMonoBehaviour
     public virtual void OnEnable()
     {
 
-        RuntimeSettingsPropertyBase property = RuntimeSettings.instance.GetProperty(propertyName);
+        RuntimeSettingsPropertyBase property = RuntimeSettings.instance?.GetProperty(propertyName);
 
         if (property != null)
             property.OnPropertyChanged += OnValueChangedExternally;
@@ -39,7 +41,7 @@ public class RuntimeSettingsWrapper : SerializedMonoBehaviour
     public virtual void OnDisable()
     {
 
-        RuntimeSettingsPropertyBase property = RuntimeSettings.instance.GetProperty(propertyName);
+        RuntimeSettingsPropertyBase property = RuntimeSettings.instance?.GetProperty(propertyName);
 
         if (property != null)
             property.OnPropertyChanged -= OnValueChangedExternally;
@@ -50,7 +52,7 @@ public class RuntimeSettingsWrapper : SerializedMonoBehaviour
     public virtual void OnValueChanged(RuntimeSettingsPropertyBase property)
     {
 
-        Debug.Log($"Property was changed locally to {property.Value}");
+        Debug.Log($"Property {propertyName} was changed locally to {property.Value}");
 
         RuntimeSettings.instance.SetPropertyValue(propertyName, property.Value);
 
@@ -59,17 +61,19 @@ public class RuntimeSettingsWrapper : SerializedMonoBehaviour
     //this gets run, if the value was changed externally, i.e a differen button changed, so this button needs to reflect that change
     public virtual void OnValueChangedExternally(string value)
     {
+        
+        Debug.Log($"Property {propertyName} was changed externally to {value}");
 
         if (value == property.Value)
             return;
-
-        Debug.Log($"Property was changed externally to {value}");
 
     }
 
     public virtual void UpdateValue(string value)
     {
 
+        Debug.Log($"Property {propertyName} was updated to {property.Value}");
+        
         property.Value = value;
 
         OnValueChanged(property);

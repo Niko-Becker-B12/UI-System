@@ -83,8 +83,8 @@ namespace GPUI
 
             if (windowHeaderText != null)
             {
-
-                if (!windowHeader.IsEmpty || windowHeader != null || windowHeader.TableEntryReference.ReferenceType != TableEntryReference.Type.Empty)
+                
+                if (!windowHeader.IsEmpty || windowHeader.TableEntryReference.ReferenceType != TableEntryReference.Type.Empty || windowHeader.TableReference.ReferenceType != TableReference.Type.Empty)
                 {
                     windowHeaderText.localizedString = windowHeader;
                     windowHeaderText.OverrideText(windowHeader?.GetLocalizedString());

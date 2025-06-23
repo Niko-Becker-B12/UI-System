@@ -7,6 +7,11 @@ using UnityEngine.Events;
 public class RuntimeSettingsWrapperString : RuntimeSettingsWrapper
 {
 
+    public UnityEvent<string> OnValueChangedExternal;
+
+    public UnityEvent<string> OnValueChangedLocal;
+    
+    
     public override void Start()
     {
 
@@ -18,7 +23,18 @@ public class RuntimeSettingsWrapperString : RuntimeSettingsWrapper
     {
 
         base.OnValueChanged(property);
+        
+        OnValueChangedLocal?.Invoke(property.name);
 
+    }
+
+    public override void OnValueChangedExternally(string value)
+    {
+        
+        base.OnValueChangedExternally(value);
+        
+        OnValueChangedExternal?.Invoke(value);
+        
     }
 
     public override void UpdateValue(string value)

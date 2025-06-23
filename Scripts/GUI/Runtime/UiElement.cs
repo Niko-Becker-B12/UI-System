@@ -51,9 +51,7 @@ namespace GPUI
         [Space] [TabGroup("Events", "OnExit")]
         public UnityEvent onExit;
 
-        private IPointerUpHandler _iPointerUpHandlerImplementation;
-
-
+        
         public virtual void Awake()
         {
 
@@ -165,6 +163,8 @@ namespace GPUI
 
             if (skinData.useLayoutOptions)
             {
+                
+                layoutGroup.reverseArrangement = !skinData.layoutOptions.reverseLayout;
 
                 switch (skinData.layoutOptions.childAlignmentAxis)
                 {
@@ -178,7 +178,6 @@ namespace GPUI
                         layoutGroup.spacing = skinData.layoutOptions.layoutSpacing;
                         layoutGroup.isVertical = true;
                         layoutGroup.childAlignment = skinData.layoutOptions.childAlignment;
-                        layoutGroup.reverseArrangement = skinData.layoutOptions.reverseLayout;
                         break;
                     case SimpleComponentSkinDataObject.UiElementLayoutOptions.UiElementChildAlignmentAxis.Horizontal:
                         layoutGroup.enabled = true;
@@ -186,7 +185,6 @@ namespace GPUI
                         layoutGroup.spacing = skinData.layoutOptions.layoutSpacing;
                         layoutGroup.isVertical = false;
                         layoutGroup.childAlignment = skinData.layoutOptions.childAlignment;
-                        layoutGroup.reverseArrangement = skinData.layoutOptions.reverseLayout;
                         break;
 
                 }
@@ -361,14 +359,14 @@ namespace GPUI
 
         }
 
-        public void OnPointerDown(PointerEventData eventData)
+        public virtual void OnPointerDown(PointerEventData eventData)
         {
             
             onClick?.Invoke();
             
         }
 
-        public void OnPointerEnter(PointerEventData eventData)
+        public virtual void OnPointerEnter(PointerEventData eventData)
         {
             
 #if UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
@@ -381,7 +379,7 @@ namespace GPUI
             
         }
 
-        public void OnPointerExit(PointerEventData eventData)
+        public virtual void OnPointerExit(PointerEventData eventData)
         {
             
 #if UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN

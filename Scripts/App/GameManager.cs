@@ -2,45 +2,56 @@ using Sirenix.OdinInspector;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using TMPro;
 using UnityEngine;
+using UnityEngine.Android;
+using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
+using UnityEngine.UI;
 
 public class GameManager : SingletonPersistent<GameManager>
 {
-
-    public static event Action<int> onValidatedLogin;
-    public static event Action OnLoginFinalized;
-    public static event Action<int> onNewSelectedStream;
-
-    public static event Action onOpenLoadingScreen;
-    public static event Action onCloseLoadingScreen;
     
+    public static event Action<string> OnPlayerNewCustomID;
+
     public int currentAppState;
 
     public List<AppState> appStates = new List<AppState>();
 
+    [SerializeField] private string playerId;
+    
+    public string PlayerId
+    {
+        get { return playerId; }
+        set
+        {
+
+            playerId = value;
+
+            OnPlayerNewCustomID?.Invoke(playerId);
+
+        }
+    }
+
+    public static event Action OnSceneChangeStarted;
+    public static event Action OnSceneChangeFinalized;
+
+
+    public override void Awake()
+    {
+        base.Awake();
+
+#if UNITY_ANDROID
+        Unity.XR.Oculus.Performance.TrySetDisplayRefreshRate(90f);
+#endif
+
+    }
 
     private void Start()
     {
 
-        for (int i = 1; i < Display.displays.Length; i++)
-        {
-
-            Display.displays[i].Activate();
-
-        }
-
-        Screen.sleepTimeout = SleepTimeout.NeverSleep;
-
-        OnLoginFinalized?.Invoke();
-
         SwitchAppState(0);
-
-    }
-
-    public void LoadingFinished()
-    {
-
-        onCloseLoadingScreen?.Invoke();
 
     }
 
@@ -61,10 +72,41 @@ public class GameManager : SingletonPersistent<GameManager>
 
     }
 
-    public void Quit()
+    [Button]
+    public void SwitchScene(string scene)
     {
+        
+        OnSceneChangeStarted?.Invoke();
+        
+        HandleSceneChange(scene);
 
-        Application.Quit();
+    }
+
+    async void HandleSceneChange(string scene)
+    {
+        
+        string currentScene = SceneManager.GetActiveScene().name;
+        
+        Debug.Log($"Started loading scene {scene}");
+        
+        await Task.Delay(500);
+        
+        
+        AsyncOperation asyncOperation = SceneManager.LoadSceneAsync(scene);
+
+        Debug.Log($"started async loading scene {scene}");
+        
+        await asyncOperation;
+        
+        await Task.Delay(2000);
+        
+        
+        Debug.Log($"finished loading scene {scene}");
+        
+        await Task.Delay(1000);
+        
+        
+        OnSceneChangeFinalized?.Invoke();
 
     }
 
@@ -108,5 +150,8 @@ public class AppState
             Function.InvokeEvent(onResetFunctions[i], GameManager.Instance);
 
     }
+
+
+    
 
 }

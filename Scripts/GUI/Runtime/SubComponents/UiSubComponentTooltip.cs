@@ -1,4 +1,5 @@
 ﻿using System;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Localization;
 
@@ -9,6 +10,8 @@ namespace GPUI.SubComponents
         
         public LocalizedString tooltipText;
 
+        public bool overrideDirection = false;
+
         enum Direction
         {
             Left,
@@ -17,7 +20,10 @@ namespace GPUI.SubComponents
             Bottom
         }
         
-        Direction direction = Direction.Top;
+        [SerializeField, ShowIf("overrideDirection")]
+        Direction overridenDirection = Direction.Top;
+        Direction usedDirection = Direction.Top;
+        
 
         private void Start()
         {
@@ -36,9 +42,47 @@ namespace GPUI.SubComponents
 
                 if (tooltip == null)
                     return;
-                
-                if(direction == Direction.Top)
-                    tooltip.rectTransform.position = new Vector2(this.Element.rectTransform.position.x - this.Element.rectTransform.rect.width / 2, this.Element.rectTransform.position.y + this.Element.rectTransform.rect.height / 2);
+
+                if (overrideDirection)
+                {
+
+                    switch (overridenDirection)
+                    {
+                        case Direction.Left:
+                            tooltip.rectTransform.position = new Vector2(this.Element.rectTransform.position.x - this.Element.rectTransform.rect.width / 2, this.Element.rectTransform.position.y + this.Element.rectTransform.rect.height / 2);
+                            break;
+                        case Direction.Right:
+                            tooltip.rectTransform.position = new Vector2(this.Element.rectTransform.position.x - this.Element.rectTransform.rect.width / 2, this.Element.rectTransform.position.y + this.Element.rectTransform.rect.height / 2);
+                            break;
+                        case Direction.Top:
+                            tooltip.rectTransform.position = new Vector2(this.Element.rectTransform.position.x - this.Element.rectTransform.rect.width / 2, this.Element.rectTransform.position.y + this.Element.rectTransform.rect.height / 2);
+                            break;
+                        case Direction.Bottom:
+                            tooltip.rectTransform.position = new Vector2(this.Element.rectTransform.position.x - this.Element.rectTransform.rect.width / 2, this.Element.rectTransform.position.y + this.Element.rectTransform.rect.height / 2);
+                            break;
+                    }
+                    
+                }
+                else
+                {
+                    
+                    switch (usedDirection)
+                    {
+                        case Direction.Left:
+                            tooltip.rectTransform.position = new Vector2(this.Element.rectTransform.position.x - this.Element.rectTransform.rect.width / 2, this.Element.rectTransform.position.y + this.Element.rectTransform.rect.height / 2);
+                            break;
+                        case Direction.Right:
+                            tooltip.rectTransform.position = new Vector2(this.Element.rectTransform.position.x - this.Element.rectTransform.rect.width / 2, this.Element.rectTransform.position.y + this.Element.rectTransform.rect.height / 2);
+                            break;
+                        case Direction.Top:
+                            tooltip.rectTransform.position = new Vector2(this.Element.rectTransform.position.x - this.Element.rectTransform.rect.width / 2, this.Element.rectTransform.position.y + this.Element.rectTransform.rect.height / 2);
+                            break;
+                        case Direction.Bottom:
+                            tooltip.rectTransform.position = new Vector2(this.Element.rectTransform.position.x - this.Element.rectTransform.rect.width / 2, this.Element.rectTransform.position.y + this.Element.rectTransform.rect.height / 2);
+                            break;
+                    }
+                    
+                }
                 
                 tooltip.tooltipTextObject?.OverrideText(tooltipText?.GetLocalizedString());
                 tooltip.FadeElement(true);
