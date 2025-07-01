@@ -63,10 +63,8 @@ namespace GPUI
 
         }
 
-        protected override void OnValidate()
+        void OnValidate()
         {
-            
-            base.OnValidate();
             
             ApplySkinData();
             
