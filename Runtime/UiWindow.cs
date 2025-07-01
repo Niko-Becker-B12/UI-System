@@ -34,23 +34,18 @@ namespace GPUI
         Vector2 offsetMax; // => rectTransform.offsetMax;
 
 
-        private void Start()
+        protected override void Start()
         {
+            
+            base.Start();
 
             offsetMin = rectTransform.offsetMin;
             offsetMax = rectTransform.offsetMax;
 
-        }
-
-        public void Awake()
-        {
-
-            base.Awake();
-
             LayoutRebuilder.ForceRebuildLayoutImmediate(this.GetComponent<RectTransform>());
             LayoutRebuilder.ForceRebuildLayoutImmediate(backgroundGraphic?.rectTransform);
             LayoutRebuilder.ForceRebuildLayoutImmediate(windowBody);
-
+            
         }
 
         public override void FadeElement(bool fadeIn = false)
