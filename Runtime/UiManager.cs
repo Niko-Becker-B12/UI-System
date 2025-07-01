@@ -46,7 +46,7 @@ namespace GPUI
 
         }
 
-        private void Start()
+        public virtual void Start()
         {
 
             LayoutRebuilder.ForceRebuildLayoutImmediate(this.GetComponentInChildren<RectTransform>());
