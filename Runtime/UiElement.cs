@@ -18,7 +18,6 @@ namespace GPUI
 {
     
     [RequireComponent(typeof(CanvasGroup))]
-    [ExecuteInEditMode]
     public class UiElement : UIBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
     {
 
@@ -52,19 +51,7 @@ namespace GPUI
         
         [Space] [TabGroup("Events", "OnExit")]
         public UnityEvent onExit;
-
-
-#if UNITY_EDITOR
         
-        [Button]
-        public void GenerateQuickUiSkin()
-        {
-            
-            //UiSkinQuickGenerator.GenerateUiSkinQuick(this);
-
-        }
-        
-#endif
         
         protected virtual void Awake()
         {
@@ -74,6 +61,15 @@ namespace GPUI
             
             Debug.Log(UiManager.Instance);
 
+        }
+
+        protected override void OnValidate()
+        {
+            
+            base.OnValidate();
+            
+            ApplySkinData();
+            
         }
 
         protected virtual void Start()
@@ -98,13 +94,6 @@ namespace GPUI
                 ApplySkinData();
             
         }
-
-        //protected void OnValidate()
-        //{
-//
-        //    ApplySkinData();
-//
-        //}
 
         public virtual void FadeElement(bool fadeIn = false)
         {
