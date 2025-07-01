@@ -3,7 +3,7 @@ using GPUI;
 using UnityEngine;
 using GPUI;
 
-namespace GPUI
+namespace GPUI.Editor
 {
     
     [System.Serializable]
