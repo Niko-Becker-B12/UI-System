@@ -1,6 +1,6 @@
 {
     "name": "com.red.gpui-system",
-    "version": "1.0.9-Pre-Release",
+    "version": "1.0.10-Pre-Release",
     "displayName": "GPUI-System",
     "description": "",
     "type": "tool",
@@ -28,5 +28,18 @@
         "com.jimmycushnie.ui-shapes-kit_jimmyfork": "https://github.com/JimmyCushnie/ui-shapes-kit_jimmyfork.git",
         "com.annulusgames.lit-motion": "https://github.com/annulusgames/LitMotion.git?path=src/LitMotion/Assets/LitMotion",
         "com.unity.vectorgraphics": "2.0.0-preview.25"
-    }
+    },
+    "samples":
+    [
+        {
+            "displayName": "Base Content",
+            "description": "Contains base prefabs + skins",
+            "path": "Content~/Base"
+        },
+        {
+            "displayName": "Siemens Client Content",
+            "description": "Contains Siemens CI Skins",
+            "path": "Content~/Siemens"
+        }
+    ]
 }
