@@ -37,7 +37,7 @@ namespace GPUI
         public void Play()
         {
 
-            currentTween.Cancel();
+            currentTween?.Cancel();
             
             currentTween = animation.Play(targetGraphics, loop, loopType, easeType);
 
