@@ -153,7 +153,7 @@ namespace GPUI
             if (skinData.useLayoutOptions)
             {
                 
-                layoutGroup.reverseArrangement = !skinData.layoutOptions.reverseLayout;
+                layoutGroup.reverseArrangement = skinData.layoutOptions.reverseLayout;
 
                 switch (skinData.layoutOptions.childAlignmentAxis)
                 {
