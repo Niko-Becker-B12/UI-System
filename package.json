@@ -1,45 +1,42 @@
 {
-    "name": "com.red.gpui-system",
-    "version": "1.0.16-Pre-Release",
-    "displayName": "GPUI-System",
-    "description": "",
-    "type": "tool",
-    "unity": "2020.3",
-    "hideInEditor": false,
-    "documentationUrl": "",
-    "changelogUrl": "",
-    "licensesUrl": "",
-    "keywords": [
-        "GPUI",
-        "UI"
-    ],
-    "author": {
-        "name": "Niko \"Red\" Becker",
-        "email": "",
-        "url": ""
-    },
-    "dependencies": 
+  "name": "com.red.gpui-system",
+  "version": "1.0.17-Pre-Release",
+  "displayName": "GPUI-System",
+  "type": "tool",
+  "unity": "2022.3",
+  "hideInEditor": false,
+  "documentationUrl": "",
+  "changelogUrl": "",
+  "licensesUrl": "",
+  "keywords": [
+    "GPUI",
+    "UI"
+  ],
+  "author": {
+    "name": "Niko \"Red\" Becker",
+    "email": "",
+    "url": ""
+  },
+  "dependencies": {
+    "com.unity.burst": "1.6.0",
+    "com.unity.collections": "1.5.1",
+    "com.unity.mathematics": "1.0.1",
+    "com.unity.ugui": "2.0.0",
+    "com.hextantstudios.utilities": "https://github.com/hextantstudios/com.hextantstudios.utilities.git",
+    "com.jimmycushnie.ui-shapes-kit_jimmyfork": "https://github.com/JimmyCushnie/ui-shapes-kit_jimmyfork.git",
+    "com.annulusgames.lit-motion": "https://github.com/annulusgames/LitMotion.git?path=src/LitMotion/Assets/LitMotion",
+    "com.unity.vectorgraphics": "2.0.0-preview.25"
+  },
+  "samples": [
     {
-        "com.unity.burst": "1.6.0",
-        "com.unity.collections": "1.5.1",
-        "com.unity.mathematics": "1.0.1",
-        "com.unity.ugui": "2.0.0",
-        "com.hextantstudios.utilities": "https://github.com/hextantstudios/com.hextantstudios.utilities.git",
-        "com.jimmycushnie.ui-shapes-kit_jimmyfork": "https://github.com/JimmyCushnie/ui-shapes-kit_jimmyfork.git",
-        "com.annulusgames.lit-motion": "https://github.com/annulusgames/LitMotion.git?path=src/LitMotion/Assets/LitMotion",
-        "com.unity.vectorgraphics": "2.0.0-preview.25"
+      "displayName": "Base Content",
+      "description": "Contains base prefabs + skins",
+      "path": "Samples~/Base"
     },
-    "samples":
-    [
-        {
-            "displayName": "Base Content",
-            "description": "Contains base prefabs + skins",
-            "path": "Samples~/Base"
-        },
-        {
-            "displayName": "Siemens Client Content",
-            "description": "Contains Siemens CI Skins",
-            "path": "Samples~/Siemens"
-        }
-    ]
+    {
+      "displayName": "Siemens Client Content",
+      "description": "Contains Siemens CI Skins",
+      "path": "Samples~/Siemens"
+    }
+  ]
 }
