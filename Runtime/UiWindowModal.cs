@@ -33,9 +33,9 @@ namespace GPUI
 
             });
 
-            closeButton.onClickFunctions.Add(onCloseButton);
+            closeButton?.onClickFunctions.Add(onCloseButton);
 
-            if (this.skinData != null)
+            if (this.skinData != null && closeButton != null)
             {
 
                 closeButton.skinData = (this.skinData as UiWindowModalSkinDataObject).closeButtonSkinData;
