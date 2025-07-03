@@ -57,7 +57,7 @@ namespace GPUI
 
             base.ApplySkinData();
 
-            closeButton.ApplySkinData();
+            closeButton?.ApplySkinData();
 
         }
 
