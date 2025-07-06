@@ -31,6 +31,9 @@ namespace GPUI
 
         [VerticalGroup("$displayName/2"), SerializeField] [BoxGroup("$displayName/2/General Settings")]
         private UiSwatchesContainer swatchesContainer;
+        
+        [VerticalGroup("$displayName/2"), SerializeField] [BoxGroup("$displayName/2/General Settings")]
+        public List<Sprite> cursorSprites = new List<Sprite>();
 
         [VerticalGroup("$displayName/3")] [ReadOnly, ShowInInspector]
         List<string> skinCategoryNames = new List<string>();
