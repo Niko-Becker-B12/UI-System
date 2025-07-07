@@ -35,10 +35,48 @@ namespace GPUI
         static void SetCursor(int index)
         {
             
-            if(index < 0 || index >= cursorSprites.Count)
+            if(index < 0 || cursorSprites == null || index >= cursorSprites.Count)
                 return;
             
             Cursor.SetCursor(cursorSprites[index].texture, Vector2.zero, CursorMode.Auto);
+            
+        }
+
+        public static void SetCursorState(CursorLockMode cursorLockMode)
+        {
+
+            switch (cursorLockMode)
+            {
+                
+                case CursorLockMode.None:
+                    Cursor.lockState = CursorLockMode.None;
+                    Cursor.visible = true;
+                    break;
+                case CursorLockMode.Locked:
+                    Cursor.lockState = CursorLockMode.Locked;
+                    Cursor.visible = false;
+                    break;
+                
+            }
+            
+        }
+        
+        public static void SetCursorState(bool isLocked = false)
+        {
+
+            switch (isLocked)
+            {
+                
+                case false:
+                    Cursor.lockState = CursorLockMode.None;
+                    Cursor.visible = true;
+                    break;
+                case true:
+                    Cursor.lockState = CursorLockMode.Locked;
+                    Cursor.visible = false;
+                    break;
+                
+            }
             
         }
         
