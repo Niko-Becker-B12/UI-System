@@ -133,7 +133,7 @@ namespace GPUI
 
                 ComponentSkinDataObject detailedSkinData = skinData as ComponentSkinDataObject;
                 
-                detailGraphic.color = detailedSkinData.detailColor.normalColor;
+                detailGraphic.color = detailedSkinData.detailColor.pressedColor;
 
             }
 
@@ -178,7 +178,7 @@ namespace GPUI
 
                 ComponentSkinDataObject detailedSkinData = skinData as ComponentSkinDataObject;
                 
-                detailGraphic.color = detailedSkinData.detailColor.normalColor;
+                detailGraphic.color = detailedSkinData.detailColor.highlightedColor;
 
             }
 
