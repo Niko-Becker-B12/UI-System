@@ -1,18 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using ThisOtherThing.UI.Shapes;
-using static ThisOtherThing.UI.GeoUtils;
-using Sirenix.OdinInspector;
-using Sirenix.Serialization;
-using System;
-using LitMotion;
-using LitMotion.Extensions;
-using ThisOtherThing.UI.ShapeUtils;
-using UnityEngine.Events;
-using UnityEngine.EventSystems;
 
 namespace GPUI
 {

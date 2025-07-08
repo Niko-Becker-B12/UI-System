@@ -5,7 +5,6 @@ using UnityEngine.Localization;
 
 namespace GPUI.SubComponents
 {
-    [AddComponentMenu("GPUI/Sub Components/Tooltip")]
     public class UiSubComponentTooltip : UiSubComponentBase
     {
         
@@ -25,6 +24,13 @@ namespace GPUI.SubComponents
         Direction overridenDirection = Direction.Top;
         Direction usedDirection = Direction.Top;
         
+
+        private void Start()
+        {
+            
+            OnInitialize();
+            
+        }
 
         protected override void OnInitialize()
         {

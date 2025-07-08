@@ -5,28 +5,80 @@ using ThisOtherThing.UI.Shapes;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace GPUI
 {
-
+    [RequireComponent(typeof(ButtonBehavior))]
 
     public class UiButton : UiElementExtended
     {
 
-        public bool clickableOnce = false;
+        [HideInInspector] public ButtonBehavior _buttonBehavior;
 
-        [ReadOnly] public bool wasClicked = false;
+        [Space] [TabGroup("Events", "OnClick")]
+        public List<Function> onClickFunctions = new List<Function>();
 
-        bool isResetting = false;
+        [Space] [TabGroup("Events", "OnEnter")]
+        public List<Function> onEnterFunctions = new List<Function>();
+
+        [Space] [TabGroup("Events", "OnExit")] public List<Function> onExitFunctions = new List<Function>();
+
+        [Space] [TabGroup("Events", "OnReset")]
+        public List<Function> onResetFunctions = new List<Function>();
 
 
-        protected override void Start()
+        private void Start()
         {
+
+
+            _buttonBehavior = GetComponent<ButtonBehavior>();
 
             if (backgroundGraphic != null)
                 backgroundGraphic.raycastPadding = new Vector4(-8f, -8f, -8f, -8f);
+
+
+            Function onClick = new Function
+            {
+                functionDelay = 0,
+                functionName = new UnityEvent { }
+            };
+            onClick.functionName.AddListener(() => { OnClick(); });
+
+            onClickFunctions.Add(onClick);
+
+            Function onEnter = new Function
+            {
+                functionDelay = 0,
+                functionName = new UnityEvent { }
+            };
+            onEnter.functionName.AddListener(() => { OnEnter(); });
+
+            onEnterFunctions.Add(onEnter);
+
+            Function onExit = new Function
+            {
+                functionDelay = 0,
+                functionName = new UnityEvent { }
+            };
+            onExit.functionName.AddListener(() => { OnExit(); });
+
+            onExitFunctions.Add(onExit);
+
+            Function onReset = new Function
+            {
+                functionDelay = 0,
+                functionName = new UnityEvent { }
+            };
+            onReset.functionName.AddListener(() => { OnReset(); });
+
+            onResetFunctions.Add(onReset);
+
+
+            _buttonBehavior.onMouseDown.AddRange(onClickFunctions);
+            _buttonBehavior.onMouseEnter.AddRange(onEnterFunctions);
+            _buttonBehavior.onMouseExit.AddRange(onExitFunctions);
+            _buttonBehavior.onButtonReset.AddRange(onResetFunctions);
 
         }
 
@@ -51,20 +103,11 @@ namespace GPUI
 
         }
 
-        public override void OnPointerClick(PointerEventData eventData)
+        public virtual void OnClick()
         {
 
             if (skinData == null)
                 return;
-
-            if (clickableOnce)
-                if (!wasClicked)
-                    wasClicked = true;
-
-            if (wasClicked)
-                return;
-            
-            onClick?.Invoke();
 
             if (backgroundGraphic != null)
             {
@@ -102,10 +145,8 @@ namespace GPUI
 
         }
 
-        public override void OnPointerEnter(PointerEventData eventData)
+        public virtual void OnEnter()
         {
-            
-            base.OnPointerEnter(eventData);
 
             if (skinData == null)
                 return;
@@ -149,10 +190,8 @@ namespace GPUI
 
         }
 
-        public override void OnPointerExit(PointerEventData eventData)
+        public virtual void OnExit()
         {
-            
-            base.OnPointerExit(eventData);
 
             if (skinData == null)
                 return;
@@ -195,12 +234,7 @@ namespace GPUI
 
         public virtual void OnReset()
         {
-            
-            wasClicked = false;
 
-            if (!this.gameObject.activeSelf)
-                return;
-            
             if (skinData == null)
                 return;
 

@@ -7,7 +7,6 @@ using UnityEngine.UI;
 
 namespace GPUI
 {
-    [AddComponentMenu("GPUI/UI Manager")]
     public class UiManager : MonoBehaviour
     {
 
