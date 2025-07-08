@@ -17,23 +17,7 @@ namespace GPUI
         public void Awake()
         {
 
-            Function onCloseButton = new Function
-            {
-                functionDelay = 0,
-                functionName = new UnityEvent { }
-            };
-            onCloseButton.functionName.AddListener(() =>
-            {
-
-                if (UiManager.Instance != null && useManagerForClosing)
-                    UiManager.Instance.GoToLastWindow();
-                else if (UiManager.Instance == null || !useManagerForClosing)
-                    FadeElement();
-
-
-            });
-
-            closeButton?.onClickFunctions.Add(onCloseButton);
+            //To-Do:
 
             if (this.skinData != null && closeButton != null)
             {
@@ -50,6 +34,8 @@ namespace GPUI
         private void Start()
         {
 
+            
+            
         }
 
         public override void ApplySkinData()

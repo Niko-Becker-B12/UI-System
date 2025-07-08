@@ -7,6 +7,7 @@ using UnityEngine;
 namespace GPUI.SubComponents
 {
     [RequireComponent(typeof(AudioSource))]
+    [AddComponentMenu("GPUI/Sub Components/One Shot Audio")]
     public class UiSubComponentOneShotAudio : MonoBehaviour
     {
         
@@ -15,20 +16,8 @@ namespace GPUI.SubComponents
         AudioSource audioSource => this.GetComponent<AudioSource>();
 
         public List<AudioClip> clips = new List<AudioClip>();
-        
-        
-        private void OnEnable()
-        {
-            
-            OnInitialize();
-            
-        }
 
-        protected virtual void OnInitialize()
-        {
-            
-        }
-
+        
         public void PlayOneShot(AudioClip clip)
         {
             

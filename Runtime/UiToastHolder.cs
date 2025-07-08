@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace GPUI
@@ -53,7 +54,7 @@ namespace GPUI
         public void CreateNewToast(out int index, string title = "", string message = "",
             ToastElementType toastType = ToastElementType.message,
             float lifetime = 0, Sprite customIcon = null, bool hasCloseButton = true, bool hasAdditionalButton = false,
-            List<Function> additionalButtonOnClickFunctions = null, string additionalButtonText = "")
+            UnityEvent additionalButtonOnClickFunctions = null, string additionalButtonText = "")
         {
 
             UiToastElement newUiToast = Instantiate(toastElementPrefab, this.transform).GetComponent<UiToastElement>();
@@ -91,7 +92,7 @@ namespace GPUI
             newUiToast.canvasGroup.interactable = false;
             newUiToast.canvasGroup.blocksRaycasts = false;
 
-            newUiToast.additionalButton.onClickFunctions = additionalButtonOnClickFunctions;
+            newUiToast.additionalButton.onClick = additionalButtonOnClickFunctions;
 
             newUiToast.additionalButton.GetComponentInChildren<TextMeshProUGUI>().text = additionalButtonText;
 

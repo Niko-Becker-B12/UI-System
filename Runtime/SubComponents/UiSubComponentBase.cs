@@ -11,7 +11,7 @@ namespace GPUI.SubComponents
         [ShowInInspector]
         protected UiElement Element => this.GetComponent<UiElement>();
         
-        private void OnEnable()
+        protected virtual void OnEnable()
         {
             
             OnInitialize();

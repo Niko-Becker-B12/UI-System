@@ -8,6 +8,7 @@ using Object = UnityEngine.Object;
 
 namespace GPUI
 {
+    [AddComponentMenu("GPUI/Sub Components/Animation Component")]
     public class UiAnimationComponent : SerializedMonoBehaviour
     {
 

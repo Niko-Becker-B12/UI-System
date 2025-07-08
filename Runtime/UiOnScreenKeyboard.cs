@@ -85,19 +85,11 @@ namespace GPUI
                             break;
 
                     }
-
-
-                    Function OnKeyPressed = new Function
-                    {
-                        functionDelay = 0,
-                        functionName = new UnityEvent { }
-                    };
-                    OnKeyPressed.functionName.AddListener(() =>
+                    
+                    keyButton.onClick.AddListener(() =>
                     {
                         AddCharacterToString(keyboardRows[rowIndex].keys[keyIndex]);
                     });
-
-                    keyButton.onClickFunctions.Add(OnKeyPressed);
 
                 }
 
