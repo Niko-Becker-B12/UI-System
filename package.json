@@ -1,6 +1,6 @@
 {
   "name": "com.red.gpui-system",
-  "version": "1.0.25-Pre-Release",
+  "version": "1.0.26-Pre-Release",
   "displayName": "GPUI-System",
   "type": "tool",
   "unity": "2022.3",
@@ -32,6 +32,11 @@
       "displayName": "Base Content",
       "description": "Contains base prefabs + skins",
       "path": "Samples~/Base"
+    },
+    {
+      "displayName": "Icons",
+      "description": "Contains FluentUI Icons. Roughly 5000 Icons, this will take some time to import!",
+      "path": "Samples~/Icons"
     },
     {
       "displayName": "Siemens Client Content",
