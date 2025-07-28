@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using LitMotion;
+using LitMotion.Extensions;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,7 +16,8 @@ namespace GPUI
 
         public int stepSize = 1;
 
-        [Space] [TabGroup("Tabs", "UI Elements")]
+        [Space]
+        [TabGroup("Tabs", "UI Elements")]
         public Graphic windowBody;
 
         private float spacing;
@@ -88,9 +90,11 @@ namespace GPUI
                 newBodyPosition += new Vector2(spacing * index, 0);
                 elementSetActive.FadeElement(true);
             }
-            
-            LMotion.Create(windowBody.rectTransform.anchoredPosition, -newBodyPosition, 0.5f)
-                .WithEase(Ease.InOutSine);
+
+            LMotion.Create(windowBody.rectTransform.anchoredPosition, -newBodyPosition, .5f)
+                .WithEase(Ease.InOutSine)
+                .BindToAnchoredPosition(windowBody.rectTransform)
+                .AddTo(windowBody.rectTransform);
 
         }
 

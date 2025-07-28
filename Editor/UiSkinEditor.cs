@@ -174,7 +174,7 @@ namespace GPUI.Editor
 
             }
 
-            [Button]
+            //[Button]
             public void CreateBaseComponentSkins()
             {
 
