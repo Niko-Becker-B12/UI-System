@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Components;
 using UnityEngine.Localization.Tables;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace GPUI
@@ -15,7 +16,9 @@ namespace GPUI
     public class UiWindow : UiElement
     {
 
-        [TabGroup("Tabs", "UI Elements")] public LocalizedString windowHeader;
+        [TabGroup("Tabs", "UI Elements")] public RectTransform windowHeader;
+        
+        [FormerlySerializedAs("windowHeader")] [TabGroup("Tabs", "UI Elements")] public LocalizedString windowHeaderLocalizedString;
 
         [TabGroup("Tabs", "UI Elements")] public UiText windowHeaderText;
 
@@ -79,10 +82,10 @@ namespace GPUI
             if (windowHeaderText != null)
             {
                 
-                if (!windowHeader.IsEmpty || windowHeader.TableEntryReference.ReferenceType != TableEntryReference.Type.Empty || windowHeader.TableReference.ReferenceType != TableReference.Type.Empty)
+                if (!windowHeaderLocalizedString.IsEmpty || windowHeaderLocalizedString.TableEntryReference.ReferenceType != TableEntryReference.Type.Empty || windowHeaderLocalizedString.TableReference.ReferenceType != TableReference.Type.Empty)
                 {
-                    windowHeaderText.localizedString = windowHeader;
-                    windowHeaderText.OverrideText(windowHeader?.GetLocalizedString());
+                    windowHeaderText.localizedString = windowHeaderLocalizedString;
+                    windowHeaderText.OverrideText(windowHeaderLocalizedString?.GetLocalizedString());
                 }
                 
                 if ((skinData as UiWindowSkinDataObject).windowHeaderSkinData != null)
@@ -90,15 +93,24 @@ namespace GPUI
                     
                     windowHeaderText.skinData = (skinData as UiWindowSkinDataObject).windowHeaderSkinData;
                     windowHeaderText.ApplySkinData();
+                    
+                    ApplyLayout(windowHeader);
 
                 }
 
             }
+            
+            ApplyLayout(windowBody);
 
             LayoutRebuilder.ForceRebuildLayoutImmediate(this.GetComponent<RectTransform>());
             LayoutRebuilder.ForceRebuildLayoutImmediate(backgroundGraphic?.rectTransform);
             LayoutRebuilder.ForceRebuildLayoutImmediate(windowBody);
 
+        }
+
+        public override void ApplyLayout(RectTransform layoutRectTransform)
+        {
+            base.ApplyLayout(layoutRectTransform);
         }
 
         public virtual void ToggleFullscreen(bool setActive = false)

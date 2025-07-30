@@ -33,6 +33,18 @@ namespace GPUI
         [Tooltip(
             "This should be the Background Graphic of the UI Element.<br>Example: Background of a Button, not the Icon.")]
         public Graphic backgroundGraphic;
+        
+        public enum AlignSelf
+        {
+            Inherit,
+            FlexStart,
+            Center,
+            FlexEnd,
+            Stretch
+        }
+
+        [TabGroup("Tabs", "UI Elements", SdfIconType.Stickies)]
+        public AlignSelf alignSelf = AlignSelf.Inherit;
 
         [TabGroup("Tabs", "Animations", SdfIconType.SkipEnd)]
         [InfoBox("If no animations are set, the default fade-in/fade-out are used!")]
@@ -58,13 +70,14 @@ namespace GPUI
 
             canvasGroup = GetComponent<CanvasGroup>();
             rectTransform = GetComponent<RectTransform>();
-            
-            Debug.Log(UiManager.Instance);
 
         }
 
         void OnValidate()
         {
+            
+            canvasGroup = GetComponent<CanvasGroup>();
+            rectTransform = GetComponent<RectTransform>();
             
             ApplySkinData();
             
@@ -145,13 +158,16 @@ namespace GPUI
             
             Debug.Log($"{this.name} is applying skin data {skinData.name}");
 
-            if (!TryGetComponent<UiCombiLayoutGroup>(out UiCombiLayoutGroup layoutGroup))
-                layoutGroup = this.gameObject.AddComponent<UiCombiLayoutGroup>();
-
             if (skinData.useLayoutOptions)
             {
                 
-                layoutGroup.reverseArrangement = skinData.layoutOptions.reverseLayout;
+                if(this.rectTransform == null)
+                    ApplyLayout(this.GetComponent<RectTransform>());
+                else
+                    ApplyLayout(this.rectTransform);
+                
+                /*
+                layoutGroup.rev = skinData.layoutOptions.reverseLayout;
 
                 switch (skinData.layoutOptions.childAlignmentAxis)
                 {
@@ -163,14 +179,14 @@ namespace GPUI
                         layoutGroup.enabled = true;
                         layoutGroup.padding = skinData.layoutOptions.layoutMargin;
                         layoutGroup.spacing = skinData.layoutOptions.layoutSpacing;
-                        layoutGroup.isVertical = true;
+                        layoutGroup.LayoutAxis = UiCombiLayoutGroup.UiLayoutAxis.Vertical;
                         layoutGroup.childAlignment = skinData.layoutOptions.childAlignment;
                         break;
                     case SimpleComponentSkinDataObject.UiElementLayoutOptions.UiElementChildAlignmentAxis.Horizontal:
                         layoutGroup.enabled = true;
                         layoutGroup.padding = skinData.layoutOptions.layoutMargin;
                         layoutGroup.spacing = skinData.layoutOptions.layoutSpacing;
-                        layoutGroup.isVertical = false;
+                        layoutGroup.LayoutAxis = UiCombiLayoutGroup.UiLayoutAxis.Horizontal;
                         layoutGroup.childAlignment = skinData.layoutOptions.childAlignment;
                         break;
 
@@ -222,6 +238,7 @@ namespace GPUI
                     }
 
                 }
+                */
 
             }
 
@@ -344,6 +361,20 @@ namespace GPUI
 
             }
 
+        }
+
+        public virtual void ApplyLayout(RectTransform layoutRectTransform)
+        {
+            
+            if (!layoutRectTransform.TryGetComponent<UiCombiLayoutGroup>(out UiCombiLayoutGroup layoutGroup))
+                layoutGroup = layoutRectTransform.gameObject.AddComponent<UiCombiLayoutGroup>();
+            
+            layoutGroup.justifyContent = skinData.layoutOptions.justifyContent;
+            layoutGroup.flexDirection = skinData.layoutOptions.flexDirection;
+            layoutGroup.alignItems = skinData.layoutOptions.alignItems;
+            layoutGroup.spacingX = skinData.layoutOptions.spacingX;
+            layoutGroup.spacingY = skinData.layoutOptions.spacingY;
+            
         }
 
         public virtual void OnPointerClick(PointerEventData eventData)

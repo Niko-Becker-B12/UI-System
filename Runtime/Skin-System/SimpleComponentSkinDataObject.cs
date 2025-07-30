@@ -52,41 +52,15 @@ namespace GPUI
         public bool useLayoutOptions = false;
         
         [System.Serializable]
-        public struct UiElementLayoutOptions
+        public class UiElementLayoutOptions
         {
             
-            [System.Flags]
-            public enum UiElementSizingOptions
-            {
-
-                ContentSizeFitted = 1,
-                ParentSizeFixed = 2,
-                ControlChildHeight = 4 | 2,
-                ControlChildWidth = 8 | 2
-
-            }
+            public UiCombiLayoutGroup.FlexDirection flexDirection = UiCombiLayoutGroup.FlexDirection.RowWrap;
+            public UiCombiLayoutGroup.JustifyContent justifyContent = UiCombiLayoutGroup.JustifyContent.FlexStart;
+            public UiCombiLayoutGroup.AlignItems alignItems = UiCombiLayoutGroup.AlignItems.Stretch;
             
-            public TextAnchor childAlignment;
-            
-            public UiElementSizingOptions layoutSizingOption;
-
-            public enum UiElementChildAlignmentAxis
-            {
-                None,
-                Vertical,
-                Horizontal
-            }
-
-
-            public UiElementChildAlignmentAxis childAlignmentAxis;
-
-  
-            public RectOffset layoutMargin;
-
-            [Range(0f, 256f)]
-            public float layoutSpacing;
-            
-            public bool reverseLayout;
+            public float spacingX = 0f;
+            public float spacingY = 0f;
             
         }
 

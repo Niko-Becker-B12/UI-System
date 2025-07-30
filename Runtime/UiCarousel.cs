@@ -30,7 +30,7 @@ namespace GPUI
 
             MoveToIndex(0);
 
-            spacing = windowBody.GetComponent<UiCombiLayoutGroup>().spacing;
+            spacing = windowBody.GetComponent<UiCombiLayoutGroup>().spacingX;
 
             LayoutRebuilder.ForceRebuildLayoutImmediate(windowBody.rectTransform);
 
