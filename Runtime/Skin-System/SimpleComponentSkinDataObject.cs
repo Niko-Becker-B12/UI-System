@@ -55,12 +55,15 @@ namespace GPUI
         public class UiElementLayoutOptions
         {
             
-            public UiCombiLayoutGroup.FlexDirection flexDirection = UiCombiLayoutGroup.FlexDirection.RowWrap;
+            public UiCombiLayoutGroup.FlexDirection flexDirection = UiCombiLayoutGroup.FlexDirection.Row;
+            public UiCombiLayoutGroup.FlexWrap flexWrap = UiCombiLayoutGroup.FlexWrap.Wrap;
             public UiCombiLayoutGroup.JustifyContent justifyContent = UiCombiLayoutGroup.JustifyContent.FlexStart;
             public UiCombiLayoutGroup.AlignItems alignItems = UiCombiLayoutGroup.AlignItems.Stretch;
             
-            public float spacingX = 0f;
-            public float spacingY = 0f;
+            public float gapMain = 0f;
+            public float gapCross = 0f;
+            
+            public bool stretchToParentInMainAxis = false;
             
         }
 

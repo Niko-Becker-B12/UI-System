@@ -33,18 +33,6 @@ namespace GPUI
         [Tooltip(
             "This should be the Background Graphic of the UI Element.<br>Example: Background of a Button, not the Icon.")]
         public Graphic backgroundGraphic;
-        
-        public enum AlignSelf
-        {
-            Inherit,
-            FlexStart,
-            Center,
-            FlexEnd,
-            Stretch
-        }
-
-        [TabGroup("Tabs", "UI Elements", SdfIconType.Stickies)]
-        public AlignSelf alignSelf = AlignSelf.Inherit;
 
         [TabGroup("Tabs", "Animations", SdfIconType.SkipEnd)]
         [InfoBox("If no animations are set, the default fade-in/fade-out are used!")]
@@ -162,9 +150,9 @@ namespace GPUI
             {
                 
                 if(this.rectTransform == null)
-                    ApplyLayout(this.GetComponent<RectTransform>());
+                    ApplyLayout(this.GetComponent<RectTransform>(), skinData.layoutOptions);
                 else
-                    ApplyLayout(this.rectTransform);
+                    ApplyLayout(this.rectTransform, skinData.layoutOptions);
                 
                 /*
                 layoutGroup.rev = skinData.layoutOptions.reverseLayout;
@@ -363,17 +351,19 @@ namespace GPUI
 
         }
 
-        public virtual void ApplyLayout(RectTransform layoutRectTransform)
+        public virtual void ApplyLayout(RectTransform layoutRectTransform, SimpleComponentSkinDataObject.UiElementLayoutOptions layoutOptions)
         {
             
             if (!layoutRectTransform.TryGetComponent<UiCombiLayoutGroup>(out UiCombiLayoutGroup layoutGroup))
                 layoutGroup = layoutRectTransform.gameObject.AddComponent<UiCombiLayoutGroup>();
             
-            layoutGroup.justifyContent = skinData.layoutOptions.justifyContent;
-            layoutGroup.flexDirection = skinData.layoutOptions.flexDirection;
-            layoutGroup.alignItems = skinData.layoutOptions.alignItems;
-            layoutGroup.spacingX = skinData.layoutOptions.spacingX;
-            layoutGroup.spacingY = skinData.layoutOptions.spacingY;
+            layoutGroup.justifyContent = layoutOptions.justifyContent;
+            layoutGroup.flexDirection = layoutOptions.flexDirection;
+            layoutGroup.alignItems = layoutOptions.alignItems;
+            layoutGroup.flexWrap = layoutOptions.flexWrap;
+            layoutGroup.gapMain = layoutOptions.gapMain;
+            layoutGroup.gapCross = layoutOptions.gapCross;
+            layoutGroup.forceStretch = layoutOptions.stretchToParentInMainAxis;
             
         }
 

@@ -94,23 +94,18 @@ namespace GPUI
                     windowHeaderText.skinData = (skinData as UiWindowSkinDataObject).windowHeaderSkinData;
                     windowHeaderText.ApplySkinData();
                     
-                    ApplyLayout(windowHeader);
+                    ApplyLayout(windowHeader, (skinData as UiWindowSkinDataObject).headerLayoutOptions);
 
                 }
 
             }
             
-            ApplyLayout(windowBody);
+            ApplyLayout(windowBody, (skinData as UiWindowSkinDataObject).bodyLayoutOptions);
 
             LayoutRebuilder.ForceRebuildLayoutImmediate(this.GetComponent<RectTransform>());
             LayoutRebuilder.ForceRebuildLayoutImmediate(backgroundGraphic?.rectTransform);
             LayoutRebuilder.ForceRebuildLayoutImmediate(windowBody);
 
-        }
-
-        public override void ApplyLayout(RectTransform layoutRectTransform)
-        {
-            base.ApplyLayout(layoutRectTransform);
         }
 
         public virtual void ToggleFullscreen(bool setActive = false)

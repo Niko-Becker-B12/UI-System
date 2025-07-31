@@ -189,26 +189,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3773b2179a139ca4e8940fc5fc6b6c16, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes:
-    - Name: setActiveAnimation
-      Entry: 6
-      Data: 
-    - Name: setInactiveAnimation
-      Entry: 6
-      Data: 
   canvasGroup: {fileID: 0}
   rectTransform: {fileID: 0}
   skinData: {fileID: 11400000, guid: 4647c7a45bd91e3468cc0b8e0fb79626, type: 2}
   backgroundGraphic: {fileID: 3682977184916601316}
-  windowHeader:
+  alignSelf: 0
+  onClick:
+    m_PersistentCalls:
+      m_Calls: []
+  onEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  onExit:
+    m_PersistentCalls:
+      m_Calls: []
+  windowHeader: {fileID: 4005704523374469644}
+  windowHeaderLocalizedString:
     m_TableReference:
       m_TableCollectionName: 
     m_TableEntryReference:
@@ -217,7 +213,7 @@ MonoBehaviour:
     m_FallbackState: 0
     m_WaitForCompletion: 0
     m_LocalVariables: []
-  windowHeaderText: {fileID: 763046097429043829}
+  windowHeaderText: {fileID: 6619561236551963515}
   windowBody: {fileID: 5764710287458285685}
   windowId: -1
   OnSetActive:
@@ -251,15 +247,11 @@ MonoBehaviour:
     m_Top: 12
     m_Bottom: 12
   m_ChildAlignment: 0
-  m_Spacing: 24
-  m_ChildForceExpandWidth: 0
-  m_ChildForceExpandHeight: 0
-  m_ChildControlWidth: 1
-  m_ChildControlHeight: 1
-  m_ChildScaleWidth: 1
-  m_ChildScaleHeight: 1
-  m_ReverseArrangement: 0
-  m_IsVertical: 0
+  flexDirection: 4
+  justifyContent: 0
+  alignItems: 0
+  spacingX: 0
+  spacingY: 0
 --- !u!1 &2755411773735556127
 GameObject:
   m_ObjectHideFlags: 0
@@ -406,25 +398,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c63585543be83d498b692bdc3de6870, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes:
-    - Name: setActiveAnimation
-      Entry: 6
-      Data: 
-    - Name: setInactiveAnimation
-      Entry: 6
-      Data: 
   canvasGroup: {fileID: 0}
   rectTransform: {fileID: 0}
   skinData: {fileID: 0}
   backgroundGraphic: {fileID: 0}
+  alignSelf: 0
+  onClick:
+    m_PersistentCalls:
+      m_Calls: []
+  onEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  onExit:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &4931287071685185963
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -463,15 +450,11 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 5
-  m_Spacing: 24
-  m_ChildForceExpandWidth: 0
-  m_ChildForceExpandHeight: 0
-  m_ChildControlWidth: 0
-  m_ChildControlHeight: 0
-  m_ChildScaleWidth: 1
-  m_ChildScaleHeight: 1
-  m_ReverseArrangement: 0
-  m_IsVertical: 0
+  flexDirection: 4
+  justifyContent: 0
+  alignItems: 0
+  spacingX: 0
+  spacingY: 0
 --- !u!1 &3168785930800398221
 GameObject:
   m_ObjectHideFlags: 0
@@ -513,8 +496,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 247.61, y: -35.465}
-  m_SizeDelta: {x: 447.22, y: 0}
+  m_AnchoredPosition: {x: 160, y: -156.94}
+  m_SizeDelta: {x: 272, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1415633318258193006
 CanvasRenderer:
@@ -621,25 +604,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c63585543be83d498b692bdc3de6870, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes:
-    - Name: setActiveAnimation
-      Entry: 6
-      Data: 
-    - Name: setInactiveAnimation
-      Entry: 6
-      Data: 
   canvasGroup: {fileID: 0}
   rectTransform: {fileID: 0}
   skinData: {fileID: 0}
   backgroundGraphic: {fileID: 0}
+  alignSelf: 0
+  onClick:
+    m_PersistentCalls:
+      m_Calls: []
+  onEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  onExit:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &3949386194378914598
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -678,15 +656,11 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 3
-  m_Spacing: 16
-  m_ChildForceExpandWidth: 0
-  m_ChildForceExpandHeight: 0
-  m_ChildControlWidth: 0
-  m_ChildControlHeight: 0
-  m_ChildScaleWidth: 1
-  m_ChildScaleHeight: 1
-  m_ReverseArrangement: 0
-  m_IsVertical: 0
+  flexDirection: 4
+  justifyContent: 0
+  alignItems: 0
+  spacingX: 0
+  spacingY: 0
 --- !u!114 &462164082839958632
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -739,8 +713,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 252.61, y: -23.465}
-  m_SizeDelta: {x: 389.22, y: 0}
+  m_AnchoredPosition: {x: 57.305, y: -416.94}
+  m_SizeDelta: {x: 114.61, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8985804148950798013
 CanvasRenderer:
@@ -792,7 +766,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 11400000, guid: 00b28415f3fca82429d0a7950a36be34, type: 2}
-  m_TextStyleHashCode: -1927662649
+  m_TextStyleHashCode: 2451216
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -879,25 +853,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f09832b4a774ebd40ae3dccca8828bc4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes:
-    - Name: setActiveAnimation
-      Entry: 6
-      Data: 
-    - Name: setInactiveAnimation
-      Entry: 6
-      Data: 
   canvasGroup: {fileID: 0}
   rectTransform: {fileID: 0}
   skinData: {fileID: 11400000, guid: de6a98bbca7edb3409e301bc3c33536b, type: 2}
   backgroundGraphic: {fileID: 763046097429043829}
+  alignSelf: 0
+  onClick:
+    m_PersistentCalls:
+      m_Calls: []
+  onEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  onExit:
+    m_PersistentCalls:
+      m_Calls: []
   fitHorizontalSizeToText: 1
   fitVerticalSizeToText: 1
   localizedString:
@@ -970,11 +939,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4744414437930337438, guid: 5703b8091dbb2e04ba3d8746adc724a7, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 42
+      value: 272
       objectReference: {fileID: 0}
     - target: {fileID: 4744414437930337438, guid: 5703b8091dbb2e04ba3d8746adc724a7, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 42
+      value: 289.88
       objectReference: {fileID: 0}
     - target: {fileID: 4744414437930337438, guid: 5703b8091dbb2e04ba3d8746adc724a7, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1006,11 +975,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4744414437930337438, guid: 5703b8091dbb2e04ba3d8746adc724a7, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 21
+      value: 136
       objectReference: {fileID: 0}
     - target: {fileID: 4744414437930337438, guid: 5703b8091dbb2e04ba3d8746adc724a7, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -23.465
+      value: -144.94
       objectReference: {fileID: 0}
     - target: {fileID: 4744414437930337438, guid: 5703b8091dbb2e04ba3d8746adc724a7, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x

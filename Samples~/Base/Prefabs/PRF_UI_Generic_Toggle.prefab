@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 5562823662851181869}
   - component: {fileID: 2063017972159816612}
   - component: {fileID: -4126868667229203011}
+  - component: {fileID: 1613751459900988107}
   m_Layer: 0
   m_Name: PRF_UI_Generic_Toggle
   m_TagString: Untagged
@@ -36,13 +37,13 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 6064622717963435833}
+  - {fileID: 7576720877265339741}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 48, y: 24}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2626052208481145699
 CanvasRenderer:
@@ -175,117 +176,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6fc283b66ccebc4799c65ceba9ee2e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes:
-    - Name: setActiveAnimation
-      Entry: 7
-      Data: 0|GPUI.UiAnimationData, GPUI
-    - Name: trigger
-      Entry: 6
-      Data: 
-    - Name: playOnAwake
-      Entry: 5
-      Data: false
-    - Name: loop
-      Entry: 5
-      Data: false
-    - Name: loopType
-      Entry: 3
-      Data: 0
-    - Name: easeType
-      Entry: 3
-      Data: 0
-    - Name: targetGraphics
-      Entry: 7
-      Data: 1|System.Collections.Generic.List`1[[UnityEngine.UI.Graphic, UnityEngine.UI]],
-        mscorlib
-    - Name: 
-      Entry: 12
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: animation
-      Entry: 7
-      Data: 2|GPUI.UiAnimationBase, GPUI
-    - Name: duration
-      Entry: 4
-      Data: 0
-    - Name: isRunning
-      Entry: 5
-      Data: false
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: currentTween
-      Entry: 6
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: setInactiveAnimation
-      Entry: 7
-      Data: 3|GPUI.UiAnimationData, GPUI
-    - Name: trigger
-      Entry: 6
-      Data: 
-    - Name: playOnAwake
-      Entry: 5
-      Data: false
-    - Name: loop
-      Entry: 5
-      Data: false
-    - Name: loopType
-      Entry: 3
-      Data: 0
-    - Name: easeType
-      Entry: 3
-      Data: 0
-    - Name: targetGraphics
-      Entry: 7
-      Data: 4|System.Collections.Generic.List`1[[UnityEngine.UI.Graphic, UnityEngine.UI]],
-        mscorlib
-    - Name: 
-      Entry: 12
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: animation
-      Entry: 7
-      Data: 5|GPUI.UiAnimationBase, GPUI
-    - Name: duration
-      Entry: 4
-      Data: 0
-    - Name: isRunning
-      Entry: 5
-      Data: false
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: currentTween
-      Entry: 6
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-  canvasGroup: {fileID: 0}
-  rectTransform: {fileID: 0}
+  canvasGroup: {fileID: 1081332831405574189}
+  rectTransform: {fileID: 1539360596442772272}
   skinData: {fileID: 11400000, guid: f0ffbe8c10e065547a0e2b9a93a819d8, type: 2}
   backgroundGraphic: {fileID: 5322470517822042825}
+  onClick:
+    m_PersistentCalls:
+      m_Calls: []
+  onEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  onExit:
+    m_PersistentCalls:
+      m_Calls: []
   detailGraphic: {fileID: 7637319385118166200}
   _toggleBehavior: {fileID: 4347712663294654126}
   onSetActiveFunctions:
@@ -650,8 +553,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_HorizontalFit: 0
-  m_VerticalFit: 0
+  m_HorizontalFit: 2
+  m_VerticalFit: 2
 --- !u!114 &-4126868667229203011
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -659,7 +562,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4081507831860478384}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9c4e676cb55d4ba40acb3e1a07be85f3, type: 3}
   m_Name: 
@@ -670,15 +573,33 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 3
-  m_Spacing: 0
-  m_ChildForceExpandWidth: 1
-  m_ChildForceExpandHeight: 1
-  m_ChildControlWidth: 0
-  m_ChildControlHeight: 0
-  m_ChildScaleWidth: 0
-  m_ChildScaleHeight: 0
-  m_ReverseArrangement: 0
-  m_IsVertical: 1
+  flexDirection: 0
+  justifyContent: 0
+  alignItems: 3
+  flexWrap: 0
+  gapMain: 0
+  gapCross: 0
+  forceStretch: 1
+--- !u!114 &1613751459900988107
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4081507831860478384}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreLayout: 0
+  m_MinWidth: -1
+  m_MinHeight: -1
+  m_PreferredWidth: 48
+  m_PreferredHeight: 24
+  m_FlexibleWidth: -1
+  m_FlexibleHeight: -1
+  m_LayoutPriority: 1
 --- !u!1 &4323936858384901481
 GameObject:
   m_ObjectHideFlags: 0
@@ -709,7 +630,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1539360596442772272}
+  m_Father: {fileID: 7576720877265339741}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -803,3 +724,39 @@ MonoBehaviour:
   AntiAliasingProperties:
     AntiAliasing: 0
   Sprite: {fileID: 0}
+--- !u!1 &8423190847296130397
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7576720877265339741}
+  m_Layer: 0
+  m_Name: Holder
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &7576720877265339741
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8423190847296130397}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 6064622717963435833}
+  m_Father: {fileID: 1539360596442772272}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}

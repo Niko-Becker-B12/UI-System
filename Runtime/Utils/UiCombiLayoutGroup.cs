@@ -1,66 +1,34 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using System.Collections.Generic;
-using GPUI;
 
-[AddComponentMenu("Layout/Ui Combi Layout Group")]
+[AddComponentMenu("Layout/UiCombi Layout Group")]
 public class UiCombiLayoutGroup : LayoutGroup
 {
-    public enum FlexDirection
-    {
-        Row,
-        RowReverse,
-        Column,
-        ColumnReverse,
-        RowWrap,
-        ColumnWrap
-    }
+    public enum FlexDirection { Row, Column }
+    public enum JustifyContent { FlexStart, Center, FlexEnd, SpaceBetween, SpaceAround }
+    public enum AlignItems { FlexStart, Center, FlexEnd, Stretch }
+    public enum FlexWrap { NoWrap, Wrap }
 
-    public enum JustifyContent
-    {
-        FlexStart,
-        Center,
-        FlexEnd,
-        SpaceBetween,
-        SpaceAround
-    }
+    [SerializeField] public FlexDirection flexDirection = FlexDirection.Row;
+    [SerializeField] public JustifyContent justifyContent = JustifyContent.FlexStart;
+    [SerializeField] public AlignItems alignItems = AlignItems.Stretch;
+    [SerializeField] public FlexWrap flexWrap = FlexWrap.NoWrap;
 
-    public enum AlignItems
-    {
-        Stretch,
-        FlexStart,
-        Center,
-        FlexEnd
-    }
+    [SerializeField] public float gapMain = 0f;
+    [SerializeField] public float gapCross = 0f;
 
-    public FlexDirection flexDirection = FlexDirection.RowWrap;
-    public JustifyContent justifyContent = JustifyContent.FlexStart;
-    public AlignItems alignItems = AlignItems.Stretch;
-
-    public float spacingX = 0f;
-    public float spacingY = 0f;
-
-    private bool IsHorizontal => flexDirection == FlexDirection.Row ||
-                                 flexDirection == FlexDirection.RowReverse ||
-                                 flexDirection == FlexDirection.RowWrap;
-
-    private bool IsWrap => flexDirection == FlexDirection.RowWrap ||
-                           flexDirection == FlexDirection.ColumnWrap;
-
-    private float _preferredMainSize = 0f;
-    private float _preferredCrossSize = 0f;
+    [SerializeField] public bool forceStretch = false;
 
     public override void CalculateLayoutInputHorizontal()
     {
         base.CalculateLayoutInputHorizontal();
-        CalculateFlexLayoutSizes();
-        SetLayoutInputForAxis(_preferredMainSize, _preferredMainSize, -1, 0);
+        CalcAlongAxis(0);
     }
 
     public override void CalculateLayoutInputVertical()
     {
-        CalculateFlexLayoutSizes();
-        SetLayoutInputForAxis(_preferredCrossSize, _preferredCrossSize, -1, 1);
+        CalcAlongAxis(1);
     }
 
     public override void SetLayoutHorizontal()
@@ -73,250 +41,208 @@ public class UiCombiLayoutGroup : LayoutGroup
         SetChildrenAlongAxis(1);
     }
 
-    private void CalculateFlexLayoutSizes()
+    private void CalcAlongAxis(int axis)
     {
-        float containerWidth = rectTransform.rect.width - padding.horizontal;
-        float containerHeight = rectTransform.rect.height - padding.vertical;
+        float totalPadding = (axis == 0) ? padding.horizontal : padding.vertical;
+        float preferred = totalPadding;
+        float flexible = 0;
 
-        float mainAvailable = IsHorizontal ? containerWidth : containerHeight;
-        if (mainAvailable <= 0) mainAvailable = float.MaxValue; // Treat zero or negative as infinite for initial calc
+        // We must calculate the preferred size **including gaps only between children**
 
-        float spacingMain = IsHorizontal ? spacingX : spacingY;
-        float spacingCross = IsHorizontal ? spacingY : spacingX;
-
-        List<List<RectTransform>> lines = new List<List<RectTransform>>();
-        List<float> lineMainSizes = new List<float>();
-        List<float> lineCrossSizes = new List<float>();
-
-        List<RectTransform> currentLine = new List<RectTransform>();
-        float lineMain = 0f;
-        float lineCross = 0f;
-
-        float maxMain = 0f;
-        float totalCross = 0f;
-
-        for (int i = 0; i < rectChildren.Count; i++)
+        // For wrapping, we need to group children into lines and sum lines separately
+        if (flexWrap == FlexWrap.Wrap)
         {
-            RectTransform child = rectChildren[i];
-            float childMain = LayoutUtility.GetPreferredSize(child, IsHorizontal ? 0 : 1);
-            float childCross = LayoutUtility.GetPreferredSize(child, IsHorizontal ? 1 : 0);
+            float containerMain = rectTransform.rect.size[axis] - totalPadding;
+            float lineMain = 0f;
+            float lineCross = 0f;
 
-            // Spacing only between elements, so add spacing if not first in line
-            float spacingToAdd = currentLine.Count > 0 ? spacingMain : 0f;
+            float maxCross = 0f;
+            float totalCross = 0f;
 
-            bool needWrap = IsWrap && currentLine.Count > 0 && (lineMain + spacingToAdd + childMain > mainAvailable);
+            int itemsInLine = 0;
 
-            if (needWrap)
+            for (int i = 0; i < rectChildren.Count; i++)
             {
-                // Save current line
-                lines.Add(currentLine);
-                lineMainSizes.Add(lineMain);
-                lineCrossSizes.Add(lineCross);
+                var child = rectChildren[i];
+                float childMain = LayoutUtility.GetPreferredSize(child, axis);
+                float childCross = LayoutUtility.GetPreferredSize(child, 1 - axis);
+                float gap = (itemsInLine > 0) ? gapMain : 0f;
 
-                totalCross += lineCross + spacingCross;
-                maxMain = Mathf.Max(maxMain, lineMain);
+                if (itemsInLine > 0 && lineMain + gap + childMain > containerMain)
+                {
+                    // finish current line
+                    totalCross += maxCross + (totalCross > 0 ? gapCross : 0);
+                    maxCross = 0f;
+                    lineMain = 0f;
+                    itemsInLine = 0;
+                }
 
-                // Start new line
-                currentLine = new List<RectTransform>();
-                lineMain = 0f;
-                lineCross = 0f;
-                spacingToAdd = 0f;
+                lineMain += gap + childMain;
+                maxCross = Mathf.Max(maxCross, childCross);
+                itemsInLine++;
             }
 
-            lineMain += spacingToAdd + childMain;
-            lineCross = Mathf.Max(lineCross, childCross);
-            currentLine.Add(child);
-        }
+            // add last line cross size
+            totalCross += maxCross;
 
-        // Add last line
-        if (currentLine.Count > 0)
+            // total preferred is the max lineMain width or height + padding for main axis
+            // and sum of line crosses + gaps + padding for cross axis
+            if (axis == (int)flexDirection)
+            {
+                // Main axis: width or height depending on flexDirection
+                // We must find max line main size for wrapping — but current code doesn't store max line width
+                // For simplicity, we'll return the container size as preferred here (not perfect, but enough for sizing content)
+                preferred = Mathf.Max(preferred, containerMain + totalPadding);
+            }
+            else
+            {
+                // Cross axis: sum of line heights or widths + padding + gapsCross
+                preferred += totalCross;
+            }
+        }
+        else
         {
-            lines.Add(currentLine);
-            lineMainSizes.Add(lineMain);
-            lineCrossSizes.Add(lineCross);
+            // No wrap, just sum all children main sizes + gaps between + padding
 
-            totalCross += lineCross;
-            maxMain = Mathf.Max(maxMain, lineMain);
+            int childCount = rectChildren.Count;
+
+            for (int i = 0; i < childCount; i++)
+            {
+                var child = rectChildren[i];
+                float pref = LayoutUtility.GetPreferredSize(child, axis);
+                preferred += pref;
+
+                if (i < childCount - 1)
+                    preferred += gapMain;
+
+                flexible += LayoutUtility.GetFlexibleSize(child, axis);
+            }
         }
 
-        // Calculate preferred sizes including padding
-        _preferredMainSize = (IsHorizontal ? maxMain : totalCross) + (IsHorizontal ? padding.horizontal : padding.vertical);
-        _preferredCrossSize = (IsHorizontal ? totalCross : maxMain) + (IsHorizontal ? padding.vertical : padding.horizontal);
+        SetLayoutInputForAxis(totalPadding, preferred, flexible, axis);
     }
 
     private void SetChildrenAlongAxis(int axis)
     {
-        float containerMainSize = rectTransform.rect.size[IsHorizontal ? 0 : 1];
-        float containerCrossSize = rectTransform.rect.size[IsHorizontal ? 1 : 0];
+        bool isMainHorizontal = flexDirection == FlexDirection.Row;
+        if ((axis == 0 && !isMainHorizontal) || (axis == 1 && isMainHorizontal))
+        {
+            float size = rectTransform.rect.size[axis] - ((axis == 0) ? padding.horizontal : padding.vertical);
+            foreach (var child in rectChildren)
+            {
+                SetChildAlongAxis(child, axis, (axis == 0) ? padding.left : padding.top, size);
+            }
+            return;
+        }
 
-        float spacingMain = IsHorizontal ? spacingX : spacingY;
-        float spacingCross = IsHorizontal ? spacingY : spacingX;
+        float containerMain = rectTransform.rect.size[axis] - ((axis == 0) ? padding.horizontal : padding.vertical);
+        float posCross = (axis == 0) ? padding.top : padding.left;
 
-        float mainAvailable = containerMainSize - (IsHorizontal ? padding.horizontal : padding.vertical);
-        float crossAvailable = containerCrossSize - (IsHorizontal ? padding.vertical : padding.horizontal);
-
-        // Clamp available sizes to zero minimum
-        mainAvailable = Mathf.Max(0, mainAvailable);
-        crossAvailable = Mathf.Max(0, crossAvailable);
-
-        List<List<RectTransform>> lines = new List<List<RectTransform>>();
-        List<float> lineMainSizes = new List<float>();
-        List<float> lineCrossSizes = new List<float>();
-
-        List<RectTransform> currentLine = new List<RectTransform>();
+        List<List<RectTransform>> lines = new();
+        List<RectTransform> currentLine = new();
         float lineMain = 0f;
         float lineCross = 0f;
 
-        for (int i = 0; i < rectChildren.Count; i++)
+        foreach (var child in rectChildren)
         {
-            RectTransform child = rectChildren[i];
-            float childMain = LayoutUtility.GetPreferredSize(child, IsHorizontal ? 0 : 1);
-            float childCross = LayoutUtility.GetPreferredSize(child, IsHorizontal ? 1 : 0);
+            float childMain = LayoutUtility.GetPreferredSize(child, axis);
+            float childCross = LayoutUtility.GetPreferredSize(child, 1 - axis);
+            float extra = currentLine.Count > 0 ? gapMain : 0;
 
-            float spacingToAdd = currentLine.Count > 0 ? spacingMain : 0f;
-
-            bool needWrap = IsWrap && currentLine.Count > 0 && (lineMain + spacingToAdd + childMain > mainAvailable);
-
-            if (needWrap)
+            if (flexWrap == FlexWrap.Wrap && currentLine.Count > 0 && lineMain + extra + childMain > containerMain)
             {
                 lines.Add(currentLine);
-                lineMainSizes.Add(lineMain);
-                lineCrossSizes.Add(lineCross);
-
+                posCross += lineCross + gapCross;
                 currentLine = new List<RectTransform>();
-                lineMain = 0f;
-                lineCross = 0f;
-                spacingToAdd = 0f;
+                lineMain = 0;
+                lineCross = 0;
+                extra = 0;
             }
 
-            lineMain += spacingToAdd + childMain;
-            lineCross = Mathf.Max(lineCross, childCross);
             currentLine.Add(child);
+            lineMain += childMain + extra;
+            lineCross = Mathf.Max(lineCross, childCross);
         }
 
         if (currentLine.Count > 0)
-        {
             lines.Add(currentLine);
-            lineMainSizes.Add(lineMain);
-            lineCrossSizes.Add(lineCross);
-        }
 
-        bool isReverse = flexDirection == FlexDirection.RowReverse || flexDirection == FlexDirection.ColumnReverse;
-        bool isWrap = flexDirection == FlexDirection.RowWrap || flexDirection == FlexDirection.ColumnWrap;
-
-        if (isReverse && !isWrap)
+        foreach (var line in lines)
         {
-            lines.Reverse();
-            lineMainSizes.Reverse();
-            lineCrossSizes.Reverse();
-        }
+            float totalMain = 0f;
+            List<float> childSizes = new();
 
-        float crossPos = IsHorizontal ? padding.top : padding.left;
+            foreach (var child in line)
+            {
+                float size = LayoutUtility.GetPreferredSize(child, axis);
+                childSizes.Add(size);
+                totalMain += size;
+            }
 
-        for (int l = 0; l < lines.Count; l++)
-        {
-            List<RectTransform> currentLineChildren = lines[l];
-            float totalMain = lineMainSizes[l];
-            int childCount = currentLineChildren.Count;
+            float spacing = gapMain;
+            float offset = (axis == 0) ? padding.left : padding.top;
 
-            float offset = 0f;
-            float spacingBetween = spacingMain;
-
+            float extraSpace = containerMain - totalMain - gapMain * (line.Count - 1);
             switch (justifyContent)
             {
                 case JustifyContent.Center:
-                    offset = (mainAvailable - totalMain) / 2f;
-                    spacingBetween = spacingMain;
+                    offset += extraSpace / 2f;
                     break;
                 case JustifyContent.FlexEnd:
-                    offset = mainAvailable - totalMain;
-                    spacingBetween = spacingMain;
+                    offset += extraSpace;
                     break;
                 case JustifyContent.SpaceBetween:
-                    {
-                        int gaps = childCount - 1;
-                        float totalChildMain = totalMain - spacingMain * gaps;
-                        float totalSpacing = mainAvailable - totalChildMain;
-                        spacingBetween = gaps > 0 ? Mathf.Max(0, totalSpacing / gaps) : 0f;
-                        offset = 0f;
-                    }
+                    spacing = (line.Count > 1) ? extraSpace / (line.Count - 1) : 0f;
                     break;
                 case JustifyContent.SpaceAround:
-                    {
-                        int gaps = childCount;
-                        float totalChildMain = totalMain - spacingMain * (childCount - 1);
-                        float totalSpacing = mainAvailable - totalChildMain;
-                        spacingBetween = gaps > 0 ? Mathf.Max(0, totalSpacing / gaps) : 0f;
-                        offset = spacingBetween / 2f;
-                    }
-                    break;
-                case JustifyContent.FlexStart:
-                default:
-                    offset = 0f;
-                    spacingBetween = spacingMain;
+                    spacing = (line.Count > 0) ? extraSpace / line.Count : 0f;
+                    offset += spacing / 2f;
                     break;
             }
 
-            for (int i = 0; i < childCount; i++)
+            for (int i = 0; i < line.Count; i++)
             {
-                RectTransform child = currentLineChildren[i];
-                float childMain = LayoutUtility.GetPreferredSize(child, IsHorizontal ? 0 : 1);
-                float childCross = LayoutUtility.GetPreferredSize(child, IsHorizontal ? 1 : 0);
+                var child = line[i];
+                float childMain = childSizes[i];
+                float childCross = LayoutUtility.GetPreferredSize(child, 1 - axis);
 
-                var layoutElement = child.GetComponent<UiElement>();
-                UiElement.AlignSelf selfAlign = layoutElement != null ? layoutElement.alignSelf : UiElement.AlignSelf.Inherit;
+                if (forceStretch)
+                    childMain = (containerMain - gapMain * (line.Count - 1)) / line.Count;
 
-                AlignItems finalAlign = alignItems;
-                if (selfAlign != UiElement.AlignSelf.Inherit)
+                if (alignItems == AlignItems.Stretch)
+                    childCross = lineCross;
+
+                float crossStart = posCross;
+                if (alignItems != AlignItems.Stretch)
                 {
-                    finalAlign = selfAlign switch
+                    switch (alignItems)
                     {
-                        UiElement.AlignSelf.FlexStart => AlignItems.FlexStart,
-                        UiElement.AlignSelf.FlexEnd => AlignItems.FlexEnd,
-                        UiElement.AlignSelf.Center => AlignItems.Center,
-                        UiElement.AlignSelf.Stretch => AlignItems.Stretch,
-                        _ => alignItems
-                    };
+                        case AlignItems.Center:
+                            crossStart += (lineCross - childCross) / 2f;
+                            break;
+                        case AlignItems.FlexEnd:
+                            crossStart += (lineCross - childCross);
+                            break;
+                    }
                 }
 
-                float crossAvailableForChild = crossAvailable;
-                float crossPosChild = 0f;
-                float crossSizeChild = childCross;
-
-                switch (finalAlign)
+                if (axis == 0)
                 {
-                    case AlignItems.FlexStart:
-                        crossPosChild = 0f;
-                        break;
-                    case AlignItems.FlexEnd:
-                        crossPosChild = crossAvailableForChild - crossSizeChild;
-                        break;
-                    case AlignItems.Center:
-                        crossPosChild = (crossAvailableForChild - crossSizeChild) / 2f;
-                        break;
-                    case AlignItems.Stretch:
-                        crossSizeChild = crossAvailableForChild;
-                        crossPosChild = 0f;
-                        break;
-                }
-
-                float mainPos = offset + i * (childMain + spacingBetween);
-
-                if (IsHorizontal)
-                {
-                    float x = padding.left + (isReverse && !isWrap ? mainAvailable - mainPos - childMain : mainPos);
-                    SetChildAlongAxis(child, 0, x, childMain);
-                    SetChildAlongAxis(child, 1, crossPos + crossPosChild, crossSizeChild);
+                    SetChildAlongAxis(child, 0, offset, childMain);
+                    SetChildAlongAxis(child, 1, crossStart, childCross);
                 }
                 else
                 {
-                    float y = padding.top + (isReverse && !isWrap ? mainAvailable - mainPos - childMain : mainPos);
-                    SetChildAlongAxis(child, 1, y, childMain);
-                    SetChildAlongAxis(child, 0, crossPos + crossPosChild, crossSizeChild);
+                    SetChildAlongAxis(child, 1, offset, childMain);
+                    SetChildAlongAxis(child, 0, crossStart, childCross);
                 }
+
+                offset += childMain;
+                if (i < line.Count - 1)
+                    offset += spacing;
             }
 
-            crossPos += lineCrossSizes[l] + spacingCross;
+            posCross += lineCross + gapCross;
         }
     }
 }

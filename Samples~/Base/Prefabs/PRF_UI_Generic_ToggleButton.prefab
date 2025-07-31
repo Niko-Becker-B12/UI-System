@@ -175,117 +175,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6fc283b66ccebc4799c65ceba9ee2e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes:
-    - Name: setActiveAnimation
-      Entry: 7
-      Data: 0|GPUI.UiAnimationData, GPUI
-    - Name: trigger
-      Entry: 6
-      Data: 
-    - Name: playOnAwake
-      Entry: 5
-      Data: false
-    - Name: loop
-      Entry: 5
-      Data: false
-    - Name: loopType
-      Entry: 3
-      Data: 0
-    - Name: easeType
-      Entry: 3
-      Data: 0
-    - Name: targetGraphics
-      Entry: 7
-      Data: 1|System.Collections.Generic.List`1[[UnityEngine.UI.Graphic, UnityEngine.UI]],
-        mscorlib
-    - Name: 
-      Entry: 12
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: animation
-      Entry: 7
-      Data: 2|GPUI.UiAnimationBase, GPUI
-    - Name: duration
-      Entry: 4
-      Data: 0
-    - Name: isRunning
-      Entry: 5
-      Data: false
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: currentTween
-      Entry: 6
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: setInactiveAnimation
-      Entry: 7
-      Data: 3|GPUI.UiAnimationData, GPUI
-    - Name: trigger
-      Entry: 6
-      Data: 
-    - Name: playOnAwake
-      Entry: 5
-      Data: false
-    - Name: loop
-      Entry: 5
-      Data: false
-    - Name: loopType
-      Entry: 3
-      Data: 0
-    - Name: easeType
-      Entry: 3
-      Data: 0
-    - Name: targetGraphics
-      Entry: 7
-      Data: 4|System.Collections.Generic.List`1[[UnityEngine.UI.Graphic, UnityEngine.UI]],
-        mscorlib
-    - Name: 
-      Entry: 12
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: animation
-      Entry: 7
-      Data: 5|GPUI.UiAnimationBase, GPUI
-    - Name: duration
-      Entry: 4
-      Data: 0
-    - Name: isRunning
-      Entry: 5
-      Data: false
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: currentTween
-      Entry: 6
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-  canvasGroup: {fileID: 0}
-  rectTransform: {fileID: 0}
+  canvasGroup: {fileID: 1081332831405574189}
+  rectTransform: {fileID: 1539360596442772272}
   skinData: {fileID: 0}
   backgroundGraphic: {fileID: 5322470517822042825}
+  onClick:
+    m_PersistentCalls:
+      m_Calls: []
+  onEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  onExit:
+    m_PersistentCalls:
+      m_Calls: []
   detailGraphic: {fileID: 5409980161173653940}
   _toggleBehavior: {fileID: 4347712663294654126}
   onSetActiveFunctions:
@@ -522,15 +424,13 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 0
-  m_Spacing: 0
-  m_ChildForceExpandWidth: 1
-  m_ChildForceExpandHeight: 1
-  m_ChildControlWidth: 1
-  m_ChildControlHeight: 1
-  m_ChildScaleWidth: 0
-  m_ChildScaleHeight: 0
-  m_ReverseArrangement: 0
-  m_IsVertical: 0
+  flexDirection: 0
+  justifyContent: 0
+  alignItems: 3
+  flexWrap: 0
+  gapMain: 0
+  gapCross: 0
+  forceStretch: 1
 --- !u!1 &4323936858384901481
 GameObject:
   m_ObjectHideFlags: 0

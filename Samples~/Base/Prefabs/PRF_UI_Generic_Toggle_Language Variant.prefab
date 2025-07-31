@@ -38,8 +38,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 110, y: -12}
-  m_SizeDelta: {x: 20, y: 0}
+  m_AnchoredPosition: {x: 113.21, y: -12}
+  m_SizeDelta: {x: 22.14, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5890805900868027407
 CanvasRenderer:
@@ -91,7 +91,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: -1046691121
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -164,25 +164,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f09832b4a774ebd40ae3dccca8828bc4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes:
-    - Name: setActiveAnimation
-      Entry: 6
-      Data: 
-    - Name: setInactiveAnimation
-      Entry: 6
-      Data: 
-  canvasGroup: {fileID: 0}
-  rectTransform: {fileID: 0}
+  canvasGroup: {fileID: 7540459008919917923}
+  rectTransform: {fileID: 246758683282453767}
   skinData: {fileID: 0}
   backgroundGraphic: {fileID: 7837571672674682491}
+  onClick:
+    m_PersistentCalls:
+      m_Calls: []
+  onEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  onExit:
+    m_PersistentCalls:
+      m_Calls: []
   fitHorizontalSizeToText: 1
   fitVerticalSizeToText: 1
   localizedString:
@@ -241,10 +235,18 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2095496937972765906, guid: 95cd7bd19204225438869e26ac40ca40, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2095496937972765906, guid: 95cd7bd19204225438869e26ac40ca40, type: 3}
       propertyPath: m_AnchorMin.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2095496937972765906, guid: 95cd7bd19204225438869e26ac40ca40, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 48
+      objectReference: {fileID: 0}
+    - target: {fileID: 2095496937972765906, guid: 95cd7bd19204225438869e26ac40ca40, type: 3}
+      propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2095496937972765906, guid: 95cd7bd19204225438869e26ac40ca40, type: 3}
@@ -257,11 +259,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2095496937972765906, guid: 95cd7bd19204225438869e26ac40ca40, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 62.14
       objectReference: {fileID: 0}
     - target: {fileID: 2095496937972765906, guid: 95cd7bd19204225438869e26ac40ca40, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -12
+      objectReference: {fileID: 0}
+    - target: {fileID: 2174510149288852777, guid: 95cd7bd19204225438869e26ac40ca40, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2454307445433659405, guid: 95cd7bd19204225438869e26ac40ca40, type: 3}
       propertyPath: serializationData.Prefab
@@ -273,7 +279,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3178858855281990321, guid: 95cd7bd19204225438869e26ac40ca40, type: 3}
       propertyPath: m_TextStyleHashCode
-      value: -1046691121
+      value: -1183493901
       objectReference: {fileID: 0}
     - target: {fileID: 3178858855281990321, guid: 95cd7bd19204225438869e26ac40ca40, type: 3}
       propertyPath: m_ActiveFontFeatures.Array.size
@@ -281,7 +287,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4725803981672600875, guid: 95cd7bd19204225438869e26ac40ca40, type: 3}
       propertyPath: RoundedProperties.UniformResolution.FixedResolution
-      value: 16
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 5006672064637872847, guid: 95cd7bd19204225438869e26ac40ca40, type: 3}
       propertyPath: serializationData.Prefab
@@ -317,7 +323,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6220835922540512823, guid: 95cd7bd19204225438869e26ac40ca40, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0
+      value: 24
       objectReference: {fileID: 0}
     - target: {fileID: 6220835922540512823, guid: 95cd7bd19204225438869e26ac40ca40, type: 3}
       propertyPath: m_LocalPosition.x
@@ -367,6 +373,34 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7020461372183061183, guid: 95cd7bd19204225438869e26ac40ca40, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7020461372183061183, guid: 95cd7bd19204225438869e26ac40ca40, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7020461372183061183, guid: 95cd7bd19204225438869e26ac40ca40, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7020461372183061183, guid: 95cd7bd19204225438869e26ac40ca40, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7020461372183061183, guid: 95cd7bd19204225438869e26ac40ca40, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7020461372183061183, guid: 95cd7bd19204225438869e26ac40ca40, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7317353008616653287, guid: 95cd7bd19204225438869e26ac40ca40, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7317353008616653287, guid: 95cd7bd19204225438869e26ac40ca40, type: 3}
       propertyPath: serializationData.Prefab
       value: 
@@ -381,7 +415,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7636839909736795254, guid: 95cd7bd19204225438869e26ac40ca40, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 20
+      value: 22.14
       objectReference: {fileID: 0}
     - target: {fileID: 7636839909736795254, guid: 95cd7bd19204225438869e26ac40ca40, type: 3}
       propertyPath: m_SizeDelta.y
@@ -397,7 +431,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7636839909736795254, guid: 95cd7bd19204225438869e26ac40ca40, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 10
+      value: 11.07
       objectReference: {fileID: 0}
     - target: {fileID: 7636839909736795254, guid: 95cd7bd19204225438869e26ac40ca40, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -407,7 +441,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: PRF_UI_Generic_Toggle_Language Variant
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 2135780225592733142, guid: 95cd7bd19204225438869e26ac40ca40, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 6220835922540512823, guid: 95cd7bd19204225438869e26ac40ca40, type: 3}

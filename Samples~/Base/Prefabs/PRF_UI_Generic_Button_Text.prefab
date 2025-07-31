@@ -83,26 +83,26 @@ MonoBehaviour:
       rgba: 0
     DrawOutlineShadow: 0
   RoundedProperties:
-    Type: 1
+    Type: 2
     ResolutionMode: 0
     UniformRadius: 15
     UseMaxRadius: 1
-    TLRadius: 0
+    TLRadius: 4
     TLResolution:
       Resolution: 0
       FixedResolution: 10
       ResolutionMaxDistance: 4
-    TRRadius: 0
+    TRRadius: 4
     TRResolution:
       Resolution: 0
       FixedResolution: 10
       ResolutionMaxDistance: 4
-    BRRadius: 0
+    BRRadius: 4
     BRResolution:
       Resolution: 0
       FixedResolution: 10
       ResolutionMaxDistance: 4
-    BLRadius: 0
+    BLRadius: 4
     BLResolution:
       Resolution: 0
       FixedResolution: 10
@@ -124,7 +124,7 @@ MonoBehaviour:
         serializedVersion: 2
         rgba: 4278190080
       Offset: {x: 0, y: 0}
-      Size: 10
+      Size: 2
       Softness: 0.5
     Offset: {x: 0, y: -0}
   AntiAliasingProperties:
@@ -172,25 +172,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b32eceff3dbd8ff4b866acee438217de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes:
-    - Name: setActiveAnimation
-      Entry: 6
-      Data: 
-    - Name: setInactiveAnimation
-      Entry: 6
-      Data: 
-  canvasGroup: {fileID: 0}
-  rectTransform: {fileID: 0}
+  canvasGroup: {fileID: 6766220652869898354}
+  rectTransform: {fileID: 2856423810142355372}
   skinData: {fileID: 11400000, guid: 9d27e56b7d078374ba2d816a46562be8, type: 2}
   backgroundGraphic: {fileID: 6985648075042307972}
+  onClick:
+    m_PersistentCalls:
+      m_Calls: []
+  onEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  onExit:
+    m_PersistentCalls:
+      m_Calls: []
   detailGraphic: {fileID: 2746938095891092528}
   _buttonBehavior: {fileID: 5772218648226414808}
   onClickFunctions: []
@@ -215,15 +209,13 @@ MonoBehaviour:
     m_Top: 24
     m_Bottom: 24
   m_ChildAlignment: 4
-  m_Spacing: 0
-  m_ChildForceExpandWidth: 0
-  m_ChildForceExpandHeight: 0
-  m_ChildControlWidth: 0
-  m_ChildControlHeight: 0
-  m_ChildScaleWidth: 1
-  m_ChildScaleHeight: 1
-  m_ReverseArrangement: 0
-  m_IsVertical: 0
+  flexDirection: 0
+  justifyContent: 0
+  alignItems: 3
+  flexWrap: 1
+  gapMain: 0
+  gapCross: 0
+  forceStretch: 0
 --- !u!114 &2549441424511369257
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -300,7 +292,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3771054613095411320, guid: 5e8036cb16b36b54bbd22bed34c08387, type: 3}
       propertyPath: m_fontColor32.rgba
-      value: 4280811520
+      value: 4281874488
       objectReference: {fileID: 0}
     - target: {fileID: 3771054613095411320, guid: 5e8036cb16b36b54bbd22bed34c08387, type: 3}
       propertyPath: m_VerticalAlignment

@@ -184,26 +184,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d29396a690812c74abeaceb759267ce2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes:
-    - Name: setActiveAnimation
-      Entry: 6
-      Data: 
-    - Name: setInactiveAnimation
-      Entry: 6
-      Data: 
   canvasGroup: {fileID: 0}
   rectTransform: {fileID: 0}
   skinData: {fileID: 11400000, guid: ae1d0502f48491f4099ce4fc1bba8981, type: 2}
   backgroundGraphic: {fileID: 3673741808957754064}
-  windowHeader:
+  alignSelf: 0
+  onClick:
+    m_PersistentCalls:
+      m_Calls: []
+  onEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  onExit:
+    m_PersistentCalls:
+      m_Calls: []
+  windowHeader: {fileID: 674487996553478265}
+  windowHeaderLocalizedString:
     m_TableReference:
       m_TableCollectionName: 
     m_TableEntryReference:
@@ -212,7 +208,7 @@ MonoBehaviour:
     m_FallbackState: 0
     m_WaitForCompletion: 0
     m_LocalVariables: []
-  windowHeaderText: {fileID: 3576861050894836355}
+  windowHeaderText: {fileID: 2056531721829359085}
   windowBody: {fileID: 4145435554148416526}
   windowId: -1
   OnSetActive:
@@ -248,15 +244,11 @@ MonoBehaviour:
     m_Top: 32
     m_Bottom: 32
   m_ChildAlignment: 0
-  m_Spacing: 0
-  m_ChildForceExpandWidth: 0
-  m_ChildForceExpandHeight: 0
-  m_ChildControlWidth: 1
-  m_ChildControlHeight: 1
-  m_ChildScaleWidth: 1
-  m_ChildScaleHeight: 1
-  m_ReverseArrangement: 0
-  m_IsVertical: 1
+  flexDirection: 4
+  justifyContent: 0
+  alignItems: 0
+  spacingX: 0
+  spacingY: 0
 --- !u!1 &5537925767422273281
 GameObject:
   m_ObjectHideFlags: 0
@@ -406,25 +398,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c63585543be83d498b692bdc3de6870, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes:
-    - Name: setActiveAnimation
-      Entry: 6
-      Data: 
-    - Name: setInactiveAnimation
-      Entry: 6
-      Data: 
   canvasGroup: {fileID: 0}
   rectTransform: {fileID: 0}
   skinData: {fileID: 0}
   backgroundGraphic: {fileID: 0}
+  alignSelf: 0
+  onClick:
+    m_PersistentCalls:
+      m_Calls: []
+  onEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  onExit:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &3798281561134491501
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -463,15 +450,11 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 3
-  m_Spacing: 24
-  m_ChildForceExpandWidth: 1
-  m_ChildForceExpandHeight: 1
-  m_ChildControlWidth: 0
-  m_ChildControlHeight: 0
-  m_ChildScaleWidth: 0
-  m_ChildScaleHeight: 0
-  m_ReverseArrangement: 0
-  m_IsVertical: 0
+  flexDirection: 4
+  justifyContent: 0
+  alignItems: 0
+  spacingX: 0
+  spacingY: 0
 --- !u!1 &6446603716875776923
 GameObject:
   m_ObjectHideFlags: 0
@@ -510,8 +493,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 108.925, y: -32}
-  m_SizeDelta: {x: 217.85, y: 0}
+  m_AnchoredPosition: {x: 28.935, y: -32}
+  m_SizeDelta: {x: 57.87, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1119507698369414643
 CanvasRenderer:
@@ -563,7 +546,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 11400000, guid: 00b28415f3fca82429d0a7950a36be34, type: 2}
-  m_TextStyleHashCode: -1927662649
+  m_TextStyleHashCode: 2451216
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -650,25 +633,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f09832b4a774ebd40ae3dccca8828bc4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes:
-    - Name: setActiveAnimation
-      Entry: 6
-      Data: 
-    - Name: setInactiveAnimation
-      Entry: 6
-      Data: 
   canvasGroup: {fileID: 0}
   rectTransform: {fileID: 0}
   skinData: {fileID: 11400000, guid: de6a98bbca7edb3409e301bc3c33536b, type: 2}
   backgroundGraphic: {fileID: 3576861050894836355}
+  alignSelf: 0
+  onClick:
+    m_PersistentCalls:
+      m_Calls: []
+  onEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  onExit:
+    m_PersistentCalls:
+      m_Calls: []
   fitHorizontalSizeToText: 1
   fitVerticalSizeToText: 1
   localizedString:
@@ -849,25 +827,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c63585543be83d498b692bdc3de6870, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes:
-    - Name: setActiveAnimation
-      Entry: 6
-      Data: 
-    - Name: setInactiveAnimation
-      Entry: 6
-      Data: 
   canvasGroup: {fileID: 0}
   rectTransform: {fileID: 0}
   skinData: {fileID: 0}
   backgroundGraphic: {fileID: 0}
+  alignSelf: 0
+  onClick:
+    m_PersistentCalls:
+      m_Calls: []
+  onEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  onExit:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &4216704295927648182
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -906,15 +879,11 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 0
-  m_Spacing: 0
-  m_ChildForceExpandWidth: 0
-  m_ChildForceExpandHeight: 0
-  m_ChildControlWidth: 0
-  m_ChildControlHeight: 0
-  m_ChildScaleWidth: 1
-  m_ChildScaleHeight: 1
-  m_ReverseArrangement: 0
-  m_IsVertical: 1
+  flexDirection: 4
+  justifyContent: 0
+  alignItems: 0
+  spacingX: 0
+  spacingY: 0
 --- !u!1001 &3468622600617769529
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1154,7 +1123,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4744414437930337438, guid: 5703b8091dbb2e04ba3d8746adc724a7, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 24
+      value: 64
       objectReference: {fileID: 0}
     - target: {fileID: 4744414437930337438, guid: 5703b8091dbb2e04ba3d8746adc724a7, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1186,11 +1155,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4744414437930337438, guid: 5703b8091dbb2e04ba3d8746adc724a7, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 265.85
+      value: 24
       objectReference: {fileID: 0}
     - target: {fileID: 4744414437930337438, guid: 5703b8091dbb2e04ba3d8746adc724a7, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -32
+      value: -49.879997
       objectReference: {fileID: 0}
     - target: {fileID: 4744414437930337438, guid: 5703b8091dbb2e04ba3d8746adc724a7, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x

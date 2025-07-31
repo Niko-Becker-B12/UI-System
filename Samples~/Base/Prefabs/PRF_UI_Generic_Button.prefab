@@ -162,29 +162,29 @@ MonoBehaviour:
     ResolutionMode: 0
     UniformRadius: 15
     UseMaxRadius: 1
-    TLRadius: 0
+    TLRadius: 4
     TLResolution:
       Resolution: 0
       FixedResolution: 10
       ResolutionMaxDistance: 4
-    TRRadius: 0
+    TRRadius: 4
     TRResolution:
       Resolution: 0
       FixedResolution: 10
       ResolutionMaxDistance: 4
-    BRRadius: 0
+    BRRadius: 4
     BRResolution:
       Resolution: 0
       FixedResolution: 10
       ResolutionMaxDistance: 4
-    BLRadius: 0
+    BLRadius: 4
     BLResolution:
       Resolution: 0
       FixedResolution: 10
       ResolutionMaxDistance: 4
     UniformResolution:
       Resolution: 1
-      FixedResolution: 16
+      FixedResolution: 20
       ResolutionMaxDistance: 4
   OutlineProperties:
     Type: 0
@@ -197,9 +197,9 @@ MonoBehaviour:
     Shadows:
     - Color:
         serializedVersion: 2
-        rgba: 1073741824
+        rgba: 4278190080
       Offset: {x: 0, y: 0}
-      Size: 5
+      Size: 2
       Softness: 0.5
     Offset: {x: 0, y: -0}
   AntiAliasingProperties:
@@ -247,25 +247,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b32eceff3dbd8ff4b866acee438217de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes:
-    - Name: setActiveAnimation
-      Entry: 6
-      Data: 
-    - Name: setInactiveAnimation
-      Entry: 6
-      Data: 
-  canvasGroup: {fileID: 0}
-  rectTransform: {fileID: 0}
+  canvasGroup: {fileID: 8412259757530548852}
+  rectTransform: {fileID: 4744414437930337438}
   skinData: {fileID: 11400000, guid: 9d27e56b7d078374ba2d816a46562be8, type: 2}
   backgroundGraphic: {fileID: 9101690505346285161}
+  onClick:
+    m_PersistentCalls:
+      m_Calls: []
+  onEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  onExit:
+    m_PersistentCalls:
+      m_Calls: []
   detailGraphic: {fileID: 3157150289776038503}
   _buttonBehavior: {fileID: 1879716107463975160}
   onClickFunctions: []
@@ -304,12 +298,10 @@ MonoBehaviour:
     m_Top: 8
     m_Bottom: 8
   m_ChildAlignment: 0
-  m_Spacing: 8
-  m_ChildForceExpandWidth: 1
-  m_ChildForceExpandHeight: 1
-  m_ChildControlWidth: 1
-  m_ChildControlHeight: 1
-  m_ChildScaleWidth: 0
-  m_ChildScaleHeight: 0
-  m_ReverseArrangement: 0
-  m_IsVertical: 0
+  flexDirection: 0
+  justifyContent: 0
+  alignItems: 3
+  flexWrap: 1
+  gapMain: 0
+  gapCross: 0
+  forceStretch: 0
