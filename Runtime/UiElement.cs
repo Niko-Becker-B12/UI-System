@@ -361,9 +361,7 @@ namespace GPUI
             layoutGroup.flexDirection = layoutOptions.flexDirection;
             layoutGroup.alignItems = layoutOptions.alignItems;
             layoutGroup.flexWrap = layoutOptions.flexWrap;
-            layoutGroup.gapMain = layoutOptions.gapMain;
-            layoutGroup.gapCross = layoutOptions.gapCross;
-            layoutGroup.forceStretch = layoutOptions.stretchToParentInMainAxis;
+            layoutGroup.gap = layoutOptions.gapMain;
             
         }
 
