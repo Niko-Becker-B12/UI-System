@@ -357,11 +357,11 @@ namespace GPUI
             if (!layoutRectTransform.TryGetComponent<UiCombiLayoutGroup>(out UiCombiLayoutGroup layoutGroup))
                 layoutGroup = layoutRectTransform.gameObject.AddComponent<UiCombiLayoutGroup>();
             
-            layoutGroup.justifyContent = layoutOptions.justifyContent;
-            layoutGroup.flexDirection = layoutOptions.flexDirection;
-            layoutGroup.alignItems = layoutOptions.alignItems;
-            layoutGroup.flexWrap = layoutOptions.flexWrap;
-            layoutGroup.gap = layoutOptions.gapMain;
+            //layoutGroup.justifyContent = layoutOptions.justifyContent;
+            //layoutGroup.flexDirection = layoutOptions.flexDirection;
+            //layoutGroup.alignItems = layoutOptions.alignItems;
+            //layoutGroup.flexWrap = layoutOptions.flexWrap;
+            //layoutGroup.gap = layoutOptions.gapMain;
             
         }
 
