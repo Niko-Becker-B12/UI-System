@@ -3,241 +3,230 @@ using UnityEngine.UI;
 
 namespace GPUI
 {
- 
-    [AddComponentMenu("Layout/UI Combi Layout Group")]
-    public class UiCombiLayoutGroup : LayoutGroup
+    [AddComponentMenu("Layout/Ui Combi Layout Group")]
+    [RequireComponent(typeof(RectTransform))]
+    public class UiCombiLayoutGroup : LayoutGroup, ILayoutSelfController
     {
         public enum FlowDirection { Horizontal, Vertical }
-    
+        public enum JustifyContent { Start, Center, End, SpaceBetween, SpaceAround }
+
         [SerializeField] private FlowDirection flow = FlowDirection.Horizontal;
         [SerializeField] private float spacingX = 5f;
         [SerializeField] private float spacingY = 5f;
         [SerializeField] private bool forceExpandChildWidth = false;
         [SerializeField] private bool forceExpandChildHeight = false;
-        [SerializeField] private TextAnchor childAlignmentAnchor = TextAnchor.UpperLeft;
-    
-        public FlowDirection Flow
-        {
-            get => flow;
-            set { SetProperty(ref flow, value); }
-        }
-    
-        public float SpacingX
-        {
-            get => spacingX;
-            set { SetProperty(ref spacingX, value); }
-        }
-    
-        public float SpacingY
-        {
-            get => spacingY;
-            set { SetProperty(ref spacingY, value); }
-        }
-    
-        public bool ForceExpandChildWidth
-        {
-            get => forceExpandChildWidth;
-            set { SetProperty(ref forceExpandChildWidth, value); }
-        }
-    
-        public bool ForceExpandChildHeight
-        {
-            get => forceExpandChildHeight;
-            set { SetProperty(ref forceExpandChildHeight, value); }
-        }
-    
-        public TextAnchor ChildAlignmentAnchor
-        {
-            get => childAlignmentAnchor;
-            set { SetProperty(ref childAlignmentAnchor, value); }
-        }
-    
+        [SerializeField] private bool enableWrapping = true;
+        [SerializeField] private JustifyContent justifyContent = JustifyContent.Start;
+
+        public FlowDirection Flow { get => flow; set { SetProperty(ref flow, value); } }
+        public float SpacingX { get => spacingX; set { SetProperty(ref spacingX, value); } }
+        public float SpacingY { get => spacingY; set { SetProperty(ref spacingY, value); } }
+        public bool ForceExpandChildWidth { get => forceExpandChildWidth; set { SetProperty(ref forceExpandChildWidth, value); } }
+        public bool ForceExpandChildHeight { get => forceExpandChildHeight; set { SetProperty(ref forceExpandChildHeight, value); } }
+        public bool EnableWrapping { get => enableWrapping; set { SetProperty(ref enableWrapping, value); } }
+        public JustifyContent Justify { get => justifyContent; set { SetProperty(ref justifyContent, value); } }
+
         public override void CalculateLayoutInputHorizontal()
         {
             base.CalculateLayoutInputHorizontal();
-            CalcAlongAxis(0, true);
+            CalculateSizes();
         }
-    
+
         public override void CalculateLayoutInputVertical()
         {
-            CalcAlongAxis(1, true);
+            CalculateSizes();
         }
-    
-        public override void SetLayoutHorizontal()
+
+        public override void SetLayoutHorizontal() { SetChildrenAlongAxis(); }
+        public override void SetLayoutVertical() { SetChildrenAlongAxis(); }
+
+        private float GetChildSize(RectTransform child, int axis, bool forceExpand, float availableSpace)
         {
-            SetChildrenAlongAxis(0);
-        }
-    
-        public override void SetLayoutVertical()
-        {
-            SetChildrenAlongAxis(1);
-        }
-    
-        private void CalcAlongAxis(int axis, bool isVertical)
-        {
-            float totalMin = padding.horizontal;
-            float totalPreferred = padding.horizontal;
-            float totalFlexible = 0;
-    
-            float totalMinY = padding.vertical;
-            float totalPreferredY = padding.vertical;
-            float totalFlexibleY = 0;
-    
-            float maxX = rectTransform.rect.width;
-            float maxY = rectTransform.rect.height;
-    
-            float lineThickness = 0f;
-            float lineLength = 0f;
-    
-            for (int i = 0; i < rectChildren.Count; i++)
+            var layoutElement = child.GetComponent<LayoutElement>();
+            float preferred = LayoutUtility.GetPreferredSize(child, axis);
+            float min = LayoutUtility.GetMinSize(child, axis);
+
+            if (layoutElement != null)
             {
-                RectTransform child = rectChildren[i];
-                if (child == null) continue;
-    
-                float childWidth = LayoutUtility.GetPreferredSize(child, 0);
-                float childHeight = LayoutUtility.GetPreferredSize(child, 1);
-    
-                if (flow == FlowDirection.Horizontal)
-                {
-                    if (lineLength + childWidth + (lineLength > 0 ? spacingX : 0) > maxX && lineLength > 0)
-                    {
-                        totalMinY += lineThickness + spacingY;
-                        totalPreferredY += lineThickness + spacingY;
-                        lineLength = 0;
-                        lineThickness = 0;
-                    }
-                    lineLength += (lineLength > 0 ? spacingX : 0) + childWidth;
-                    lineThickness = Mathf.Max(lineThickness, childHeight);
-    
-                    totalPreferred = Mathf.Max(totalPreferred, lineLength + padding.horizontal);
-                }
-                else // Vertical flow
-                {
-                    if (lineLength + childHeight + (lineLength > 0 ? spacingY : 0) > maxY && lineLength > 0)
-                    {
-                        totalMin += lineThickness + spacingX;
-                        totalPreferred += lineThickness + spacingX;
-                        lineLength = 0;
-                        lineThickness = 0;
-                    }
-                    lineLength += (lineLength > 0 ? spacingY : 0) + childHeight;
-                    lineThickness = Mathf.Max(lineThickness, childWidth);
-    
-                    totalPreferredY = Mathf.Max(totalPreferredY, lineLength + padding.vertical);
-                }
+                if (axis == 0 && layoutElement.preferredWidth >= 0)
+                    preferred = layoutElement.preferredWidth;
+                else if (axis == 1 && layoutElement.preferredHeight >= 0)
+                    preferred = layoutElement.preferredHeight;
             }
-    
+
+            float size = Mathf.Max(min, preferred);
+            if (forceExpand)
+                size = availableSpace;
+            return size;
+        }
+
+        private void CalculateSizes()
+        {
+            float totalWidth = padding.horizontal;
+            float totalHeight = padding.vertical;
+
+            float lineWidth = 0f;
+            float lineHeight = 0f;
+
+            float parentWidth = rectTransform.rect.width > 0 ? rectTransform.rect.width : float.MaxValue;
+            float parentHeight = rectTransform.rect.height > 0 ? rectTransform.rect.height : float.MaxValue;
+
             if (flow == FlowDirection.Horizontal)
             {
-                totalMinY += lineThickness;
-                totalPreferredY += lineThickness;
+                foreach (RectTransform child in rectChildren)
+                {
+                    float w = GetChildSize(child, 0, forceExpandChildWidth, parentWidth - padding.horizontal);
+                    float h = GetChildSize(child, 1, forceExpandChildHeight, parentHeight - padding.vertical);
+
+                    if (enableWrapping && lineWidth + w > parentWidth - padding.horizontal && lineWidth > 0)
+                    {
+                        totalWidth = Mathf.Max(totalWidth, lineWidth + padding.horizontal);
+                        totalHeight += lineHeight + spacingY;
+                        lineWidth = 0f;
+                        lineHeight = 0f;
+                    }
+
+                    lineWidth += w + spacingX;
+                    lineHeight = Mathf.Max(lineHeight, h);
+                }
+
+                totalWidth = Mathf.Max(totalWidth, lineWidth + padding.horizontal);
+                totalHeight += lineHeight;
+
+                SetLayoutInputForAxis(totalWidth, totalWidth, -1, 0);
+                SetLayoutInputForAxis(totalHeight, totalHeight, -1, 1);
             }
             else
             {
-                totalMin += lineThickness;
-                totalPreferred += lineThickness;
+                foreach (RectTransform child in rectChildren)
+                {
+                    float w = GetChildSize(child, 0, forceExpandChildWidth, parentWidth - padding.horizontal);
+                    float h = GetChildSize(child, 1, forceExpandChildHeight, parentHeight - padding.vertical);
+
+                    if (enableWrapping && lineHeight + h > parentHeight - padding.vertical && lineHeight > 0)
+                    {
+                        totalHeight = Mathf.Max(totalHeight, lineHeight + padding.vertical);
+                        totalWidth += lineWidth + spacingX;
+                        lineWidth = 0f;
+                        lineHeight = 0f;
+                    }
+
+                    lineHeight += h + spacingY;
+                    lineWidth = Mathf.Max(lineWidth, w);
+                }
+
+                totalHeight = Mathf.Max(totalHeight, lineHeight + padding.vertical);
+                totalWidth += lineWidth;
+
+                SetLayoutInputForAxis(totalWidth, totalWidth, -1, 0);
+                SetLayoutInputForAxis(totalHeight, totalHeight, -1, 1);
             }
-    
-            SetLayoutInputForAxis(totalMin, totalPreferred, totalFlexible, 0);
-            SetLayoutInputForAxis(totalMinY, totalPreferredY, totalFlexibleY, 1);
         }
-    
-        private void SetChildrenAlongAxis(int axis)
+
+        private void SetChildrenAlongAxis()
         {
             float parentWidth = rectTransform.rect.width;
             float parentHeight = rectTransform.rect.height;
-    
             float x = padding.left;
             float y = padding.top;
             float lineThickness = 0f;
-    
+
+            int count = rectChildren.Count;
+
             if (flow == FlowDirection.Horizontal)
             {
-                for (int i = 0; i < rectChildren.Count; i++)
+                float totalWidth = 0f;
+                foreach (var child in rectChildren) totalWidth += GetChildSize(child, 0, false, parentWidth);
+                float availableSpace = Mathf.Max(0, parentWidth - padding.horizontal - totalWidth - spacingX * (count - 1));
+                float offset = 0f;
+                float spacing = spacingX;
+
+                switch (justifyContent)
+                {
+                    case JustifyContent.Center: offset = availableSpace / 2f; break;
+                    case JustifyContent.End: offset = availableSpace; break;
+                    case JustifyContent.SpaceBetween: spacing = count > 1 ? spacingX + availableSpace / (count - 1) : spacingX; break;
+                    case JustifyContent.SpaceAround: spacing = spacingX + availableSpace / count; offset = spacing / 2f; break;
+                }
+
+                x += offset;
+
+                for (int i = 0; i < count; i++)
                 {
                     RectTransform child = rectChildren[i];
-                    float childWidth = LayoutUtility.GetPreferredSize(child, 0);
-                    float childHeight = LayoutUtility.GetPreferredSize(child, 1);
-    
-                    if (x + childWidth > parentWidth - padding.right && x > padding.left)
+                    float width = GetChildSize(child, 0, forceExpandChildWidth, parentWidth - padding.horizontal);
+                    float height = GetChildSize(child, 1, forceExpandChildHeight, parentHeight - padding.vertical);
+
+                    if (enableWrapping && x + width > parentWidth - padding.right && x > padding.left)
                     {
-                        x = padding.left;
+                        x = padding.left + offset;
                         y += lineThickness + spacingY;
                         lineThickness = 0f;
                     }
-    
-                    Vector2 alignedPos = GetAlignedPosition(childWidth, childHeight, parentWidth, parentHeight, x, y, lineThickness);
-                    SetChildAlongAxis(child, 0, alignedPos.x, childWidth);
-                    SetChildAlongAxis(child, 1, alignedPos.y, childHeight);
-    
-                    x += childWidth + spacingX;
-                    lineThickness = Mathf.Max(lineThickness, childHeight);
+
+                    AlignChild(child, ref x, ref y, width, height, parentWidth, parentHeight);
+                    x += width + spacing;
+                    lineThickness = Mathf.Max(lineThickness, height);
                 }
             }
             else
             {
-                for (int i = 0; i < rectChildren.Count; i++)
+                float totalHeight = 0f;
+                foreach (var child in rectChildren) totalHeight += GetChildSize(child, 1, false, parentHeight);
+                float availableSpace = Mathf.Max(0, parentHeight - padding.vertical - totalHeight - spacingY * (count - 1));
+                float offset = 0f;
+                float spacing = spacingY;
+
+                switch (justifyContent)
+                {
+                    case JustifyContent.Center: offset = availableSpace / 2f; break;
+                    case JustifyContent.End: offset = availableSpace; break;
+                    case JustifyContent.SpaceBetween: spacing = count > 1 ? spacingY + availableSpace / (count - 1) : spacingY; break;
+                    case JustifyContent.SpaceAround: spacing = spacingY + availableSpace / count; offset = spacing / 2f; break;
+                }
+
+                y += offset;
+
+                for (int i = 0; i < count; i++)
                 {
                     RectTransform child = rectChildren[i];
-                    float childWidth = LayoutUtility.GetPreferredSize(child, 0);
-                    float childHeight = LayoutUtility.GetPreferredSize(child, 1);
-    
-                    if (y + childHeight > parentHeight - padding.bottom && y > padding.top)
+                    float width = GetChildSize(child, 0, forceExpandChildWidth, parentWidth - padding.horizontal);
+                    float height = GetChildSize(child, 1, forceExpandChildHeight, parentHeight - padding.vertical);
+
+                    if (enableWrapping && y + height > parentHeight - padding.bottom && y > padding.top)
                     {
-                        y = padding.top;
+                        y = padding.top + offset;
                         x += lineThickness + spacingX;
                         lineThickness = 0f;
                     }
-    
-                    Vector2 alignedPos = GetAlignedPosition(childWidth, childHeight, parentWidth, parentHeight, x, y, lineThickness);
-                    SetChildAlongAxis(child, 0, alignedPos.x, childWidth);
-                    SetChildAlongAxis(child, 1, alignedPos.y, childHeight);
-    
-                    y += childHeight + spacingY;
-                    lineThickness = Mathf.Max(lineThickness, childWidth);
+
+                    AlignChild(child, ref x, ref y, width, height, parentWidth, parentHeight);
+                    y += height + spacing;
+                    lineThickness = Mathf.Max(lineThickness, width);
                 }
             }
         }
-    
-        private Vector2 GetAlignedPosition(float childWidth, float childHeight, float parentWidth, float parentHeight, float x, float y, float lineThickness)
+
+        private void AlignChild(RectTransform child, ref float x, ref float y, float width, float height, float parentWidth, float parentHeight)
         {
-            float alignedX = x;
-            float alignedY = y;
-    
-            switch (childAlignmentAnchor)
-            {
-                case TextAnchor.UpperCenter:
-                    alignedX = x + (parentWidth - padding.horizontal - childWidth) / 2f;
-                    break;
-                case TextAnchor.UpperRight:
-                    alignedX = parentWidth - padding.right - childWidth;
-                    break;
-                case TextAnchor.MiddleLeft:
-                    alignedY = y + (parentHeight - padding.vertical - childHeight) / 2f;
-                    break;
-                case TextAnchor.MiddleCenter:
-                    alignedX = x + (parentWidth - padding.horizontal - childWidth) / 2f;
-                    alignedY = y + (parentHeight - padding.vertical - childHeight) / 2f;
-                    break;
-                case TextAnchor.MiddleRight:
-                    alignedX = parentWidth - padding.right - childWidth;
-                    alignedY = y + (parentHeight - padding.vertical - childHeight) / 2f;
-                    break;
-                case TextAnchor.LowerLeft:
-                    alignedY = parentHeight - padding.bottom - childHeight;
-                    break;
-                case TextAnchor.LowerCenter:
-                    alignedX = x + (parentWidth - padding.horizontal - childWidth) / 2f;
-                    alignedY = parentHeight - padding.bottom - childHeight;
-                    break;
-                case TextAnchor.LowerRight:
-                    alignedX = parentWidth - padding.right - childWidth;
-                    alignedY = parentHeight - padding.bottom - childHeight;
-                    break;
-            }
-    
-            return new Vector2(alignedX, alignedY);
+            float posX = x;
+            float posY = y;
+
+            if (childAlignment == TextAnchor.UpperCenter || childAlignment == TextAnchor.MiddleCenter || childAlignment == TextAnchor.LowerCenter)
+                posX += (parentWidth - padding.horizontal - width) / 2f;
+            else if (childAlignment == TextAnchor.UpperRight || childAlignment == TextAnchor.MiddleRight || childAlignment == TextAnchor.LowerRight)
+                posX += parentWidth - padding.horizontal - width;
+
+            if (childAlignment == TextAnchor.MiddleLeft || childAlignment == TextAnchor.MiddleCenter || childAlignment == TextAnchor.MiddleRight)
+                posY += (parentHeight - padding.vertical - height) / 2f;
+            else if (childAlignment == TextAnchor.LowerLeft || childAlignment == TextAnchor.LowerCenter || childAlignment == TextAnchor.LowerRight)
+                posY += parentHeight - padding.vertical - height;
+
+            posX = Mathf.Clamp(posX, padding.left, parentWidth - padding.right - width);
+            posY = Mathf.Clamp(posY, padding.top, parentHeight - padding.bottom - height);
+
+            SetChildAlongAxis(child, 0, posX, width);
+            SetChildAlongAxis(child, 1, posY, height);
         }
     }
-    
 }
