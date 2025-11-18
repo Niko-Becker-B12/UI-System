@@ -191,8 +191,8 @@ namespace GPUI
         public void RemoveTab(int index)
         {
 
-            Destroy(tabs[index].contentHolderParent.gameObject);
-            Destroy(tabs[index].gameObject);
+            Destroy(tabs[index]?.contentHolderParent?.gameObject);
+            Destroy(tabs[index]?.gameObject);
 
             tabs.RemoveAt(index);
 
