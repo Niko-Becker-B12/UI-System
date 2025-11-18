@@ -132,7 +132,16 @@ namespace GPUI
 
             tab._toggleBehavior.clickableOnce = true;
 
-            (tab.secondaryDetailGraphic as Image).sprite = sprite;
+            for (int i = 0; i < tab.secondaryDetailGraphics.Count; i++)
+            {
+
+                if (tab.secondaryDetailGraphics[i] is Image)
+                {
+                    (tab.secondaryDetailGraphics[i] as Image).sprite = sprite;
+                    break;
+                }
+                
+            }
 
             string[] localizationReferences = new string[2];
 

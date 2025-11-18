@@ -11,7 +11,7 @@ namespace GPUI
     public class UiTab : UiToggle
     {
 
-        [TabGroup("Tabs", "UI Elements")] public Graphic secondaryDetailGraphic;
+        [TabGroup("Tabs", "UI Elements")] public List<Graphic> secondaryDetailGraphics = new List<Graphic>();
 
         [TabGroup("Tabs", "UI Elements")] public LocalizedString title;
 
@@ -56,8 +56,13 @@ namespace GPUI
             {
 
                 ComponentSkinDataObject detailedSkinData = skinData as ComponentSkinDataObject;
-                
-                secondaryDetailGraphic.color = detailedSkinData.detailColor.normalColor;
+
+                for (int i = 0; i < secondaryDetailGraphics.Count; i++)
+                {
+                    
+                    secondaryDetailGraphics[i].color = detailedSkinData.detailColor.normalColor;
+                    
+                }
 
             }
 
@@ -74,15 +79,25 @@ namespace GPUI
 
             if (isActive)
             {
-
-                (secondaryDetailGraphic as Image).color =
-                    (skinData as UiToggleSkinDataObject).pressedDetailColor.normalColor;
+                
+                for (int i = 0; i < secondaryDetailGraphics.Count; i++)
+                {
+                    
+                    secondaryDetailGraphics[i].color =
+                        (skinData as UiToggleSkinDataObject).pressedDetailColor.normalColor;
+                    
+                }
 
             }
             else
             {
-
-                (secondaryDetailGraphic as Image).color = (skinData as UiToggleSkinDataObject).detailColor.normalColor;
+                
+                for (int i = 0; i < secondaryDetailGraphics.Count; i++)
+                {
+                    
+                    secondaryDetailGraphics[i].color = (skinData as UiToggleSkinDataObject).detailColor.normalColor;
+                    
+                }
 
             }
 
@@ -99,15 +114,25 @@ namespace GPUI
             if (_toggleBehavior.isActive)
             {
 
-                (secondaryDetailGraphic as Image).color =
-                    (skinData as UiToggleSkinDataObject).pressedDetailColor.highlightedColor;
+                for (int i = 0; i < secondaryDetailGraphics.Count; i++)
+                {
+                    
+                    secondaryDetailGraphics[i].color =
+                        (skinData as UiToggleSkinDataObject).pressedDetailColor.highlightedColor;
+                    
+                }
 
             }
             else
             {
-
-                (secondaryDetailGraphic as Image).color =
-                    (skinData as UiToggleSkinDataObject).detailColor.highlightedColor;
+                
+                for (int i = 0; i < secondaryDetailGraphics.Count; i++)
+                {
+                    
+                    secondaryDetailGraphics[i].color =
+                        (skinData as UiToggleSkinDataObject).detailColor.highlightedColor;
+                    
+                }
 
             }
 
@@ -123,15 +148,25 @@ namespace GPUI
 
             if (_toggleBehavior.isActive)
             {
-
-                (secondaryDetailGraphic as Image).color =
-                    (skinData as UiToggleSkinDataObject).pressedDetailColor.normalColor;
+                
+                for (int i = 0; i < secondaryDetailGraphics.Count; i++)
+                {
+                    
+                    secondaryDetailGraphics[i].color =
+                        (skinData as UiToggleSkinDataObject).pressedDetailColor.normalColor;
+                    
+                }
 
             }
             else
             {
-
-                (secondaryDetailGraphic as Image).color = (skinData as UiToggleSkinDataObject).detailColor.normalColor;
+                
+                for (int i = 0; i < secondaryDetailGraphics.Count; i++)
+                {
+                    
+                    secondaryDetailGraphics[i].color = (skinData as UiToggleSkinDataObject).detailColor.normalColor;
+                    
+                }
 
             }
 
@@ -147,15 +182,29 @@ namespace GPUI
 
             if (_toggleBehavior.isActive)
             {
+                
+                for (int i = 0; i < secondaryDetailGraphics.Count; i++)
+                {
+                    
+                    secondaryDetailGraphics[i].color =
+                        (skinData as UiToggleSkinDataObject).pressedDetailColor.normalColor;
+                    
+                }
 
-                (secondaryDetailGraphic as Image).color =
-                    (skinData as UiToggleSkinDataObject).pressedDetailColor.normalColor;
+
 
             }
             else
             {
+                
+                for (int i = 0; i < secondaryDetailGraphics.Count; i++)
+                {
+                    
+                    secondaryDetailGraphics[i].color = (skinData as UiToggleSkinDataObject).detailColor.normalColor;
+                    
+                }
 
-                (secondaryDetailGraphic as Image).color = (skinData as UiToggleSkinDataObject).detailColor.normalColor;
+                
 
             }
 
