@@ -8,19 +8,22 @@ using UnityEngine.UI;
 
 namespace GPUI
 {
-    public class UiTabGroup : UiElement
+    public class UiTabGroupComplex : UiTabGroup
     {
 
         [TabGroup("Tabs", "Custom")] public GameObject tabButtonPrefab;
-        [TabGroup("Tabs", "Custom")] public ComponentSkinDataObject tabButtonSkin;
-        
+
         [TabGroup("Tabs", "Custom")] public RectTransform tabButtonParent;
-        
+
+        [TabGroup("Tabs", "Custom")] public GameObject contentGroupPrefab;
+        [TabGroup("Tabs", "Custom")] public RectTransform contentGroupHolder;
+
+        [TabGroup("Tabs", "Custom")] public string contentPosition;
+
+
         int currentIndex;
 
         [TabGroup("Tabs", "Custom")] public List<UiTab> tabs = new List<UiTab>();
-
-        [TabGroup("Events", "Custom")] public UnityEvent<int> OnTabSelected;
 
 
         public void Awake()
@@ -33,7 +36,7 @@ namespace GPUI
         private void OnDisable()
         {
 
-            RemoveAllTabs();
+            RemoveAlltabs();
 
         }
 
@@ -100,23 +103,6 @@ namespace GPUI
 
         }
 
-        public void AddNewTabs(string[] titles)
-        {
-
-            for (int i = 0; i < titles.Length; i++)
-            {
-
-                int index = i;
-                
-                UiTab temp = GenerateTabButton(titles[i], null, index);
-                temp.ApplySkinData();
-
-                tabs.Add(temp);
-                
-            }
-            
-        }
-
         UiTab GenerateTabButton(string title = "", Sprite sprite = null, int index = -1)
         {
 
@@ -125,7 +111,12 @@ namespace GPUI
 
             GameObject tempButtonObject = Instantiate(tabButtonPrefab, tabButtonParent);
             UiTab tab = tempButtonObject.GetComponent<UiTab>();
-            
+
+            GameObject newContentHolder = Instantiate(contentGroupPrefab, contentGroupHolder);
+            newContentHolder.transform.SetParent(contentGroupHolder);
+
+            tab.contentHolderParent = newContentHolder.transform;
+            tab.contentHolderParent.gameObject.SetActive(false);
             tab.tabGroup = this;
             tab.tabIndex = index;
 
@@ -167,7 +158,7 @@ namespace GPUI
 
         }
 
-        public void RemoveAllTabs()
+        public void RemoveAlltabs()
         {
 
             for (int i = tabs.Count - 1; i > -1; i--)
@@ -192,13 +183,17 @@ namespace GPUI
         public void SwitchTab(int index)
         {
 
-            OnTabSelected?.Invoke(index);
-            
             for (int i = 0; i < tabs.Count; i++)
             {
 
                 if (i == index)
                 {
+
+                    tabs[i].contentHolderParent.gameObject.SetActive(true);
+
+                    LayoutRebuilder.ForceRebuildLayoutImmediate(tabs[index].contentHolderParent
+                        .GetComponent<RectTransform>());
+                    LayoutRebuilder.ForceRebuildLayoutImmediate(contentGroupHolder);
 
                     tabs[i].OnClick(true);
 
@@ -207,7 +202,8 @@ namespace GPUI
                 }
                 else
                 {
-                    
+
+                    tabs[i].contentHolderParent.gameObject.SetActive(false);
                     tabs[i]._toggleBehavior.ResetClick();
 
                     continue;
@@ -215,6 +211,34 @@ namespace GPUI
                 }
 
             }
+
+        }
+
+        public void AddEntryToGroup(GameObject rootObject, int index = -1)
+        {
+
+            Debug.Log($"Moving {rootObject.name} to {index}");
+
+            if (index == -1 || rootObject == null)
+            {
+                //Error handling
+                return;
+            }
+
+            Debug.Log($"Moving {rootObject.name} to {tabs[index].contentHolderParent.name}");
+
+            rootObject.transform.SetParent(tabs[index].contentHolderParent);
+            rootObject.transform.localScale = Vector3.one;
+
+            LayoutRebuilder.ForceRebuildLayoutImmediate(tabs[index].contentHolderParent.GetComponent<RectTransform>());
+            LayoutRebuilder.ForceRebuildLayoutImmediate(this.GetComponent<RectTransform>());
+
+        }
+
+        public Transform GetEntryParent(int index)
+        {
+
+            return null;
 
         }
 

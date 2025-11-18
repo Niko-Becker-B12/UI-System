@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using Sirenix.Utilities.Editor;
 using System.IO;
 using Sirenix.OdinInspector;
+using GPUI;
 
 namespace GPUI.Editor
 {
