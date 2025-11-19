@@ -2,14 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using ThisOtherThing.UI.Shapes;
-using static ThisOtherThing.UI.GeoUtils;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using System;
 using LitMotion;
 using LitMotion.Extensions;
-using ThisOtherThing.UI.ShapeUtils;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
@@ -17,8 +14,17 @@ using UnityEngine.EventSystems;
 namespace GPUI
 {
     
+    /// <summary>
+    /// Base UI element for GPUI. 
+    /// Handles:
+    /// - Skin application (colors, sprite, material, outline, shadow)
+    /// - Hover / reset events
+    /// - State-based color transitions via Selectable
+    /// 
+    /// Derive from this for buttons, toggles, sliders, etc.
+    /// </summary>
     [RequireComponent(typeof(CanvasGroup))]
-    public class UiElement : UIBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
+    public class UiElement : Selectable, IPointerEnterHandler, IPointerExitHandler
     {
 
         [HideInInspector] public CanvasGroup canvasGroup;
@@ -43,39 +49,47 @@ namespace GPUI
         [TabGroup("Tabs", "Animations")] [OdinSerialize, NonSerialized]
         public UiAnimationData setInactiveAnimation;
         
-        [Space] [TabGroup("Events", "OnClick")]
+        [TabGroup("Events", "OnClick")]
         public UnityEvent onClick;
         
-        [Space] [TabGroup("Events", "OnEnter")]
+        [TabGroup("Events", "OnEnter")]
         public UnityEvent onEnter;
         
-        [Space] [TabGroup("Events", "OnExit")]
+        [TabGroup("Events", "OnExit")]
         public UnityEvent onExit;
         
+        [TabGroup("Events", "OnReset")]
+        public UnityEvent onReset;
         
-        protected virtual void Awake()
+        #region Unity Lifecycle
+
+        protected override void Reset()
         {
-
-            canvasGroup = GetComponent<CanvasGroup>();
-            rectTransform = GetComponent<RectTransform>();
-
+            
+            base.Reset();
+            
+            CacheComponents();
+            
         }
 
-        void OnValidate()
+        protected override void Awake()
         {
             
-            canvasGroup = GetComponent<CanvasGroup>();
-            rectTransform = GetComponent<RectTransform>();
+            base.Awake();
             
+            CacheComponents();
             ApplySkinData();
             
         }
 
-        protected virtual void Start()
+        protected override void OnEnable()
         {
-            
-            Debug.Log(UiManager.Instance);
-            
+            base.OnEnable();
+
+            // Ensure targetGraphic is set for Selectable color transitions
+            if (targetGraphic == null && backgroundGraphic != null)
+                targetGraphic = backgroundGraphic;
+
             if (UiManager.Instance != null)
             {
 
@@ -91,9 +105,193 @@ namespace GPUI
             }
             else
                 ApplySkinData();
+
+            // Make sure visuals reflect current selection state
+            DoStateTransition(currentSelectionState, true);
+            
+        }
+        
+        protected override void Start()
+        {
+            
+            base.Start();
             
         }
 
+#if UNITY_EDITOR
+        protected override void OnValidate()
+        {
+            base.OnValidate();
+            
+            CacheComponents();
+            ApplySkinData();
+            
+        }
+#endif
+
+        #endregion
+        
+        #region Component Caching
+        
+        protected virtual void CacheComponents()
+        {
+            if (!backgroundGraphic)
+                backgroundGraphic = GetComponent<Graphic>();
+
+            // By default, use our background image as the target graphic
+            if (backgroundGraphic && targetGraphic == null)
+                targetGraphic = backgroundGraphic;
+            
+            if(!canvasGroup)
+                canvasGroup = GetComponent<CanvasGroup>();
+            
+            if(!rectTransform)
+                rectTransform = GetComponent<RectTransform>();
+            
+        }
+
+        #endregion
+        
+        #region Apply Skin
+        
+        /// <summary>
+        /// Assigns skin values to this element.
+        /// </summary>
+        public virtual void ApplySkinData()
+        {
+
+            if (skinData == null)
+                return;
+            
+            Debug.Log($"{this.name} is applying skin data {skinData.name}");
+
+            if (backgroundGraphic)
+            {
+
+                if (skinData.backgroundMaterial != null)
+                    backgroundGraphic.material = skinData.backgroundMaterial;
+                
+                colors = skinData.backgroundColor;
+
+                if (backgroundGraphic is UiShapeRect)
+                {
+
+                    (backgroundGraphic as UiShapeRect).color = skinData.backgroundColor.normalColor;
+                    (backgroundGraphic as UiShapeRect).OutlineColor = skinData.outlineColor.normalColor;
+
+                    //if (skinData.backgroundSprite != null)
+                    //    (backgroundGraphic as UiShapeRect).Sprite = skinData.backgroundSprite;
+
+                    (backgroundGraphic as UiShapeRect).UseOutline = true;
+                    (backgroundGraphic as UiShapeRect).OutlineThickness = skinData.outlineWidth;
+
+                    (backgroundGraphic as UiShapeRect).UseShadow = true;
+                    (backgroundGraphic as UiShapeRect).ShadowCol = skinData.shadowColor;
+                    (backgroundGraphic as UiShapeRect).ShadowOffset = skinData.offset;
+                    (backgroundGraphic as UiShapeRect).ShadowSize = skinData.size;
+
+                }
+
+                LayoutRebuilder.ForceRebuildLayoutImmediate(this.GetComponent<RectTransform>());
+                LayoutRebuilder.ForceRebuildLayoutImmediate(backgroundGraphic.rectTransform);
+
+            }
+            
+            ApplyShape();
+            ApplyLayout(rectTransform, skinData.layoutOptions);
+
+        }
+
+        /// <summary>
+        /// Hook for shape components (rounded corners, etc).
+        /// Implement in subclasses or attach custom components that read from the skin.
+        /// </summary>
+        public virtual void ApplyShape()
+        {
+            
+            if (backgroundGraphic is UiShapeRect)
+            {
+
+                if (skinData.useMaxRadius)
+                {
+                    
+                    
+
+                }
+                else
+                {
+                    
+                    (backgroundGraphic as UiShapeRect).CornerRadius = new Vector4(skinData.backgroundRadiusTL, 
+                                                                        skinData.backgroundRadiusTR, 
+                                                                        skinData.backgroundRadiusBR, 
+                                                                        skinData.backgroundRadiusBL);
+
+                }
+
+                (backgroundGraphic as UiShapeRect).ShapeRoundness = skinData.shapeRoundness;
+
+                backgroundGraphic.SetAllDirty();
+
+            }
+            
+        }
+        
+        public virtual void ApplyLayout(RectTransform layoutRectTransform, SimpleComponentSkinDataObject.UiElementLayoutOptions layoutOptions)
+        {
+
+            if (!skinData)
+                return;
+            
+            if (!layoutRectTransform.TryGetComponent<UiCombiLayoutGroup>(out UiCombiLayoutGroup layoutGroup))
+                layoutGroup = layoutRectTransform.gameObject.AddComponent<UiCombiLayoutGroup>();
+            
+            //layoutGroup.justifyContent = layoutOptions.justifyContent;
+            //layoutGroup.flexDirection = layoutOptions.flexDirection;
+            //layoutGroup.alignItems = layoutOptions.alignItems;
+            //layoutGroup.flexWrap = layoutOptions.flexWrap;
+            //layoutGroup.gap = layoutOptions.gapMain;
+            
+        }
+        
+        /// <summary>
+        /// Override default state transition to also update outline based on skin.
+        /// </summary>
+        protected override void DoStateTransition(SelectionState state, bool instant)
+        {
+            base.DoStateTransition(state, instant);
+
+            if (skinData == null)
+                return;
+            
+            Color targetOutline = skinData.outlineColor.normalColor;
+
+            switch (state)
+            {
+                case SelectionState.Normal:
+                    targetOutline = skinData.outlineColor.normalColor;
+                    break;
+                case SelectionState.Highlighted:
+                    targetOutline = skinData.outlineColor.highlightedColor;
+                    break;
+                case SelectionState.Pressed:
+                    targetOutline = skinData.outlineColor.pressedColor;
+                    break;
+                case SelectionState.Selected:
+                    targetOutline = skinData.outlineColor.selectedColor;
+                    break;
+                case SelectionState.Disabled:
+                    targetOutline = skinData.outlineColor.disabledColor;
+                    break;
+            }
+
+            if(backgroundGraphic is UiShapeRect)
+                (backgroundGraphic as UiShapeRect).OutlineColor = targetOutline;
+        }
+        
+        #endregion
+        
+        #region API
+        
         public virtual void FadeElement(bool fadeIn = false)
         {
 
@@ -137,265 +335,51 @@ namespace GPUI
             }
 
         }
-        
-        public virtual void ApplySkinData()
-        {
-
-            if (skinData == null)
-                return;
-            
-            Debug.Log($"{this.name} is applying skin data {skinData.name}");
-
-            if (skinData.useLayoutOptions)
-            {
-                
-                if(this.rectTransform == null)
-                    ApplyLayout(this.GetComponent<RectTransform>(), skinData.layoutOptions);
-                else
-                    ApplyLayout(this.rectTransform, skinData.layoutOptions);
-                
-                /*
-                layoutGroup.rev = skinData.layoutOptions.reverseLayout;
-
-                switch (skinData.layoutOptions.childAlignmentAxis)
-                {
-
-                    case SimpleComponentSkinDataObject.UiElementLayoutOptions.UiElementChildAlignmentAxis.None:
-                        layoutGroup.enabled = true;
-                        break;
-                    case SimpleComponentSkinDataObject.UiElementLayoutOptions.UiElementChildAlignmentAxis.Vertical:
-                        layoutGroup.enabled = true;
-                        layoutGroup.padding = skinData.layoutOptions.layoutMargin;
-                        layoutGroup.spacing = skinData.layoutOptions.layoutSpacing;
-                        layoutGroup.LayoutAxis = UiCombiLayoutGroup.UiLayoutAxis.Vertical;
-                        layoutGroup.childAlignment = skinData.layoutOptions.childAlignment;
-                        break;
-                    case SimpleComponentSkinDataObject.UiElementLayoutOptions.UiElementChildAlignmentAxis.Horizontal:
-                        layoutGroup.enabled = true;
-                        layoutGroup.padding = skinData.layoutOptions.layoutMargin;
-                        layoutGroup.spacing = skinData.layoutOptions.layoutSpacing;
-                        layoutGroup.LayoutAxis = UiCombiLayoutGroup.UiLayoutAxis.Horizontal;
-                        layoutGroup.childAlignment = skinData.layoutOptions.childAlignment;
-                        break;
-
-                }
-
-                if (!TryGetComponent<ContentSizeFitter>(out ContentSizeFitter contentSizeFitter))
-                    contentSizeFitter = this.gameObject.AddComponent<ContentSizeFitter>();
-
-
-                if (skinData.layoutOptions.layoutSizingOption.HasFlag(
-                        SimpleComponentSkinDataObject.UiElementLayoutOptions.UiElementSizingOptions.ContentSizeFitted))
-                {
-                    contentSizeFitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
-                    contentSizeFitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
-
-                    layoutGroup.childControlHeight = false;
-                    layoutGroup.childControlWidth = false;
-                    layoutGroup.childForceExpandHeight = false;
-                    layoutGroup.childForceExpandWidth = false;
-                    layoutGroup.childScaleHeight = true;
-                    layoutGroup.childScaleWidth = true;
-
-                }
-                else if (skinData.layoutOptions.layoutSizingOption.HasFlag(SimpleComponentSkinDataObject.UiElementLayoutOptions.UiElementSizingOptions
-                             .ParentSizeFixed))
-                {
-
-                    contentSizeFitter.horizontalFit = ContentSizeFitter.FitMode.Unconstrained;
-                    contentSizeFitter.verticalFit = ContentSizeFitter.FitMode.Unconstrained;
-
-                    if (skinData.layoutOptions.layoutSizingOption.HasFlag(SimpleComponentSkinDataObject.UiElementLayoutOptions.UiElementSizingOptions
-                            .ControlChildWidth))
-                    {
-
-                        layoutGroup.childControlWidth = true;
-                        layoutGroup.childForceExpandWidth = true;
-                        layoutGroup.childScaleWidth = false;
-
-                    }
-
-                    if (skinData.layoutOptions.layoutSizingOption.HasFlag(SimpleComponentSkinDataObject.UiElementLayoutOptions.UiElementSizingOptions
-                            .ControlChildHeight))
-                    {
-
-                        layoutGroup.childControlHeight = true;
-                        layoutGroup.childForceExpandHeight = true;
-                        layoutGroup.childScaleHeight = false;
-
-                    }
-
-                }
-                */
-
-            }
-
-            if (backgroundGraphic != null)
-            {
-
-                if (skinData.backgroundMaterial != null)
-                    backgroundGraphic.material = skinData.backgroundMaterial;
-
-                if (backgroundGraphic is Rectangle)
-                {
-
-                    (backgroundGraphic as Rectangle).ShapeProperties.FillColor = skinData.backgroundColor.normalColor;
-                    (backgroundGraphic as Rectangle).ShapeProperties.OutlineColor = skinData.outlineColor.normalColor;
-
-                    if (skinData.backgroundSprite != null)
-                        (backgroundGraphic as Rectangle).Sprite = skinData.backgroundSprite;
-
-                    (backgroundGraphic as Rectangle).ShapeProperties.DrawOutline = true;
-                    (backgroundGraphic as Rectangle).OutlineProperties.Type =
-                        OutlineProperties.LineType.Inner;
-                    (backgroundGraphic as Rectangle).OutlineProperties.LineWeight = skinData.outlineWidth;
-
-                    if (skinData.useMaxRadius)
-                    {
-
-                        (backgroundGraphic as Rectangle).RoundedProperties.Type = RoundedRects.RoundedProperties.RoundedType.Uniform;
-                        (backgroundGraphic as Rectangle).RoundedProperties.UseMaxRadius = true;
-                        (backgroundGraphic as Rectangle).RoundedProperties.UseMaxRadius = true;
-                        (backgroundGraphic as Rectangle).RoundedProperties.UseMaxRadius = true;
-                        (backgroundGraphic as Rectangle).RoundedProperties.UseMaxRadius = true;
-                        (backgroundGraphic as Rectangle).RoundedProperties.UseMaxRadius = true;
-
-                    }
-                    else
-                    {
-
-                        (backgroundGraphic as Rectangle).RoundedProperties.Type = RoundedRects.RoundedProperties.RoundedType.Individual;
-                        (backgroundGraphic as Rectangle).RoundedProperties.TLRadius = skinData.backgroundRadiusTL;
-                        (backgroundGraphic as Rectangle).RoundedProperties.TRRadius = skinData.backgroundRadiusTR;
-                        (backgroundGraphic as Rectangle).RoundedProperties.BRRadius = skinData.backgroundRadiusBR;
-                        (backgroundGraphic as Rectangle).RoundedProperties.BLRadius = skinData.backgroundRadiusBL;
-
-                    }
-
-                    (backgroundGraphic as Rectangle).RoundedProperties.ResolutionMode = RoundedRects.RoundedProperties.ResolutionType.Uniform;
-                    (backgroundGraphic as Rectangle).RoundedProperties.UniformResolution.Resolution =
-                        RoundingProperties.ResolutionType.Fixed;
-                    (backgroundGraphic as Rectangle).RoundedProperties.UniformResolution.FixedResolution =
-                        skinData.shapeRoundness * 2;
-
-                    if ((backgroundGraphic as Rectangle).ShadowProperties.Shadows == null ||
-                        (backgroundGraphic as Rectangle).ShadowProperties.Shadows.Length == 0)
-                    {
-
-                        ShadowProperties[] shadows = new ShadowProperties[1];
-
-                        shadows[0] = new ShadowProperties
-                        {
-                            Softness = skinData.softness,
-                            Color = skinData.shadowColor,
-                            Size = skinData.size,
-                            Offset = skinData.offset
-                        };
-
-                        (backgroundGraphic as Rectangle).ShadowProperties.Shadows = shadows;
-
-                    }
-                    else
-                        (backgroundGraphic as Rectangle).ShadowProperties.Shadows[0] = new ShadowProperties
-                        {
-                            Softness = skinData.softness,
-                            Color = skinData.shadowColor,
-                            Size = skinData.size,
-                            Offset = skinData.offset
-                        };
-
-                    backgroundGraphic.SetAllDirty();
-                    (backgroundGraphic as Rectangle).ForceMeshUpdate();
-
-                }
-                else if (backgroundGraphic is Polygon)
-                {
-
-                    (backgroundGraphic as Polygon).ShapeProperties.FillColor = skinData.backgroundColor.normalColor;
-
-
-                    if ((backgroundGraphic as Polygon).ShadowProperties.Shadows.Length == 0)
-                    {
-
-                        ShadowProperties[] shadows = new ShadowProperties[1];
-
-                        shadows[0] = new ShadowProperties
-                        {
-                            Softness = skinData.softness,
-                            Color = skinData.shadowColor,
-                            Size = skinData.size,
-                            Offset = skinData.offset
-                        };
-
-                        (backgroundGraphic as Polygon).ShadowProperties.Shadows = shadows;
-
-                    }
-                    else
-                        (backgroundGraphic as Polygon).ShadowProperties.Shadows[0] = new ShadowProperties
-                        {
-                            Softness = skinData.softness,
-                            Color = skinData.shadowColor,
-                            Size = skinData.size,
-                            Offset = skinData.offset
-                        };
-
-                    backgroundGraphic.SetAllDirty();
-                    (backgroundGraphic as Polygon).ForceMeshUpdate();
-
-                }
-
-                LayoutRebuilder.ForceRebuildLayoutImmediate(this.GetComponent<RectTransform>());
-                LayoutRebuilder.ForceRebuildLayoutImmediate(backgroundGraphic.rectTransform);
-
-            }
-
-        }
-
-        public virtual void ApplyLayout(RectTransform layoutRectTransform, SimpleComponentSkinDataObject.UiElementLayoutOptions layoutOptions)
-        {
-            
-            if (!layoutRectTransform.TryGetComponent<UiCombiLayoutGroup>(out UiCombiLayoutGroup layoutGroup))
-                layoutGroup = layoutRectTransform.gameObject.AddComponent<UiCombiLayoutGroup>();
-            
-            //layoutGroup.justifyContent = layoutOptions.justifyContent;
-            //layoutGroup.flexDirection = layoutOptions.flexDirection;
-            //layoutGroup.alignItems = layoutOptions.alignItems;
-            //layoutGroup.flexWrap = layoutOptions.flexWrap;
-            //layoutGroup.gap = layoutOptions.gapMain;
-            
-        }
 
         public virtual void OnPointerClick(PointerEventData eventData)
         {
+            
+            if (!IsActive() || !IsInteractable()) 
+                return;
 
             onClick?.Invoke();
             
         }
 
-        public virtual void OnPointerEnter(PointerEventData eventData)
+        public override void OnPointerEnter(PointerEventData eventData)
         {
             
-#if UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
-            
-            UiCursor.ChangeCursor(UiCursor.CursorType.Hand);
+            base.OnPointerEnter(eventData);
 
-#endif
-            
+            if (!IsActive() || !IsInteractable()) 
+                return;
+
             onEnter?.Invoke();
             
         }
 
-        public virtual void OnPointerExit(PointerEventData eventData)
+        public override void OnPointerExit(PointerEventData eventData)
         {
             
-#if UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
-            
-            UiCursor.ChangeCursor(UiCursor.CursorType.Arrow);
+            base.OnPointerExit(eventData);
 
-#endif
-            
-            onExit?.Invoke();   
+            if (!IsActive()) 
+                return;
+
+            onExit?.Invoke();
          
         }
+
+        public virtual void OnResetElement()
+        {
+            
+            interactable = true;
+            DoStateTransition(SelectionState.Normal, true);
+            onReset?.Invoke();
+            
+        }
+        
+        #endregion
+        
     }
 }

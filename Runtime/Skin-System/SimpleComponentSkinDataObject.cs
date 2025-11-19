@@ -24,22 +24,22 @@ namespace GPUI
         public Object target => this;
 
         [TabGroup("Settings", "Shape", SdfIconType.BoundingBoxCircles)]
-        [HorizontalGroup("Settings/Shape/Left"), LabelText("Top-Left")]
+        [HorizontalGroup("Settings/Shape/Top"), LabelText("Top-Left")]
         [Range(0f, 256f)]
         public int backgroundRadiusTL;
 
         [TabGroup("Settings", "Shape")]
-        [HorizontalGroup("Settings/Shape/Right"), LabelText("Top-Right")]
+        [HorizontalGroup("Settings/Shape/Top"), LabelText("Top-Right")]
         [Range(0f, 256f)]
         public int backgroundRadiusTR;
 
         [TabGroup("Settings", "Shape")]
-        [HorizontalGroup("Settings/Shape/Left"), LabelText("Bottom-Left")]
+        [HorizontalGroup("Settings/Shape/Bottom"), LabelText("Bottom-Left")]
         [Range(0f, 256f)]
         public int backgroundRadiusBL;
 
         [TabGroup("Settings", "Shape")]
-        [HorizontalGroup("Settings/Shape/Right"), LabelText("Bottom-Right"), InlineProperty]
+        [HorizontalGroup("Settings/Shape/Bottom"), LabelText("Bottom-Right"), InlineProperty]
         [Range(0f, 256f)]
         public int backgroundRadiusBR;
 
