@@ -12,13 +12,12 @@ namespace GPUI
     {
 
         [TabGroup("Tabs", "UI Elements")] public List<Graphic> secondaryDetailGraphics = new List<Graphic>();
+        [TabGroup("Tabs", "UI Elements")] public ComponentSkinDataObject secondaryDetailGraphicsSkin;
 
         [TabGroup("Tabs", "UI Elements")] public LocalizedString title;
 
         [TabGroup("Tabs", "UI Elements")] [ReadOnly]
         public int tabIndex;
-
-        [TabGroup("Tabs", "UI Elements")] public Transform contentHolderParent;
 
         [TabGroup("Tabs", "UI Elements")] public UiTabGroup tabGroup;
 
@@ -60,7 +59,7 @@ namespace GPUI
                 for (int i = 0; i < secondaryDetailGraphics.Count; i++)
                 {
                     
-                    secondaryDetailGraphics[i].color = detailedSkinData.detailColor.normalColor;
+                    secondaryDetailGraphics[i].color = secondaryDetailGraphicsSkin.detailColor.normalColor;
                     
                 }
 
@@ -84,7 +83,7 @@ namespace GPUI
                 {
                     
                     secondaryDetailGraphics[i].color =
-                        (skinData as UiToggleSkinDataObject).pressedDetailColor.normalColor;
+                        (secondaryDetailGraphicsSkin as UiToggleSkinDataObject).pressedDetailColor.normalColor;
                     
                 }
 
@@ -95,7 +94,8 @@ namespace GPUI
                 for (int i = 0; i < secondaryDetailGraphics.Count; i++)
                 {
                     
-                    secondaryDetailGraphics[i].color = (skinData as UiToggleSkinDataObject).detailColor.normalColor;
+                    secondaryDetailGraphics[i].color = 
+                        (secondaryDetailGraphicsSkin as UiToggleSkinDataObject).detailColor.normalColor;
                     
                 }
 
@@ -118,7 +118,7 @@ namespace GPUI
                 {
                     
                     secondaryDetailGraphics[i].color =
-                        (skinData as UiToggleSkinDataObject).pressedDetailColor.highlightedColor;
+                        (secondaryDetailGraphicsSkin as UiToggleSkinDataObject).pressedDetailColor.highlightedColor;
                     
                 }
 
@@ -130,7 +130,7 @@ namespace GPUI
                 {
                     
                     secondaryDetailGraphics[i].color =
-                        (skinData as UiToggleSkinDataObject).detailColor.highlightedColor;
+                        (secondaryDetailGraphicsSkin as UiToggleSkinDataObject).detailColor.highlightedColor;
                     
                 }
 
@@ -153,7 +153,7 @@ namespace GPUI
                 {
                     
                     secondaryDetailGraphics[i].color =
-                        (skinData as UiToggleSkinDataObject).pressedDetailColor.normalColor;
+                        (secondaryDetailGraphicsSkin as UiToggleSkinDataObject).pressedDetailColor.normalColor;
                     
                 }
 
@@ -164,7 +164,7 @@ namespace GPUI
                 for (int i = 0; i < secondaryDetailGraphics.Count; i++)
                 {
                     
-                    secondaryDetailGraphics[i].color = (skinData as UiToggleSkinDataObject).detailColor.normalColor;
+                    secondaryDetailGraphics[i].color = (secondaryDetailGraphicsSkin as UiToggleSkinDataObject).detailColor.normalColor;
                     
                 }
 
@@ -187,7 +187,7 @@ namespace GPUI
                 {
                     
                     secondaryDetailGraphics[i].color =
-                        (skinData as UiToggleSkinDataObject).pressedDetailColor.normalColor;
+                        (secondaryDetailGraphicsSkin as UiToggleSkinDataObject).pressedDetailColor.normalColor;
                     
                 }
 
@@ -199,7 +199,7 @@ namespace GPUI
                 for (int i = 0; i < secondaryDetailGraphics.Count; i++)
                 {
                     
-                    secondaryDetailGraphics[i].color = (skinData as UiToggleSkinDataObject).detailColor.normalColor;
+                    secondaryDetailGraphics[i].color = (secondaryDetailGraphicsSkin as UiToggleSkinDataObject).detailColor.normalColor;
                     
                 }
 
