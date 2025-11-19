@@ -84,6 +84,7 @@ namespace GPUI
                         }
 
                         wasClicked = true;
+                        isActive = false;
 
                     }
                     else
@@ -97,6 +98,7 @@ namespace GPUI
                         }
 
                         wasClicked = true;
+                        isActive = true;
 
                     }
 
