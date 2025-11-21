@@ -27,7 +27,7 @@ namespace GPUI
 
         [ShowInInspector, ReadOnly] public Stack<int> lastWindows = new Stack<int>(128);
 
-        public List<UiWindow> mainWindows = new List<UiWindow>();
+        public List<UiElement> mainWindows = new List<UiElement>();
 
         public UnityEvent<UiSkinPalette> OnSkinChanged;
 

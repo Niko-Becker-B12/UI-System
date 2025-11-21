@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,38 +16,79 @@ namespace GPUI
     [RequireComponent(typeof(CanvasRenderer))]
     public class UiShapeRect : MaskableGraphic
     {
-        [Header("Rectangle")] [Tooltip("Corner radius in pixels: X = TL, Y = TR, Z = BR, W = BL.")] [SerializeField]
+        [Header("Rectangle")]
+        [Tooltip("Fill color of the shape (independent from outline and shadow).")]
+        [SerializeField]
+        [TabGroup("Settings", "Shape", SdfIconType.BoundingBoxCircles)]
+        private Color fillColor = Color.white;
+
+        [Tooltip("Corner radius in pixels: X = TL, Y = TR, Z = BR, W = BL.")]
+        [SerializeField]
+        [TabGroup("Settings", "Shape", SdfIconType.BoundingBoxCircles)]
         private Vector4 cornerRadius = Vector4.zero;
 
-        [Tooltip("Number of segments used to approximate each rounded corner.")] [Range(1, 24)] [SerializeField]
+        [Tooltip("Number of segments used to approximate each rounded corner.")]
+        [Range(1, 24)]
+        [SerializeField]
+        [TabGroup("Settings", "Shape", SdfIconType.BoundingBoxCircles)]
         private float cornerSegments = 8;
 
-        [Header("Outline")] [SerializeField] private bool useOutline = false;
+        [TabGroup("Settings", "Outline", SdfIconType.BorderOuter)]
+        [SerializeField]
+        private bool useOutline = false;
 
-        [Tooltip("Outline thickness in pixels.")] [Min(0f)] [SerializeField]
+        [TabGroup("Settings", "Outline", SdfIconType.BorderOuter)]
+        [Tooltip("Outline thickness in pixels.")]
+        [Min(0f)]
+        [SerializeField]
         private float outlineThickness = 2f;
 
-        [SerializeField] private Color outlineColor = Color.black;
+        [TabGroup("Settings", "Outline", SdfIconType.BorderOuter)]
+        [SerializeField]
+        private Color outlineColor = Color.black;
 
-        [Header("Shadow")] [SerializeField] private bool useShadow = false;
+        [TabGroup("Settings", "Shadow", SdfIconType.Subtract)]
+        [SerializeField]
+        private bool useShadow = false;
 
-        [Tooltip("Base shadow offset in local pixels.")] [SerializeField]
+        [TabGroup("Settings", "Shadow")]
+        [Tooltip("Base shadow offset in local pixels.")]
+        [SerializeField]
         private Vector2 shadowOffset = new Vector2(2f, -2f);
 
-        [Tooltip("Base expansion of the shadow in pixels (like a big solid drop shadow).")] [Min(0f)] [SerializeField]
+        [TabGroup("Settings", "Shadow")]
+        [Tooltip("Base expansion of the shadow in pixels (like a big solid drop shadow).")]
+        [Min(0f)]
+        [SerializeField]
         private float shadowSize = 4f;
 
+        [TabGroup("Settings", "Shadow")]
         [Tooltip("Extra soft fade distance in pixels. 0 = hard edge, higher = softer shadow.")]
         [Min(0f)]
         [SerializeField]
         private float shadowSoftness = 8f;
 
-        [Tooltip("How many soft steps to draw. More = smoother but more vertices.")] [Range(1, 8)] [SerializeField]
+        [TabGroup("Settings", "Shadow")]
+        [Tooltip("How many soft steps to draw. More = smoother but more vertices.")]
+        [Range(1, 8)]
+        [SerializeField]
         private int shadowSteps = 4;
 
-        [SerializeField] private Color shadowColor = new Color(0f, 0f, 0f, 0.5f);
+        [TabGroup("Settings", "Shadow")]
+        [SerializeField]
+        private Color shadowColor = new Color(0f, 0f, 0f, 0.5f);
 
         #region Public API
+
+        public Color FillColor
+        {
+            get => fillColor;
+            set
+            {
+                fillColor = value;
+                SetVerticesDirty();
+            }
+        }
 
         public Vector4 CornerRadius
         {
@@ -147,7 +189,7 @@ namespace GPUI
                 SetVerticesDirty();
             }
         }
-        
+
         public float ShapeRoundness
         {
             get => cornerSegments;
@@ -177,11 +219,17 @@ namespace GPUI
         protected override void OnValidate()
         {
             base.OnValidate();
-            cornerSegments = Mathf.Max(1, cornerSegments);
+            cornerSegments   = Mathf.Max(1, cornerSegments);
             outlineThickness = Mathf.Max(0f, outlineThickness);
-            shadowSize = Mathf.Max(0f, shadowSize);
-            shadowSoftness = Mathf.Max(0f, shadowSoftness);
-            shadowSteps = Mathf.Clamp(shadowSteps, 1, 8);
+            shadowSize       = Mathf.Max(0f, shadowSize);
+            shadowSoftness   = Mathf.Max(0f, shadowSoftness);
+            shadowSteps      = Mathf.Clamp(shadowSteps, 1, 8);
+
+            // Ensure the built-in Graphic color does not tint our geometry.
+            // All actual colors come from fillColor / outlineColor / shadowColor.
+            if (color != Color.white)
+                color = Color.white;
+
             SetVerticesDirty();
         }
 #endif
@@ -190,6 +238,10 @@ namespace GPUI
         {
             vh.Clear();
 
+            // Also enforce white at runtime in case someone changes it via script.
+            if (color != Color.white)
+                color = Color.white;
+
             Rect rect = GetPixelAdjustedRect();
             Vector4 radius = GetClampedRadius(rect, cornerRadius);
             int segments = Mathf.Max(1, Mathf.RoundToInt(cornerSegments));
@@ -197,13 +249,12 @@ namespace GPUI
             // SOFT SHADOW (drawn first so it appears behind everything)
             if (useShadow && shadowColor.a > 0f)
             {
-                // We draw several expanded copies with decreasing alpha
                 int steps = Mathf.Max(1, shadowSteps);
 
                 for (int i = 0; i < steps; i++)
                 {
                     // t=0 is inner-most (solid), t=1 is outer-most (faded)
-                    float t = (steps == 1) ? 0f : (float)i / (steps - 1);
+                    float t    = (steps == 1) ? 0f : (float)i / (steps - 1);
                     float size = shadowSize + t * shadowSoftness;
 
                     // Fade alpha outwards
@@ -220,10 +271,10 @@ namespace GPUI
                 }
             }
 
-            // FILL
-            AddFilledRoundedRect(vh, rect, radius, color, segments);
+            // FILL (uses fillColor only)
+            AddFilledRoundedRect(vh, rect, radius, fillColor, segments);
 
-            // OUTLINE
+            // OUTLINE (uses outlineColor only)
             if (useOutline && outlineThickness > 0f)
             {
                 AddRoundedOutline(vh, rect, radius, outlineThickness, outlineColor, segments);
@@ -277,7 +328,12 @@ namespace GPUI
             }
         }
 
-        private void AddRoundedOutline(VertexHelper vh, Rect rect, Vector4 radius, float thickness, Color col,
+        private void AddRoundedOutline(
+            VertexHelper vh,
+            Rect rect,
+            Vector4 radius,
+            float thickness,
+            Color col,
             int segmentsPerCorner)
         {
             Color32 c32 = col;

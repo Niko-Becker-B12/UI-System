@@ -1,435 +1,312 @@
 using Sirenix.OdinInspector;
-using System.Collections;
 using System.Collections.Generic;
-using ThisOtherThing.UI.Shapes;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.UI;
-
+using UnityEngine.EventSystems;
 
 namespace GPUI
 {
-    [RequireComponent(typeof(ToggleBehavior))]
 
     public class UiToggle : UiElementExtended
     {
-
-        public ToggleBehavior _toggleBehavior;
-
-        [Space] [TabGroup("Events", "OnClick")]
-        public List<Function> onSetActiveFunctions = new List<Function>();
-
-        [Space] [TabGroup("Events", "OnClick")]
-        public List<Function> onSetDeactiveFunctions = new List<Function>();
-
-        [Space] [TabGroup("Events", "OnEnter")]
-        public List<Function> onEnterFunctions = new List<Function>();
-
-        [Space] [TabGroup("Events", "OnExit")]
-        public List<Function> onExitFunctions = new List<Function>();
-
-        [Space] [TabGroup("Events", "OnReset")]
-        public List<Function> onResetFunctions = new List<Function>();
-
-        [TabGroup("Tabs", "UI Elements")]
-        public bool isToggleButton = false;
-
-
-        public void Start()
+        
+        public enum ToggleBehavior
         {
+            Normal,
+            ToggleButton,
+        }
+        
+        [TabGroup("Tabs", "Settings")]
+        [SerializeField]
+        private ToggleBehavior behavior = ToggleBehavior.Normal;
+        
+        [TabGroup("Tabs", "Settings")]
+        [Tooltip("Initial state when the toggle becomes active.")]
+        [SerializeField]
+        private bool startOn = false;
 
-            _toggleBehavior = GetComponent<ToggleBehavior>();
+        [TabGroup("Tabs", "Settings")]
+        [ShowInInspector, ReadOnly, LabelText("Is On")]
+        private bool isOn;
+        
+        [TabGroup("Tabs", "Settings")]
+        [Tooltip("Optional toggle group this toggle belongs to.")]
+        [SerializeField]
+        private UiToggleGroup toggleGroup;
+        
+        [TabGroup("Events", "OnClick")]
+        [LabelText("On Value Changed (bool)")]
+        public UnityEvent<bool> onValueChanged;
 
-            if (backgroundGraphic != null)
-                backgroundGraphic.raycastPadding = new Vector4(-8f, -8f, -8f, -8f);
+        [TabGroup("Events", "OnClick")]
+        [LabelText("On Toggled On")]
+        public UnityEvent onToggledOn;
 
-            _toggleBehavior.onSetActive.Clear();
-            _toggleBehavior.onSetDeactive.Clear();
-            _toggleBehavior.onMouseEnter.Clear();
-            _toggleBehavior.onMouseExit.Clear();
-            _toggleBehavior.onButtonReset.Clear();
-
-
-            Function onSetActive = new Function
+        [TabGroup("Events", "OnClick")]
+        [LabelText("On Toggled Off")]
+        public UnityEvent onToggledOff;
+        
+        /// <summary>
+        /// Public read-only access to the current state.
+        /// </summary>
+        public bool IsOn => isOn;
+        
+        public UiToggleGroup ToggleGroup
+        {
+            get => toggleGroup;
+            set
             {
-                functionDelay = 0,
-                functionName = new UnityEvent { }
-            };
-            onSetActive.functionName.AddListener(() => { OnClick(true); });
+                if (toggleGroup == value)
+                    return;
 
-            onSetActiveFunctions.Add(onSetActive);
+                // deregister from old
+                if (toggleGroup != null)
+                    toggleGroup.UnregisterToggle(this);
 
-            Function onSetDeactive = new Function
-            {
-                functionDelay = 0,
-                functionName = new UnityEvent { }
-            };
-            onSetDeactive.functionName.AddListener(() => { OnClick(false); });
+                toggleGroup = value;
 
-            onSetDeactiveFunctions.Add(onSetDeactive);
+                // register to new
+                if (isActiveAndEnabled && toggleGroup != null)
+                    toggleGroup.RegisterToggle(this);
 
-            Function onEnter = new Function
-            {
-                functionDelay = 0,
-                functionName = new UnityEvent { }
-            };
-            onEnter.functionName.AddListener(() => { OnEnter(); });
-
-            onEnterFunctions.Add(onEnter);
-
-            Function onExit = new Function
-            {
-                functionDelay = 0,
-                functionName = new UnityEvent { }
-            };
-            onExit.functionName.AddListener(() => { OnExit(); });
-
-            onExitFunctions.Add(onExit);
-
-            Function onReset = new Function
-            {
-                functionDelay = 0,
-                functionName = new UnityEvent { }
-            };
-            onReset.functionName.AddListener(() => { OnReset(); });
-
-            onResetFunctions.Add(onReset);
-
-
-            _toggleBehavior.onSetActive.AddRange(onSetActiveFunctions);
-            _toggleBehavior.onSetDeactive.AddRange(onSetDeactiveFunctions);
-            _toggleBehavior.onMouseEnter.AddRange(onEnterFunctions);
-            _toggleBehavior.onMouseExit.AddRange(onExitFunctions);
-            _toggleBehavior.onButtonReset.AddRange(onResetFunctions);
-
+                // ensure group constraints are respected
+                if (toggleGroup != null && isOn)
+                    toggleGroup.NotifyToggleOn(this);
+            }
         }
 
+        #region Unity Lifecycle
+
+        protected override void Reset()
+        {
+            
+            base.Reset();
+            
+        }
+
+        protected override void Awake()
+        {
+            
+            base.Awake();
+            
+        }
+
+        protected override void OnEnable()
+        {
+            
+            base.OnEnable();
+
+            // Initialize state when the toggle becomes active
+            SetIsOn(startOn, false);
+
+            if (toggleGroup != null)
+                toggleGroup.RegisterToggle(this);
+
+            // If we're ON, notify group so it can turn others off.
+            if (toggleGroup != null && isOn)
+                toggleGroup.NotifyToggleOn(this);
+            
+        }
+
+        protected override void OnDisable()
+        {
+            
+            if (toggleGroup != null)
+                toggleGroup.UnregisterToggle(this);
+
+            base.OnDisable();
+            
+        }
+        
+        protected override void Start()
+        {
+            
+            base.Start();
+            
+        }
+
+#if UNITY_EDITOR
+        protected override void OnValidate()
+        {
+            
+            base.OnValidate();
+            
+        }
+#endif
+
+        #endregion
+        
+        #region Component Caching
+        
+        protected override void CacheComponents()
+        {
+            
+            base.CacheComponents();
+            
+        }
+
+        #endregion
+        
+        #region Apply Skin
+        
+        /// <summary>
+        /// Assigns skin values to this element.
+        /// </summary>
         public override void ApplySkinData()
         {
 
             base.ApplySkinData();
 
-            if (skinData == null)
-                return;
-
-            if (detailGraphic != null && skinData is ComponentSkinDataObject)
-            {
-
-                ComponentSkinDataObject detailedSkinData = skinData as ComponentSkinDataObject;
-                
-                detailGraphic.color = detailedSkinData.detailColor.normalColor;
-
-            }
-
         }
 
-        public virtual void OnClick(bool isActive)
+        /// <summary>
+        /// Hook for shape components (rounded corners, etc).
+        /// Implement in subclasses or attach custom components that read from the skin.
+        /// </summary>
+        public override void ApplyShape()
+        {
+            
+            base.ApplyShape();
+            
+        }
+        
+        public override void ApplyLayout(RectTransform layoutRectTransform, SimpleComponentSkinDataObject.UiElementLayoutOptions layoutOptions)
         {
 
-            if (isActive)
-            {
-
-                if (backgroundGraphic != null)
-                {
-
-                    if (skinData != null)
-                    {
-                        if (skinData is UiToggleSkinDataObject)
-                        {
-
-                            (backgroundGraphic as Rectangle).ShapeProperties.FillColor =
-                                (skinData as UiToggleSkinDataObject).pressedBackgroundColor.pressedColor;
-                            (backgroundGraphic as Rectangle).ShapeProperties.OutlineColor =
-                                (skinData as UiToggleSkinDataObject).pressedBackgroundColor.pressedColor;
-
-                        }
-                        else
-                        {
-
-                            (backgroundGraphic as Rectangle).ShapeProperties.FillColor =
-                                skinData.backgroundColor.pressedColor;
-                            (backgroundGraphic as Rectangle).ShapeProperties.OutlineColor =
-                                skinData.outlineColor.pressedColor;
-
-                        }
-
-                    }
-
-                }
-
-                if (detailGraphic != null)
-                {
-
-                    ComponentSkinDataObject detailedSkinData = skinData as ComponentSkinDataObject;
-                    detailGraphic.color = detailedSkinData.detailColor.normalColor;
-                    
-                    if (isToggleButton)
-                        detailGraphic.gameObject.SetActive(true);
-
-                    if (skinData != null)
-                        if (skinData is UiToggleSkinDataObject)
-                            detailGraphic.color = (skinData as UiToggleSkinDataObject).pressedDetailColor.pressedColor;
-                        else
-                            detailGraphic.color = detailedSkinData.detailColor.pressedColor;
-
-                }
-
-                if (!_toggleBehavior.isActive)
-                {
-
-                    _toggleBehavior.isActive = false;
-                    _toggleBehavior.OnMouseDown();
-
-                }
-
-            }
-            else
-            {
-
-                if (backgroundGraphic != null)
-                {
-
-                    if (skinData != null)
-                    {
-                        if (skinData is UiToggleSkinDataObject)
-                        {
-
-                            (backgroundGraphic as Rectangle).ShapeProperties.FillColor =
-                                skinData.backgroundColor.pressedColor;
-                            (backgroundGraphic as Rectangle).ShapeProperties.OutlineColor =
-                                skinData.outlineColor.pressedColor;
-
-                        }
-                        else
-                        {
-
-                            (backgroundGraphic as Rectangle).ShapeProperties.FillColor =
-                                skinData.backgroundColor.pressedColor;
-                            (backgroundGraphic as Rectangle).ShapeProperties.OutlineColor =
-                                skinData.outlineColor.pressedColor;
-
-                        }
-
-                    }
-
-                }
-
-                if (detailGraphic != null)
-                {
-
-                    if (isToggleButton)
-                        detailGraphic.gameObject.SetActive(false);
-                    
-                    ComponentSkinDataObject detailedSkinData = skinData as ComponentSkinDataObject;
-                    detailGraphic.color = detailedSkinData.detailColor.normalColor;
-
-                    if (skinData != null)
-                        if (skinData is UiToggleSkinDataObject)
-                            detailGraphic.color = (skinData as UiToggleSkinDataObject).detailColor.pressedColor;
-                        else
-                            detailGraphic.color = detailedSkinData.detailColor.pressedColor;
-
-                }
-
-                if (_toggleBehavior.isActive)
-                {
-
-                    _toggleBehavior.isActive = true;
-                    _toggleBehavior.OnMouseDown();
-
-                }
-
-            }
-
-            if (backgroundGraphic != null)
-                backgroundGraphic.SetAllDirty();
-
-            if (detailGraphic != null)
-                detailGraphic.SetAllDirty();
-
+           base.ApplyLayout(layoutRectTransform, layoutOptions);
+            
         }
-
-        public virtual void OnEnter()
+        
+        /// <summary>
+        /// Override default state transition to also update outline based on skin.
+        /// </summary>
+        protected override void DoStateTransition(SelectionState state, bool instant)
+        {
+            
+            base.DoStateTransition(state, instant);
+            
+        }
+        
+        #endregion
+        
+        #region API
+        
+        public override void FadeElement(bool fadeIn = false)
         {
 
-            if (skinData == null)
-                return;
-
-            if (backgroundGraphic != null)
-            {
-                if (_toggleBehavior.isActive)
-                {
-                    if (skinData is UiToggleSkinDataObject)
-                    {
-                        (backgroundGraphic as Rectangle).ShapeProperties.FillColor =
-                            (skinData as UiToggleSkinDataObject).pressedBackgroundColor.highlightedColor;
-                        (backgroundGraphic as Rectangle).ShapeProperties.OutlineColor =
-                            (skinData as UiToggleSkinDataObject).pressedBackgroundColor.highlightedColor;
-                    }
-                    else
-                    {
-                        (backgroundGraphic as Rectangle).ShapeProperties.FillColor =
-                            skinData.backgroundColor.highlightedColor;
-                        (backgroundGraphic as Rectangle).ShapeProperties.OutlineColor =
-                            skinData.outlineColor.highlightedColor;
-                    }
-                }
-                else
-                {
-                    (backgroundGraphic as Rectangle).ShapeProperties.FillColor =
-                        skinData.backgroundColor.highlightedColor;
-                    (backgroundGraphic as Rectangle).ShapeProperties.OutlineColor =
-                        skinData.outlineColor.highlightedColor;
-                }
-
-            }
-
-            if (detailGraphic != null)
-            {
-                
-                ComponentSkinDataObject detailedSkinData = skinData as ComponentSkinDataObject;
-                detailGraphic.color = detailedSkinData.detailColor.normalColor;
-                
-                if (_toggleBehavior.isActive)
-                    if (skinData is UiToggleSkinDataObject)
-                        detailGraphic.color = (skinData as UiToggleSkinDataObject).pressedDetailColor.highlightedColor;
-                    else
-                        detailGraphic.color = detailedSkinData.detailColor.highlightedColor;
-                else
-                    detailGraphic.color = detailedSkinData.detailColor.highlightedColor;
-
-            }
-
-            if (backgroundGraphic != null)
-                backgroundGraphic.SetAllDirty();
-
-            if (detailGraphic != null)
-                detailGraphic.SetAllDirty();
+            base.FadeElement(fadeIn);
 
         }
 
-        public virtual void OnExit()
+        public override void OnPointerClick(PointerEventData eventData)
         {
-
-            if (skinData == null)
+            
+            if (eventData.button != PointerEventData.InputButton.Left)
                 return;
 
-            if (backgroundGraphic != null)
-            {
-                if (_toggleBehavior.isActive)
-                {
-                    if (skinData is UiToggleSkinDataObject)
-                    {
-                        (backgroundGraphic as Rectangle).ShapeProperties.FillColor =
-                            (skinData as UiToggleSkinDataObject).pressedBackgroundColor.normalColor;
-                        (backgroundGraphic as Rectangle).ShapeProperties.OutlineColor =
-                            (skinData as UiToggleSkinDataObject).pressedBackgroundColor.normalColor;
-                    }
-                    else
-                    {
-                        (backgroundGraphic as Rectangle).ShapeProperties.FillColor =
-                            skinData.backgroundColor.normalColor;
-                        (backgroundGraphic as Rectangle).ShapeProperties.OutlineColor =
-                            skinData.outlineColor.normalColor;
-                    }
-                }
-                else
-                {
-                    (backgroundGraphic as Rectangle).ShapeProperties.FillColor = skinData.backgroundColor.normalColor;
-                    (backgroundGraphic as Rectangle).ShapeProperties.OutlineColor = skinData.outlineColor.normalColor;
-                }
+            if (!IsActive() || !IsInteractable())
+                return;
 
-            }
+            Toggle();
 
-            if (detailGraphic != null)
-            {
-                
-                ComponentSkinDataObject detailedSkinData = skinData as ComponentSkinDataObject;
-                detailGraphic.color = detailedSkinData.detailColor.normalColor;
-                
-                if (_toggleBehavior.isActive)
-                    if (skinData is UiToggleSkinDataObject)
-                        detailGraphic.color = (skinData as UiToggleSkinDataObject).pressedDetailColor.normalColor;
-                    else
-                        detailGraphic.color = detailedSkinData.detailColor.normalColor;
-                else
-                    detailGraphic.color = detailedSkinData.detailColor.normalColor;
-
-            }
-
-            if (backgroundGraphic != null)
-                backgroundGraphic.SetAllDirty();
-
-            if (detailGraphic != null)
-                detailGraphic.SetAllDirty();
-
+            // Let Selectable handle state transitions, etc.
+            base.OnPointerClick(eventData);
+            
         }
 
-        public virtual void OnReset()
+        public override void OnPointerEnter(PointerEventData eventData)
         {
-
-            if (skinData == null)
-                return;
-
-            if (backgroundGraphic != null)
-            {
-                if (_toggleBehavior.isActive)
-                {
-                    if (skinData is UiToggleSkinDataObject)
-                    {
-                        (backgroundGraphic as Rectangle).ShapeProperties.FillColor =
-                            (skinData as UiToggleSkinDataObject).pressedBackgroundColor.normalColor;
-                        (backgroundGraphic as Rectangle).ShapeProperties.OutlineColor =
-                            (skinData as UiToggleSkinDataObject).pressedBackgroundColor.normalColor;
-                    }
-                    else
-                    {
-                        (backgroundGraphic as Rectangle).ShapeProperties.FillColor =
-                            skinData.backgroundColor.normalColor;
-                        (backgroundGraphic as Rectangle).ShapeProperties.OutlineColor =
-                            skinData.outlineColor.normalColor;
-                    }
-                }
-                else
-                {
-                    (backgroundGraphic as Rectangle).ShapeProperties.FillColor = skinData.backgroundColor.normalColor;
-                    (backgroundGraphic as Rectangle).ShapeProperties.OutlineColor = skinData.outlineColor.normalColor;
-                }
-
-            }
-
-            if (detailGraphic != null)
-            {
-                
-                ComponentSkinDataObject detailedSkinData = skinData as ComponentSkinDataObject;
-                detailGraphic.color = detailedSkinData.detailColor.normalColor;
-
-                if (_toggleBehavior.isActive)
-                {
-                    if (skinData is UiToggleSkinDataObject)
-                    {
-                        detailGraphic.color = (skinData as UiToggleSkinDataObject).pressedDetailColor.normalColor;
-                    }
-                    else
-                    {
-                        detailGraphic.color = detailedSkinData.detailColor.normalColor;
-                    }
-                }
-                else
-                {
-                    detailGraphic.color = detailedSkinData.detailColor.normalColor;
-                }
-
-            }
-
-            if (backgroundGraphic != null)
-                backgroundGraphic.SetAllDirty();
-
-            if (detailGraphic != null)
-                detailGraphic.SetAllDirty();
-
+            
+            base.OnPointerEnter(eventData);
+            
         }
 
+        public override void OnPointerExit(PointerEventData eventData)
+        {
+            
+            base.OnPointerExit(eventData);
+         
+        }
+
+        public override void OnResetElement()
+        {
+            
+            base.OnResetElement();
+            
+        }
+        
+        /// <summary>
+        /// Toggles the current state and fires events.
+        /// </summary>
+        [TabGroup("Tabs", "Settings")]
+        [Button(ButtonSizes.Small)]
+        public virtual void Toggle()
+        {
+            
+            bool newValue = !isOn;
+
+            // If we're trying to switch OFF, ask the group first.
+            if (!newValue && toggleGroup != null && !toggleGroup.CanSwitchOff(this))
+                return;
+
+            SetIsOn(newValue, true);
+            
+        }
+        
+        /// <summary>
+        /// Sets the toggle state from code.
+        /// </summary>
+        /// <param name="value">New toggle state.</param>
+        /// <param name="sendEvent">Whether to invoke events.</param>
+        public virtual void SetIsOn(bool value, bool sendEvent = true)
+        {
+            
+            if (isOn == value)
+                return;
+
+            isOn = value;
+
+            if (sendEvent)
+            {
+                onValueChanged?.Invoke(isOn);
+                if (isOn) onToggledOn?.Invoke();
+                else      onToggledOff?.Invoke();
+            }
+
+            UpdateVisualState();
+
+            // If we just turned ON, tell our group.
+            if (isOn && toggleGroup != null)
+            {
+                toggleGroup.NotifyToggleOn(this);
+            }
+            
+        }
+        
+        /// <summary>
+        /// Updates the visuals to reflect current state.
+        /// This is where we implement the two visual modes:
+        ///  - ToggleButton
+        ///  - Normal (just color swap)
+        /// </summary>
+        private void UpdateVisualState()
+        {
+            if (detailGraphic == null)
+                return;
+
+            switch (behavior)
+            {
+                case ToggleBehavior.ToggleButton:
+                    detailGraphic.enabled = isOn;
+                    break;
+
+                case ToggleBehavior.Normal:
+                    detailGraphic.enabled = true;
+                    break;
+            }
+        }
+
+        #endregion
     }
+    
 }

@@ -111,6 +111,13 @@ namespace GPUI
             
         }
         
+        protected override void OnDisable()
+        {
+            
+            base.OnDisable();
+            
+        }
+        
         protected override void Start()
         {
             
@@ -162,8 +169,6 @@ namespace GPUI
 
             if (skinData == null)
                 return;
-            
-            Debug.Log($"{this.name} is applying skin data {skinData.name}");
 
             if (backgroundGraphic)
             {
@@ -171,12 +176,10 @@ namespace GPUI
                 if (skinData.backgroundMaterial != null)
                     backgroundGraphic.material = skinData.backgroundMaterial;
                 
-                colors = skinData.backgroundColor;
-
                 if (backgroundGraphic is UiShapeRect)
                 {
 
-                    (backgroundGraphic as UiShapeRect).color = skinData.backgroundColor.normalColor;
+                    (backgroundGraphic as UiShapeRect).FillColor = skinData.backgroundColor.normalColor;
                     (backgroundGraphic as UiShapeRect).OutlineColor = skinData.outlineColor.normalColor;
 
                     //if (skinData.backgroundSprite != null)
@@ -189,6 +192,7 @@ namespace GPUI
                     (backgroundGraphic as UiShapeRect).ShadowCol = skinData.shadowColor;
                     (backgroundGraphic as UiShapeRect).ShadowOffset = skinData.offset;
                     (backgroundGraphic as UiShapeRect).ShadowSize = skinData.size;
+                    (backgroundGraphic as UiShapeRect).ShadowSoftness = skinData.softness;
 
                 }
 
@@ -215,7 +219,7 @@ namespace GPUI
                 if (skinData.useMaxRadius)
                 {
                     
-                    
+
 
                 }
                 else
@@ -245,11 +249,7 @@ namespace GPUI
             if (!layoutRectTransform.TryGetComponent<UiCombiLayoutGroup>(out UiCombiLayoutGroup layoutGroup))
                 layoutGroup = layoutRectTransform.gameObject.AddComponent<UiCombiLayoutGroup>();
             
-            //layoutGroup.justifyContent = layoutOptions.justifyContent;
-            //layoutGroup.flexDirection = layoutOptions.flexDirection;
-            //layoutGroup.alignItems = layoutOptions.alignItems;
-            //layoutGroup.flexWrap = layoutOptions.flexWrap;
-            //layoutGroup.gap = layoutOptions.gapMain;
+
             
         }
         
@@ -263,29 +263,39 @@ namespace GPUI
             if (skinData == null)
                 return;
             
+            Color targetFill = skinData.backgroundColor.normalColor;
             Color targetOutline = skinData.outlineColor.normalColor;
 
             switch (state)
             {
                 case SelectionState.Normal:
+                    targetFill = skinData.backgroundColor.normalColor;
                     targetOutline = skinData.outlineColor.normalColor;
                     break;
                 case SelectionState.Highlighted:
+                    targetFill = skinData.backgroundColor.highlightedColor;
                     targetOutline = skinData.outlineColor.highlightedColor;
                     break;
                 case SelectionState.Pressed:
+                    targetFill = skinData.backgroundColor.pressedColor;
                     targetOutline = skinData.outlineColor.pressedColor;
                     break;
                 case SelectionState.Selected:
+                    targetFill = skinData.backgroundColor.selectedColor;
                     targetOutline = skinData.outlineColor.selectedColor;
                     break;
                 case SelectionState.Disabled:
+                    targetFill = skinData.backgroundColor.disabledColor;
                     targetOutline = skinData.outlineColor.disabledColor;
                     break;
             }
 
-            if(backgroundGraphic is UiShapeRect)
+            if (backgroundGraphic is UiShapeRect)
+            {
+                (backgroundGraphic as UiShapeRect).FillColor = targetFill;
                 (backgroundGraphic as UiShapeRect).OutlineColor = targetOutline;
+                
+            }
         }
         
         #endregion

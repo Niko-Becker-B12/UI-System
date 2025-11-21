@@ -74,10 +74,10 @@ namespace GPUI
         public Color shadowColor;
 
 
-        [TabGroup("Settings", "Shadow")] [Range(0f, 2048f)]
+        [TabGroup("Settings", "Shadow")] [Range(0f, 128f)]
         public float size = 0f;
 
-        [TabGroup("Settings", "Shadow")] [Range(0f, 1f)]
+        [TabGroup("Settings", "Shadow")] [Range(0f, 128f)]
         public float softness = 0f;
 
         [TabGroup("Settings", "Shadow")] public Vector2 offset;

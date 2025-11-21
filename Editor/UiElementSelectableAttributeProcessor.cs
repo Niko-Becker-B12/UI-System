@@ -38,39 +38,40 @@ namespace GPUI.Editor
 
                 case "m_TargetGraphic":
                     attributes.Add(new HideInInspector());
-                    attributes.Add(new TabGroupAttribute("Tabs", "UI Skin"));
+                    attributes.Add(new TabGroupAttribute("Tabs", "Settings"));
                     attributes.Add(new ShowIfAttribute("", false));
                     attributes.Add(new LabelTextAttribute("Target Graphic"));
                     break;
 
                 case "m_Transition":
-                    attributes.Add(new TabGroupAttribute("Tabs", "UI Skin"));
+                    attributes.Add(new TabGroupAttribute("Tabs", "Settings"));
                     attributes.Add(new LabelTextAttribute("Transition"));
                     break;
 
                 case "m_Colors":
-                    attributes.Add(new TabGroupAttribute("Tabs", "UI Skin"));
+                    attributes.Add(new HideInInspector());
+                    attributes.Add(new TabGroupAttribute("Tabs", "Settings"));
                     attributes.Add(new LabelTextAttribute("Color Tint"));
                     attributes.Add(new ShowIfAttribute(
                         "@this.transition == UnityEngine.UI.Selectable.Transition.ColorTint"));
                     break;
 
                 case "m_SpriteState":
-                    attributes.Add(new TabGroupAttribute("Tabs", "UI Skin"));
+                    attributes.Add(new TabGroupAttribute("Tabs", "Settings"));
                     attributes.Add(new LabelTextAttribute("Sprite Swap"));
                     attributes.Add(new ShowIfAttribute(
                         "@this.transition == UnityEngine.UI.Selectable.Transition.SpriteSwap"));
                     break;
 
                 case "m_AnimationTriggers":
-                    attributes.Add(new TabGroupAttribute("Tabs", "UI Skin"));
+                    attributes.Add(new TabGroupAttribute("Tabs", "Settings"));
                     attributes.Add(new LabelTextAttribute("Animation Triggers"));
                     attributes.Add(new ShowIfAttribute(
                         "@this.transition == UnityEngine.UI.Selectable.Transition.Animation"));
                     break;
 
                 case "m_Navigation":
-                    attributes.Add(new TabGroupAttribute("Tabs", "UI Skin"));
+                    attributes.Add(new TabGroupAttribute("Tabs", "Settings"));
                     attributes.Add(new LabelTextAttribute("Navigation"));
                     break;
 

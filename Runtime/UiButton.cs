@@ -1,277 +1,208 @@
 using Sirenix.OdinInspector;
 using System.Collections;
 using System.Collections.Generic;
-using ThisOtherThing.UI.Shapes;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace GPUI
 {
-    [RequireComponent(typeof(ButtonBehavior))]
 
     public class UiButton : UiElementExtended
     {
-
-        [HideInInspector] public ButtonBehavior _buttonBehavior;
-
-        [Space] [TabGroup("Events", "OnClick")]
-        public List<Function> onClickFunctions = new List<Function>();
-
-        [Space] [TabGroup("Events", "OnEnter")]
-        public List<Function> onEnterFunctions = new List<Function>();
-
-        [Space] [TabGroup("Events", "OnExit")] public List<Function> onExitFunctions = new List<Function>();
-
-        [Space] [TabGroup("Events", "OnReset")]
-        public List<Function> onResetFunctions = new List<Function>();
-
-
-        private void Start()
+        
+        public enum ButtonBehavior
         {
+            Normal,
+            PressOnce,
+        }
+        
+        [TabGroup("Tabs", "Settings", SdfIconType.HandIndex)]
+        [SerializeField]
+        private ButtonBehavior behavior = ButtonBehavior.Normal;
 
+        [TabGroup("Tabs", "Settings", SdfIconType.HandIndex)]
+        [ShowInInspector, ReadOnly, LabelText("Has Been Pressed")]
+        private bool hasBeenPressed;
+        
+        #region Unity Lifecycle
 
-            _buttonBehavior = GetComponent<ButtonBehavior>();
-
-            if (backgroundGraphic != null)
-                backgroundGraphic.raycastPadding = new Vector4(-8f, -8f, -8f, -8f);
-
-
-            Function onClick = new Function
-            {
-                functionDelay = 0,
-                functionName = new UnityEvent { }
-            };
-            onClick.functionName.AddListener(() => { OnClick(); });
-
-            onClickFunctions.Add(onClick);
-
-            Function onEnter = new Function
-            {
-                functionDelay = 0,
-                functionName = new UnityEvent { }
-            };
-            onEnter.functionName.AddListener(() => { OnEnter(); });
-
-            onEnterFunctions.Add(onEnter);
-
-            Function onExit = new Function
-            {
-                functionDelay = 0,
-                functionName = new UnityEvent { }
-            };
-            onExit.functionName.AddListener(() => { OnExit(); });
-
-            onExitFunctions.Add(onExit);
-
-            Function onReset = new Function
-            {
-                functionDelay = 0,
-                functionName = new UnityEvent { }
-            };
-            onReset.functionName.AddListener(() => { OnReset(); });
-
-            onResetFunctions.Add(onReset);
-
-
-            _buttonBehavior.onMouseDown.AddRange(onClickFunctions);
-            _buttonBehavior.onMouseEnter.AddRange(onEnterFunctions);
-            _buttonBehavior.onMouseExit.AddRange(onExitFunctions);
-            _buttonBehavior.onButtonReset.AddRange(onResetFunctions);
-
+        protected override void Reset()
+        {
+            
+            base.Reset();
+            
         }
 
+        protected override void Awake()
+        {
+            
+            base.Awake();
+            
+        }
+
+        protected override void OnEnable()
+        {
+            
+            base.OnEnable();
+            
+        }
+        
+        protected override void OnDisable()
+        {
+            
+            base.OnDisable();
+            
+        }
+        
+        protected override void Start()
+        {
+            
+            base.Start();
+            
+        }
+
+#if UNITY_EDITOR
+        protected override void OnValidate()
+        {
+            
+            base.OnValidate();
+            
+        }
+#endif
+
+        #endregion
+        
+        #region Component Caching
+        
+        protected override void CacheComponents()
+        {
+            
+            base.CacheComponents();
+            
+        }
+
+        #endregion
+        
+        #region Apply Skin
+        
+        /// <summary>
+        /// Assigns skin values to this element.
+        /// </summary>
         public override void ApplySkinData()
         {
 
             base.ApplySkinData();
 
-            if (skinData == null)
-                return;
+        }
 
-            if (detailGraphic != null && skinData is ComponentSkinDataObject)
-            {
+        /// <summary>
+        /// Hook for shape components (rounded corners, etc).
+        /// Implement in subclasses or attach custom components that read from the skin.
+        /// </summary>
+        public override void ApplyShape()
+        {
+            
+            base.ApplyShape();
+            
+        }
+        
+        public override void ApplyLayout(RectTransform layoutRectTransform, SimpleComponentSkinDataObject.UiElementLayoutOptions layoutOptions)
+        {
 
-                ComponentSkinDataObject detailedSkinData = skinData as ComponentSkinDataObject;
-                
-                detailGraphic.color = detailedSkinData.detailColor.normalColor;
+           base.ApplyLayout(layoutRectTransform, layoutOptions);
+            
+        }
+        
+        /// <summary>
+        /// Override default state transition to also update outline based on skin.
+        /// </summary>
+        protected override void DoStateTransition(SelectionState state, bool instant)
+        {
+            
+            base.DoStateTransition(state, instant);
 
-            }
+        }
+        
+        #endregion
+        
+        #region API
+        
+        public override void FadeElement(bool fadeIn = false)
+        {
 
-            LayoutRebuilder.ForceRebuildLayoutImmediate(rectTransform);
+            base.FadeElement(fadeIn);
 
         }
 
-        public virtual void OnClick()
+        public override void OnPointerClick(PointerEventData eventData)
         {
-
-            if (skinData == null)
+            
+            if (eventData.button != PointerEventData.InputButton.Left)
                 return;
 
-            if (backgroundGraphic != null)
-            {
+            if (!IsActive() || !IsInteractable())
+                return;
 
-                if (backgroundGraphic is Rectangle)
-                {
+            HandleClickBehavior();
 
-                    (backgroundGraphic as Rectangle).ShapeProperties.FillColor = skinData.backgroundColor.pressedColor;
-                    (backgroundGraphic as Rectangle).ShapeProperties.OutlineColor = skinData.outlineColor.pressedColor;
-
-                }
-                else if (backgroundGraphic is Polygon)
-                {
-
-                    (backgroundGraphic as Polygon).ShapeProperties.FillColor = skinData.backgroundColor.pressedColor;
-
-                }
-
-            }
-
-            if (detailGraphic != null && skinData is ComponentSkinDataObject)
-            {
-
-                ComponentSkinDataObject detailedSkinData = skinData as ComponentSkinDataObject;
-                
-                detailGraphic.color = detailedSkinData.detailColor.pressedColor;
-
-            }
-
-            if (backgroundGraphic != null)
-                backgroundGraphic.SetAllDirty();
-
-            if (detailGraphic != null)
-                detailGraphic.SetAllDirty();
-
+            base.OnPointerClick(eventData);
+            
         }
 
-        public virtual void OnEnter()
+        public override void OnPointerEnter(PointerEventData eventData)
         {
-
-            if (skinData == null)
-                return;
-
-            if (backgroundGraphic != null)
-            {
-
-                if (backgroundGraphic is Rectangle)
-                {
-
-                    (backgroundGraphic as Rectangle).ShapeProperties.FillColor =
-                        skinData.backgroundColor.highlightedColor;
-                    (backgroundGraphic as Rectangle).ShapeProperties.OutlineColor =
-                        skinData.outlineColor.highlightedColor;
-
-                }
-                else if (backgroundGraphic is Polygon)
-                {
-
-                    (backgroundGraphic as Polygon).ShapeProperties.FillColor =
-                        skinData.backgroundColor.highlightedColor;
-
-                }
-
-            }
-
-            if (detailGraphic != null && skinData is ComponentSkinDataObject)
-            {
-
-                ComponentSkinDataObject detailedSkinData = skinData as ComponentSkinDataObject;
-                
-                detailGraphic.color = detailedSkinData.detailColor.highlightedColor;
-
-            }
-
-            if (backgroundGraphic != null)
-                backgroundGraphic.SetAllDirty();
-
-            if (detailGraphic != null)
-                detailGraphic.SetAllDirty();
-
+            
+            base.OnPointerEnter(eventData);
+            
         }
 
-        public virtual void OnExit()
+        public override void OnPointerExit(PointerEventData eventData)
         {
-
-            if (skinData == null)
-                return;
-
-            if (backgroundGraphic != null)
-            {
-
-                if (backgroundGraphic is Rectangle)
-                {
-
-                    (backgroundGraphic as Rectangle).ShapeProperties.FillColor = skinData.backgroundColor.normalColor;
-                    (backgroundGraphic as Rectangle).ShapeProperties.OutlineColor = skinData.outlineColor.normalColor;
-
-                }
-                else if (backgroundGraphic is Polygon)
-                {
-
-                    (backgroundGraphic as Polygon).ShapeProperties.FillColor = skinData.backgroundColor.normalColor;
-
-                }
-
-            }
-
-            if (detailGraphic != null && skinData is ComponentSkinDataObject)
-            {
-
-                ComponentSkinDataObject detailedSkinData = skinData as ComponentSkinDataObject;
-                
-                detailGraphic.color = detailedSkinData.detailColor.normalColor;
-
-            }
-
-            if (backgroundGraphic != null)
-                backgroundGraphic.SetAllDirty();
-
-            if (detailGraphic != null)
-                detailGraphic.SetAllDirty();
-
+            
+            base.OnPointerExit(eventData);
+         
         }
 
-        public virtual void OnReset()
+        public override void OnResetElement()
         {
+            
+            bool hadState = hasBeenPressed;
 
-            if (skinData == null)
-                return;
-
-            if (backgroundGraphic != null)
-            {
-
-                if (backgroundGraphic is Rectangle)
-                {
-
-                    (backgroundGraphic as Rectangle).ShapeProperties.FillColor = skinData.backgroundColor.normalColor;
-                    (backgroundGraphic as Rectangle).ShapeProperties.OutlineColor = skinData.outlineColor.normalColor;
-
-                }
-                else if (backgroundGraphic is Polygon)
-                {
-
-                    (backgroundGraphic as Polygon).ShapeProperties.FillColor = skinData.backgroundColor.normalColor;
-
-                }
-
-            }
-
-            if (detailGraphic != null && skinData is ComponentSkinDataObject)
-            {
-
-                ComponentSkinDataObject detailedSkinData = skinData as ComponentSkinDataObject;
+            hasBeenPressed = false;
                 
-                detailGraphic.color = detailedSkinData.detailColor.normalColor;
+            interactable = true;
 
+            if (hadState)
+                onReset?.Invoke();
+            
+            base.OnResetElement();
+            
+        }
+        
+        #endregion
+
+        protected virtual void HandleClickBehavior()
+        {
+            
+            switch (behavior)
+            {
+                case ButtonBehavior.Normal:
+                    onClick?.Invoke();
+                    break;
+
+                case ButtonBehavior.PressOnce:
+                    if (hasBeenPressed)
+                        return;
+
+                    hasBeenPressed = true;
+                    onClick?.Invoke();
+                    interactable = false;
+                    break;
             }
-
-            if (backgroundGraphic != null)
-                backgroundGraphic.SetAllDirty();
-
-            if (detailGraphic != null)
-                detailGraphic.SetAllDirty();
-
+            
         }
 
     }

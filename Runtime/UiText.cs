@@ -1,104 +1,317 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.Localization;
 using UnityEngine.UI;
 
-
 namespace GPUI
 {
-    [RequireComponent(typeof(ContentSizeFitter))]
-
     public class UiText : UiElement
     {
+        
+        [TabGroup("Tabs", "UI Elements")]
+        [Tooltip("The TextMeshProUGUI component this element controls.")]
+        [Required]
+        [SerializeField]
+        private TextMeshProUGUI textComponent;
+        
+        [TabGroup("Tabs", "Settings")]
+        [Tooltip("Use Unity's LocalizedString to drive the label text.")]
+        [SerializeField]
+        private bool useLocalizedString = false;
 
-        ContentSizeFitter contentSizeFitter => GetComponent<ContentSizeFitter>();
+        [TabGroup("Tabs", "Settings")]
+        [ShowIf(nameof(useLocalizedString))]
+        [Tooltip("Localized string reference (Unity Localization package).")]
+        [SerializeField]
+        private LocalizedString localizedString;
+        
+        
+        #region Unity Lifecycle
 
-        public bool fitHorizontalSizeToText = true;
-        public bool fitVerticalSizeToText = true;
-
-        public LocalizedString localizedString;
-
-        private void Awake()
+        protected override void Reset()
         {
+            
+            base.Reset();
+            
+        }
 
-            if (fitHorizontalSizeToText)
-                contentSizeFitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
-            else
-                contentSizeFitter.horizontalFit = ContentSizeFitter.FitMode.Unconstrained;
-
-            if (fitVerticalSizeToText)
-                contentSizeFitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
-            else
-                contentSizeFitter.verticalFit = ContentSizeFitter.FitMode.Unconstrained;
-
+        protected override void Awake()
+        {
+            
             base.Awake();
-
+            
+            if (targetGraphic == null && textComponent != null)
+                targetGraphic = textComponent;
+            
         }
 
-        private void Start()
+        protected override void OnEnable()
         {
+            
+            base.OnEnable();
+            
+            if (useLocalizedString)
+                RegisterLocalizedString();
 
-
-
+            UpdateTextColor(currentSelectionState);
+            
         }
-
-        private void OnEnable()
+        
+        protected override void OnDisable()
         {
-
-            localizedString.StringChanged += OverrideText;
-
+            
+            UnregisterLocalizedString();
+            
+            base.OnDisable();
+            
         }
-
-        private void OnDisable()
+        
+        protected override void Start()
         {
-
-            localizedString.StringChanged -= OverrideText;
-
+            
+            base.Start();
+            
         }
 
-        public virtual void OverrideText(string newText)
+#if UNITY_EDITOR
+        protected override void OnValidate()
         {
+            
+            base.OnValidate();
+            
+            if (textComponent == null)
+                textComponent = GetComponent<TextMeshProUGUI>();
 
-            if (!backgroundGraphic.TryGetComponent(out TextMeshProUGUI text))
-                return;
+            if (useLocalizedString && isActiveAndEnabled)
+            {
+                UnregisterLocalizedString();
+                RegisterLocalizedString();
+            }
 
-            text.text = newText;
+            UpdateTextColor(currentSelectionState);
+            
+        }
+#endif
 
-            LayoutRebuilder.ForceRebuildLayoutImmediate(rectTransform);
-
+        #endregion
+        
+        #region Component Caching
+        
+        protected override void CacheComponents()
+        {
+            
+            base.CacheComponents();
+            
         }
 
+        #endregion
+        
+        #region Apply Skin
+        
+        /// <summary>
+        /// Assigns skin values to this element.
+        /// </summary>
         public override void ApplySkinData()
         {
 
-            if (skinData == null)
-                return;
-
-            if (backgroundGraphic != null && backgroundGraphic.TryGetComponent(out TextMeshProUGUI text))
-            {
-
-                text.color = skinData.backgroundColor.normalColor;
-
-                if (skinData is UiTextSkinDataObject)
-                {
-
-                    text.styleSheet = (skinData as UiTextSkinDataObject).styleSheet;
-                    text.textStyle =
-                        (skinData as UiTextSkinDataObject).styleSheet.GetStyle((skinData as UiTextSkinDataObject)
-                            .usedTextStyle);
-
-                }
-
-                backgroundGraphic.SetAllDirty();
-                LayoutRebuilder.ForceRebuildLayoutImmediate(rectTransform);
-                LayoutRebuilder.ForceRebuildLayoutImmediate(backgroundGraphic.transform.parent as RectTransform);
-
-            }
+            base.ApplySkinData();
 
         }
 
+        /// <summary>
+        /// Hook for shape components (rounded corners, etc).
+        /// Implement in subclasses or attach custom components that read from the skin.
+        /// </summary>
+        public override void ApplyShape()
+        {
+            
+            base.ApplyShape();
+            
+        }
+        
+        public override void ApplyLayout(RectTransform layoutRectTransform, SimpleComponentSkinDataObject.UiElementLayoutOptions layoutOptions)
+        {
+
+           base.ApplyLayout(layoutRectTransform, layoutOptions);
+            
+        }
+        
+        /// <summary>
+        /// Override default state transition to also update outline based on skin.
+        /// </summary>
+        protected override void DoStateTransition(SelectionState state, bool instant)
+        {
+            
+            base.DoStateTransition(state, instant);
+            
+            UpdateTextColor(state);
+            
+        }
+        
+        private void UpdateTextColor(SelectionState state)
+        {
+            
+            if (textComponent == null)
+                return;
+            
+            Color stateColor = skinData.backgroundColor.normalColor;
+
+            switch (state)
+            {
+                case SelectionState.Normal:
+                    stateColor = skinData.backgroundColor.normalColor;
+                    break;
+                case SelectionState.Highlighted:
+                    stateColor = skinData.backgroundColor.highlightedColor;
+                    break;
+                case SelectionState.Pressed:
+                    stateColor = skinData.backgroundColor.pressedColor;
+                    break;
+                case SelectionState.Selected:
+                    stateColor = skinData.backgroundColor.selectedColor;
+                    break;
+                case SelectionState.Disabled:
+                    stateColor = skinData.backgroundColor.disabledColor;
+                    break;
+            }
+            
+            textComponent.color = stateColor;
+            
+        }
+        
+        #endregion
+        
+        #region API
+        
+        public override void FadeElement(bool fadeIn = false)
+        {
+
+            base.FadeElement(fadeIn);
+
+        }
+
+        public override void OnPointerClick(PointerEventData eventData)
+        {
+            
+            base.OnPointerClick(eventData);
+            
+        }
+
+        public override void OnPointerEnter(PointerEventData eventData)
+        {
+            
+            base.OnPointerEnter(eventData);
+            
+        }
+
+        public override void OnPointerExit(PointerEventData eventData)
+        {
+            
+            base.OnPointerExit(eventData);
+         
+        }
+
+        public override void OnResetElement()
+        {
+            
+            base.OnResetElement();
+            
+        }
+        
+        /// <summary>
+        /// The underlying TMP text component.
+        /// </summary>
+        public TextMeshProUGUI TextComponent
+        {
+            get => textComponent;
+            set
+            {
+                textComponent = value;
+                if (textComponent != null && targetGraphic == null)
+                    targetGraphic = textComponent;
+
+                UpdateTextColor(currentSelectionState);
+            }
+        }
+        
+        /// <summary>
+        /// Convenience access to the label text.
+        /// If useLocalizedString is true, setting this will also disable localization.
+        /// </summary>
+        public string Text
+        {
+            get => textComponent != null ? textComponent.text : string.Empty;
+            set
+            {
+                if (textComponent == null) return;
+
+                // If user manually sets text, assume they want to override localization.
+                useLocalizedString = false;
+                UnregisterLocalizedString();
+
+                textComponent.text = value;
+            }
+        }
+        
+        public bool UseLocalizedString
+        {
+            get => useLocalizedString;
+            set
+            {
+                if (useLocalizedString == value)
+                    return;
+
+                useLocalizedString = value;
+
+                if (isActiveAndEnabled)
+                {
+                    if (useLocalizedString)
+                        RegisterLocalizedString();
+                    else
+                        UnregisterLocalizedString();
+                }
+            }
+        }
+        
+        public LocalizedString LocalizedString
+        {
+            get => localizedString;
+            set
+            {
+                // Swap the reference and re-register.
+                UnregisterLocalizedString();
+                localizedString = value;
+                if (useLocalizedString && isActiveAndEnabled)
+                    RegisterLocalizedString();
+            }
+        }
+        
+        #endregion
+
+        #region Localization
+
+        private void RegisterLocalizedString()
+        {
+            localizedString.StringChanged += OnLocalizedStringChanged;
+            localizedString.RefreshString();
+        }
+
+        private void UnregisterLocalizedString()
+        {
+            localizedString.StringChanged -= OnLocalizedStringChanged;
+        }
+
+        private void OnLocalizedStringChanged(string value)
+        {
+            if (!useLocalizedString)
+                return;
+
+            if (textComponent != null)
+                textComponent.text = value;
+        }
+
+        #endregion
     }
 }

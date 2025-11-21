@@ -1,6 +1,5 @@
 using System;
 using Sirenix.OdinInspector;
-using ThisOtherThing.UI.Shapes;
 using UnityEngine;
 using UnityEngine.Events;
 using GPUI;
@@ -53,13 +52,13 @@ namespace GPUI
             if (skinData == null)
                 return;
             
-            if (detailGraphic != null && detailGraphic.TryGetComponent<Sector>(out Sector sector) && skinData is ComponentSkinDataObject)
+            if (detailGraphic != null && detailGraphic.TryGetComponent<UiShapeSector>(out UiShapeSector sector) && skinData is ComponentSkinDataObject)
             {
 
                 ComponentSkinDataObject detailedSkinData = skinData as ComponentSkinDataObject;
                 detailGraphic.color = detailedSkinData.detailColor.normalColor;
 
-                sector.ArcProperties.Length = 1f;
+                sector.ArcAngle = 360f;
 
             }
 
@@ -71,8 +70,8 @@ namespace GPUI
             if (timerStarted && currentTime < timer)
             {
                 currentTime += Time.fixedDeltaTime;
-                (detailGraphic as Sector).ArcProperties.Length = currentTime / timer;
-                (detailGraphic as Sector).SetAllDirty();
+                (detailGraphic as UiShapeSector).ArcAngle = 360f * (currentTime / timer);
+                (detailGraphic as UiShapeSector).SetAllDirty();
             }
             else if (timerStarted && currentTime >= timer)
             {
