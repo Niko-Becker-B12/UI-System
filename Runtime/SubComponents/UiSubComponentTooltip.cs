@@ -84,7 +84,7 @@ namespace GPUI.SubComponents
                     
                 }
                 
-                tooltip.tooltipTextObject?.OverrideText(tooltipText?.GetLocalizedString());
+                tooltip.tooltipText.LocalizedString = tooltipText;
                 tooltip.FadeElement(true);
                 
             }); 
