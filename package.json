@@ -1,6 +1,6 @@
 {
   "name": "com.red.gpui-system",
-  "version": "2.0.01-Pre-Release",
+  "version": "2.0.02-Pre-Release",
   "displayName": "GPUI-System",
   "type": "tool",
   "unity": "2022.3",
@@ -18,7 +18,6 @@
     "com.unity.mathematics": "1.0.1",
     "com.unity.ugui": "2.0.0",
     "com.hextantstudios.utilities": "https://github.com/hextantstudios/com.hextantstudios.utilities.git",
-    "com.jimmycushnie.ui-shapes-kit_jimmyfork": "https://github.com/JimmyCushnie/ui-shapes-kit_jimmyfork.git",
     "com.annulusgames.lit-motion": "https://github.com/annulusgames/LitMotion.git?path=src/LitMotion/Assets/LitMotion",
     "com.unity.vectorgraphics": "2.0.0-preview.25"
   },
